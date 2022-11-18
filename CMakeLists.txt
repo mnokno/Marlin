@@ -3,4 +3,4 @@ project(Marlin)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(Marlin src/main.cpp src/position.cpp src/position.h src/types.h)
+add_executable(Marlin main.cpp)

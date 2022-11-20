@@ -13,8 +13,9 @@ using namespace std;
 namespace engine{
     class Position {
     public:
+        Position();
         void makeMove(int move);
-        void unMakeMove(int move);
+        void unMakeMove();
 
         ulong getPosition(Player player);
         ulong getPosition(int player);
@@ -23,7 +24,7 @@ namespace engine{
         ulong getHash();
         short getStackHeight(short stack);
     private:
-        GameState gameStateAfterMove(int move);
+        GameState gameStateAfterMove(int move, Player playerWhoMoved);
 
         ulong positions[2];
         GameState gameState;

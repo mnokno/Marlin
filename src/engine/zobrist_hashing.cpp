@@ -18,12 +18,12 @@ namespace engine {
         }
     }
 
-    ulong ZobristHashing::generateHash(Position position) {
+    ulong ZobristHashing::generateHash(Position *position) {
         ulong hash = 0;
         for (int i = 0; i < 2; i++){
             for (short j = 0; j < 42; j++){
                 // if the bit (j) is present in the position
-                if ((position.getPosition(i) & BitOps::flipBit(0, j)) != 0){
+                if ((position->getPosition(i) & BitOps::flipBit(0, j)) != 0){
                     hash ^= hashes[i][j];
                 }
             }

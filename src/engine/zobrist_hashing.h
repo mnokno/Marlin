@@ -16,7 +16,7 @@ namespace engine {
         inline static ulong hashes[2][42];
     public:
         static void initHashes();
-        static ulong generateHash(Position position);
+        static ulong generateHash(Position *position);
         static ulong updateHash(ulong hash, int move, Player player);
     };
 

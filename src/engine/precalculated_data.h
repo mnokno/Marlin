@@ -12,15 +12,18 @@ namespace engine {
 
     class PrecalculatedData {
     public:
-        inline static std::list<ulong> winingLinesMasks[2][42];
+        inline static std::list<ulong> winingLinesMasks[42];
         inline static ulong columMasks[7];
         inline static ulong moveMasks[42];
         inline static ulong boarderMasks[4];
         static void init();
-        static std::string format(ulong number);
-
+        static std::string formatUlong(ulong number);
+        static std::string formatBoard(ulong number);
     private:
         static ulong flipBit(ulong map, int bitToFlip);
+        static bool isOnBoard(int pos);
+        static bool isOnEdge(int pos);
+        static bool hasWrappedOver(int oldPos, int newPos);
     };
 
 } // engine

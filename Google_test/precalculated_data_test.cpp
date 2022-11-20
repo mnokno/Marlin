@@ -54,7 +54,13 @@ TEST_F(PrecalculatedDataTest, BorderMasks) {
                             "000000000000000000000000000000000001111111",
                             "111111100000000000000000000000000000000000"};
     for (int i = 0; i < 4; i++){
-        ASSERT_EQ(expected[i], PrecalculatedData::format(PrecalculatedData::boarderMasks[i]));
+        ASSERT_EQ(expected[i], PrecalculatedData::formatUlong(PrecalculatedData::boarderMasks[i]));
+    }
+}
+
+TEST_F(PrecalculatedDataTest, WiningLinesMasks){
+    for (ulong mask : PrecalculatedData::winingLinesMasks[18]){
+        //std::cout << PrecalculatedData::formatBoard(mask) << std::endl;
     }
 }
 

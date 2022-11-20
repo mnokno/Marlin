@@ -17,7 +17,7 @@ namespace engine {
     public:
         static void initHashes();
         static ulong generateHash(Position position);
-        static ulong updateHash(ulong hash, ulong move, Player player);
+        static ulong updateHash(ulong hash, int move, Player player);
     };
 
 } // engine

@@ -22,8 +22,7 @@ namespace engine {
         return 0;
     }
 
-    ulong ZobristHashing::updateHash(ulong hash, ulong move, Player player) {
-        //TODO
-        return 0;
+    ulong ZobristHashing::updateHash(ulong hash, int move, Player player) {
+        return hash ^ hashes[player][move];
     }
 } // engine

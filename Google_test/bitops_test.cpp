@@ -31,7 +31,7 @@ TEST(BitOpsTest, FlipBit){
     }
 }
 
-TEST(BitOPsTest, CountBits){
+TEST(BitOpsTest, CountBits){
     ulong num = 0;
     ASSERT_EQ(0, BitOps::countBits(num));
     for (int i = 0; i < 64; i++){

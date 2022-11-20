@@ -3,6 +3,7 @@
 //
 
 #include "precalculated_data.h"
+#include "bitops.h"
 
 namespace engine {
 
@@ -12,7 +13,7 @@ namespace engine {
         for (int i = 0; i < 2; i++){
             ulong mask = 0;
             for (int j = 0; j < 7; j++){
-                mask ^= flipBit(0,  j * 7 + i * 6);
+                mask ^= BitOps::flipBit(0,  j * 7 + i * 6);
             }
             boarderMasks[i] = mask;
         }
@@ -20,7 +21,7 @@ namespace engine {
         for (int i = 0; i < 2; i++){
             ulong mask = 0;
             for (int j = 0; j < 7; j++){
-                mask ^= flipBit(0, j + i * 5 * 7);
+                mask ^= BitOps::flipBit(0, j + i * 5 * 7);
             }
             boarderMasks[i + 2] = mask;
         }
@@ -29,7 +30,7 @@ namespace engine {
         for (int i = 0; i < 7; i++){
             ulong mask = 0;
             for (int j = 0; j < 6; j++){
-                mask |= flipBit(0, i + 7 * j);
+                mask |= BitOps::flipBit(0, i + 7 * j);
             }
             columMasks[i] = mask;
         }
@@ -37,7 +38,7 @@ namespace engine {
         // precalculates moveMasks
         // (sizeof(PrecalculatedData::moveMasks)/sizeof(*PrecalculatedData::moveMasks))
         for (int i = 0; i < 42; i++){
-            moveMasks[i] = flipBit(0, i);
+            moveMasks[i] = BitOps::flipBit(0, i);
         }
 
         // precalculates winingLinesMasks
@@ -86,7 +87,7 @@ namespace engine {
                     bool lineSuccessful = false;
 
                     for (int j = 0; j < 4; j++){
-                        winingLine ^= PrecalculatedData::flipBit(0, localPos);
+                        winingLine ^= BitOps::flipBit(0, localPos);
                         if (j == 3){
                             lineSuccessful = true;
                         }
@@ -107,11 +108,6 @@ namespace engine {
                 }
             }
         }
-    }
-
-    ulong PrecalculatedData::flipBit(ulong map, int bitToFlip) {
-        ulong a = (ulong)((ulong)0 ^ ((ulong)1 << (ulong)bitToFlip));
-        return a;
     }
 
     std::string PrecalculatedData::formatUlong(ulong number){

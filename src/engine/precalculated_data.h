@@ -20,7 +20,6 @@ namespace engine {
         static std::string formatUlong(ulong number);
         static std::string formatBoard(ulong number);
     private:
-        static ulong flipBit(ulong map, int bitToFlip);
         static bool isOnBoard(int pos);
         static bool isOnEdge(int pos);
         static bool hasWrappedOver(int oldPos, int newPos);

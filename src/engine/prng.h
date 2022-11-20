@@ -5,10 +5,17 @@
 #ifndef MARLIN_PRNG_H
 #define MARLIN_PRNG_H
 
+#include "types.h"
+
 namespace engine {
 
-    class prng {
-
+    class PRNG {
+    public:
+        PRNG(); // 1070372 default
+        PRNG(ulong seed);
+        ulong nextUlong();
+    private:
+        ulong state;
     };
 
 } // engine

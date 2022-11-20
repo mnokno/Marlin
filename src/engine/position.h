@@ -5,21 +5,32 @@
 #ifndef MARLIN_POSITION_H
 #define MARLIN_POSITION_H
 
+#include <stack>
 #include "types.h"
+
+using namespace std;
 
 namespace engine{
     class Position {
     public:
+        void makeMove(int move);
+        void unMakeMove(int move);
+
         ulong getPosition(Player player);
+        ulong getPosition(int player);
         GameState getGameState();
         Player getPlayerToMove();
+        ulong getHash();
         short getStackHeight(short stack);
     private:
+        GameState gameStateAfterMove(int move);
+
         ulong positions[2];
         GameState gameState;
         Player playerToMove;
         ulong hash;
         short stackHeights[7];
+        stack<int> history;
     };
 }
 

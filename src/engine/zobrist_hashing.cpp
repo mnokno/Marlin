@@ -5,6 +5,7 @@
 #include "zobrist_hashing.h"
 #include "types.h"
 #include "prng.h"
+#include "bitops.h"
 
 namespace engine {
 
@@ -18,8 +19,16 @@ namespace engine {
     }
 
     ulong ZobristHashing::generateHash(Position position) {
-        //TODO
-        return 0;
+        ulong hash = 0;
+        for (int i = 0; i < 2; i++){
+            for (short j = 0; j < 42; j++){
+                // if the bit (j) is present in the position
+                if ((position.getPosition(i) & BitOps::flipBit(0, j)) != 0){
+                    hash ^= hashes[i][j];
+                }
+            }
+        }
+        return hash;
     }
 
     ulong ZobristHashing::updateHash(ulong hash, int move, Player player) {

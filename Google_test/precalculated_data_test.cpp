@@ -3,9 +3,9 @@
 //
 
 #include <gtest/gtest.h>
-#include <bitset>
 #include "types.h"
 #include "precalculated_data.h"
+#include "bitops.h"
 
 using namespace engine;
 
@@ -59,8 +59,12 @@ TEST_F(PrecalculatedDataTest, BorderMasks) {
 }
 
 TEST_F(PrecalculatedDataTest, WiningLinesMasks){
-    for (ulong mask : PrecalculatedData::winingLinesMasks[18]){
-        //std::cout << PrecalculatedData::formatBoard(mask) << std::endl;
+    for (int i = 0; i < 42; i++){
+        for (ulong mask : PrecalculatedData::winingLinesMasks[i]){
+            ASSERT_EQ(4, BitOps::countBits(mask)); // should have 4 bit
+            ASSERT_NE(0, mask & (ulong)1 << i); // should overlap with center
+            std::cout << PrecalculatedData::formatBoard(mask) << std::endl;
+        }
     }
 }
 

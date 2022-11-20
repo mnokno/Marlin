@@ -10,8 +10,14 @@ namespace engine {
         // TODO
         // precalculates winingLinesMasks
 
-        // TODO
         // precalculates columMasks
+        for (int i = 0; i < 7; i++){
+            ulong mask = 0;
+            for (int j = 0; j < 6; j++){
+                mask |= PrecalculatedData::flipBit(0, i + 7 * j);
+            }
+            PrecalculatedData::columMasks[i] = mask;
+        }
 
         // precalculates moveMasks
         // (sizeof(PrecalculatedData::moveMasks)/sizeof(*PrecalculatedData::moveMasks))

@@ -16,10 +16,10 @@ namespace engine {
 
     // implementation of xorshift64star Pseudo-Random Number Generator
     ulong PRNG::nextUlong() {
-        state ^= state >> 12;
-        state ^= state << 25;
-        state ^= state >> 27;
-        return state * 2685821657736338717;
+        state ^= state >> (ulong)12;
+        state ^= state << (ulong)25;
+        state ^= state >> (ulong)27;
+        return state * (ulong)2685821657736338717;
     }
 
 } // engine

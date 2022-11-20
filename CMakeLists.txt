@@ -20,5 +20,5 @@ add_executable(Google_Tests_run
         src/engine/precalculated_data.h
         src/engine/precalculated_data.cpp
         src/engine/bitops.h
-        src/engine/bitops.cpp Google_test/bitops_test.cpp src/engine/position.cpp src/engine/position.h src/engine/prng.cpp src/engine/prng.h Google_test/prng_test.cpp src/engine/zobrist_hashing.cpp src/engine/zobrist_hashing.h Google_test/zobrist_hashing_test.cpp)
+        src/engine/bitops.cpp Google_test/bitops_test.cpp src/engine/position.cpp src/engine/position.h src/engine/prng.cpp src/engine/prng.h Google_test/prng_test.cpp src/engine/zobrist_hashing.cpp src/engine/zobrist_hashing.h Google_test/zobrist_hashing_test.cpp Google_test/position.cpp)
 target_link_libraries(Google_Tests_run gtest gtest_main)

@@ -22,7 +22,7 @@ protected:
 TEST_F(PRNGTest, Randomness){
     std::list<ulong> numbers;
     // good enough, the sequence does not loop for a long time
-    for (int i = 0; i < 10000; i++){
+    for (int i = 0; i < 1000; i++){
         ulong number = prng.nextUlong();
         ASSERT_EQ(false, (std::find(numbers.begin(), numbers.end(), number) != numbers.end()));
         numbers.push_back(number);

@@ -82,4 +82,8 @@ namespace engine{
     short Position::getStackHeight(short stack) {
         return this->stackHeights[stack];
     }
+
+    int Position::convertFileToMove(int column) {
+        return this->stackHeights[column] * 7 + column;
+    }
 }

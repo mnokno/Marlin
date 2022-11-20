@@ -63,8 +63,7 @@ TEST_F(PrecalculatedDataTest, WiningLinesMasks){
         for (ulong mask : PrecalculatedData::winingLinesMasks[i]){
             ASSERT_EQ(4, BitOps::countBits(mask)); // should have 4 bit
             ASSERT_NE(0, mask & (ulong)1 << i); // should overlap with center
-            std::cout << PrecalculatedData::formatBoard(mask) << std::endl;
+            //std::cout << PrecalculatedData::formatBoard(mask) << std::endl;
         }
     }
 }
-

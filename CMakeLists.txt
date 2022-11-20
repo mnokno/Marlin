@@ -20,5 +20,5 @@ add_executable(Google_Tests_run
         src/engine/precalculated_data.h
         src/engine/precalculated_data.cpp
         src/engine/bitops.h
-        src/engine/bitops.cpp)
+        src/engine/bitops.cpp Google_test/bitops_test.cpp)
 target_link_libraries(Google_Tests_run gtest gtest_main)

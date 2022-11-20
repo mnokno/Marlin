@@ -7,7 +7,7 @@
 namespace engine{
 
     ulong BitOps::flipBit(ulong mask, short bitToFlip) {
-        return (ulong)((ulong)0 ^ ((ulong)1 << (ulong)bitToFlip));
+        return (ulong)(mask ^ ((ulong)1 << (ulong)bitToFlip));
     }
 
     bool BitOps::isEmpty(ulong mask) {

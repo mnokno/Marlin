@@ -48,3 +48,13 @@ TEST_F(PrecalculatedDataTest, ColumnMasksB) {
     ASSERT_EQ(total, ~reminder);
 }
 
+TEST_F(PrecalculatedDataTest, BorderMasks) {
+    std::string expected[4] = {"000000100000010000001000000100000010000001",
+                            "100000010000001000000100000010000001000000",
+                            "000000000000000000000000000000000001111111",
+                            "111111100000000000000000000000000000000000"};
+    for (int i = 0; i < 4; i++){
+        ASSERT_EQ(expected[i], PrecalculatedData::format(PrecalculatedData::boarderMasks[i]));
+    }
+}
+

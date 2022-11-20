@@ -7,6 +7,24 @@
 namespace engine {
 
     void PrecalculatedData::init() {
+        // precalculates boarder masks
+        // vertical boarders
+        for (int i = 0; i < 2; i++){
+            ulong mask = 0;
+            for (int j = 0; j < 7; j++){
+                mask ^= flipBit(0,  j * 7 + i * 6);
+            }
+            PrecalculatedData::boarderMasks[i] = mask;
+        }
+        // horizontal boarders
+        for (int i = 0; i < 2; i++){
+            ulong mask = 0;
+            for (int j = 0; j < 7; j++){
+                mask ^= flipBit(0, j + i * 5 * 7);
+            }
+            PrecalculatedData::boarderMasks[i + 2] = mask;
+        }
+
         // TODO
         // precalculates winingLinesMasks
 

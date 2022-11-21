@@ -15,6 +15,7 @@ namespace engine {
         inline static std::list<ulong> winingLinesMasks[42];
         inline static ulong columMasks[7];
         inline static ulong moveMasks[42];
+        inline static ulong adjacencySquareMasks[42];
         inline static ulong boarderMasks[4];
         static void init();
         static std::string formatUlong(ulong number);

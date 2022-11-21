@@ -43,11 +43,11 @@ namespace engine {
 
         // precalculates winingLinesMasks
         // positive ray directions
-        int rayDirection[4] {1, 7, 8, 6};
+        int rayDirections[4] {1, 7, 8, 6};
         // for each position on the board
         for (int pos = 0; pos < 42; pos++){
             // in each direction there are 8
-            for (int& rayDir : rayDirection){
+            for (int& rayDir : rayDirections){
                 // finds the starting pos for the ray eight 3 away from pos or reached edge
                 int startPos = pos;
                 int stepBacks = 0;
@@ -107,6 +107,12 @@ namespace engine {
                     }
                 }
             }
+        }
+
+        // precalculates adjacencySquareMasks
+        int offsetDirections[8] {1, -1, 7, -7, 8, -8, 6, -6};
+        for (int center = 0; center < 42; center++){
+            // TODO
         }
     }
 

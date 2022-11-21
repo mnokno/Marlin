@@ -110,9 +110,15 @@ namespace engine {
         }
 
         // precalculates adjacencySquareMasks
-        int offsetDirections[8] {1, -1, 7, -7, 8, -8, 6, -6};
+        short offsetDirections[8] {1, -1, 7, -7, 8, -8, 6, -6};
         for (int center = 0; center < 42; center++){
-            // TODO
+            ulong mask = 0;
+            for (short & dir : offsetDirections){
+                if (!hasWrappedOver(center, center + dir)){
+                    mask = BitOps::flipBit(mask, center+dir);
+                }
+            }
+            adjacencySquareMasks[center] = mask;
         }
     }
 

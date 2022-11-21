@@ -34,7 +34,6 @@ namespace engine{
         this->history.push(move);
         // update player to move
         this->playerToMove = this->playerToMove == Player::YELLOW ? Player::RED : Player::YELLOW;
-
     }
 
     void Position::unMakeMove() {

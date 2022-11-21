@@ -12,7 +12,7 @@ namespace engine {
         // vertical boarders
         for (int i = 0; i < 2; i++){
             ulong mask = 0;
-            for (int j = 0; j < 7; j++){
+            for (int j = 0; j < 6; j++){
                 mask ^= BitOps::flipBit(0,  j * 7 + i * 6);
             }
             boarderMasks[i] = mask;

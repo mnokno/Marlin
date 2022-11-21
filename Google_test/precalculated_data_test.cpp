@@ -49,10 +49,10 @@ TEST_F(PrecalculatedDataTest, ColumnMasksB) {
 }
 
 TEST_F(PrecalculatedDataTest, BorderMasks) {
-    std::string expected[4] = {"000000100000010000001000000100000010000001",
-                            "100000010000001000000100000010000001000000",
-                            "000000000000000000000000000000000001111111",
-                            "111111100000000000000000000000000000000000"};
+    std::string expected[4] = {"0000000000000000000000000000100000010000001000000100000010000001",
+                            "0000000000000000000000100000010000001000000100000010000001000000",
+                            "0000000000000000000000000000000000000000000000000000000001111111",
+                            "0000000000000000000000111111100000000000000000000000000000000000"};
     for (int i = 0; i < 4; i++){
         ASSERT_EQ(expected[i], PrecalculatedData::formatUlong(PrecalculatedData::boarderMasks[i]));
     }
@@ -86,6 +86,5 @@ TEST_F(PrecalculatedDataTest, AdjacencySquareMasks) {
             default: // case 2
                 ASSERT_EQ(3, BitOps::countBits(PrecalculatedData::adjacencySquareMasks[i]));
         }
-        std::cout << PrecalculatedData::formatBoard(PrecalculatedData::adjacencySquareMasks[i]) << " " << BitOps::countBits(PrecalculatedData::adjacencySquareMasks[i]) << std::endl;
     }
 }

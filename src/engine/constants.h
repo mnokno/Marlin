@@ -6,7 +6,7 @@
 #define MARLIN_CONSTANTS_H
 
 namespace engine{
-    const int infinity = 9999999;
+    #define EVAL_INFINITY 9999999
 }
 
 #endif //MARLIN_CONSTANTS_H

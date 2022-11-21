@@ -11,9 +11,11 @@ using namespace engine;
 
 namespace engine {
 
-    class evaluation {
+    class Evaluation {
     public:
         static int eval(Position position);
+    private:
+        static int staticEval(Position position);
     };
 
 } // engine

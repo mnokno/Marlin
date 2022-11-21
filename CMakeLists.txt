@@ -36,7 +36,7 @@ add_executable(Google_Tests_run
         src/engine/move_generator.h
         Google_test/move_generator_test.cpp
         src/engine/evaluation.cpp
-        src/engine/evaluation.h src/engine/constants.h)
+        src/engine/evaluation.h src/engine/constants.h Google_test/evaluation_test.cpp)
 target_link_libraries(Google_Tests_run gtest gtest_main)
 
 # defines testers configuration

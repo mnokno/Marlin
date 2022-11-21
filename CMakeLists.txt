@@ -31,7 +31,7 @@ add_executable(Google_Tests_run
         src/engine/zobrist_hashing.cpp
         src/engine/zobrist_hashing.h
         Google_test/zobrist_hashing_test.cpp
-        Google_test/position.cpp src/engine/move_generator.cpp src/engine/move_generator.h)
+        Google_test/position.cpp src/engine/move_generator.cpp src/engine/move_generator.h Google_test/move_generator_test.cpp)
 target_link_libraries(Google_Tests_run gtest gtest_main)
 
 # defines testers configuration

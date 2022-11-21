@@ -10,7 +10,7 @@ namespace engine {
         list<int> moves;
         for (short i = 0; i < 7; i++){
             if (position.getStackHeight(i) < 6){
-                moves.push_back(position.getStackHeight(i));
+                moves.push_back(position.getStackHeight(i) * 7 + i);
             }
         }
         return moves;

@@ -45,6 +45,22 @@ TEST_F(PositionTest, RedWins) {
     ASSERT_EQ(GameState::RED_WON, position.getGameState());
 }
 
+TEST_F(PositionTest, Draw){
+    Position position = *new Position();
+
+    for (int i = 0; i < 6; i++){
+        position.makeMove(position.convertFileToMove(0));
+        position.makeMove(position.convertFileToMove(5));
+        position.makeMove(position.convertFileToMove(1));
+        position.makeMove(position.convertFileToMove(4));
+        position.makeMove(position.convertFileToMove(2));
+        position.makeMove(position.convertFileToMove(3));
+        position.makeMove(position.convertFileToMove(6));
+    }
+
+    ASSERT_EQ(GameState::DRAW, position.getGameState());
+}
+
 TEST_F(PositionTest, ConvertFileToMove) {
     Position position = *new Position();
     position.makeMove(position.convertFileToMove(0));
@@ -64,6 +80,7 @@ TEST_F(PositionTest, UnMakeMoves){
     ulong red = position.getPosition(1);
     Player player = position.getPlayerToMove();
     ulong hash = position.getHash();
+    short moveCount = position.getMoveCount();
 
     // plays the moves
     for (int i = 0; i < 3; i++){
@@ -84,4 +101,5 @@ TEST_F(PositionTest, UnMakeMoves){
     ASSERT_EQ(red, position.getPosition(1));
     ASSERT_EQ(player, position.getPlayerToMove());
     ASSERT_EQ(hash, position.getHash());
+    ASSERT_EQ(moveCount, position.getMoveCount());
 }

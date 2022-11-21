@@ -23,6 +23,8 @@ namespace engine{
     }
 
     void Position::makeMove(int move) {
+        // update move count
+        this->moveCount++;
         // plays the move
         this->positions[playerToMove] ^= PrecalculatedData::moveMasks[move];
         // updates hash, using progressive hash updating
@@ -35,11 +37,11 @@ namespace engine{
         this->history.push(move);
         // update player to move
         this->playerToMove = this->playerToMove == Player::YELLOW ? Player::RED : Player::YELLOW;
-        // update move count
-        this->moveCount++;
     }
 
     void Position::unMakeMove() {
+        // updates move count, -- since we went back in time
+        this-moveCount--;
         // update game state
         this->playerToMove = playerToMove == Player::YELLOW ? Player::RED : Player::YELLOW;
         // recovers the played move
@@ -51,8 +53,6 @@ namespace engine{
         this->hash = ZobristHashing::updateHash(this->hash, move, this->playerToMove);
         // un plays the move
         this->positions[playerToMove] ^= PrecalculatedData::moveMasks[move];
-        // updates move count, -- since we went back in time
-        this-moveCount--;
     }
 
     GameState Position::gameStateAfterMove(int move, Player playerWhoMoved) {
@@ -62,7 +62,7 @@ namespace engine{
             }
         }
         // all the slots are filled and there is no winner so it must be a draw
-        if (moveCount == 42){
+        if (moveCount >= 42){
             return GameState::DRAW;
         }
         return GameState::ON_GOING;

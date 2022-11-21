@@ -23,6 +23,7 @@ namespace engine{
         Player getPlayerToMove();
         ulong getHash();
         short getStackHeight(short stack);
+        short getMoveCount();
         int convertFileToMove(int column);
     private:
         GameState gameStateAfterMove(int move, Player playerWhoMoved);
@@ -33,6 +34,7 @@ namespace engine{
         ulong hash;
         short stackHeights[7];
         stack<int> history;
+        short moveCount;
     };
 }
 

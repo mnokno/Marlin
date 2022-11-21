@@ -19,6 +19,7 @@ namespace engine{
         }
         // stack should be empty at the beginning
         //this->history;
+        this->moveCount = 0;
     }
 
     void Position::makeMove(int move) {
@@ -34,6 +35,8 @@ namespace engine{
         this->history.push(move);
         // update player to move
         this->playerToMove = this->playerToMove == Player::YELLOW ? Player::RED : Player::YELLOW;
+        // update move count
+        this->moveCount++;
     }
 
     void Position::unMakeMove() {
@@ -48,6 +51,8 @@ namespace engine{
         this->hash = ZobristHashing::updateHash(this->hash, move, this->playerToMove);
         // un plays the move
         this->positions[playerToMove] ^= PrecalculatedData::moveMasks[move];
+        // updates move count, -- since we went back in time
+        this-moveCount--;
     }
 
     GameState Position::gameStateAfterMove(int move, Player playerWhoMoved) {
@@ -55,6 +60,10 @@ namespace engine{
             if ((winingLine & this->positions[playerWhoMoved]) == winingLine){
                 return playerWhoMoved == Player::YELLOW ? GameState::YELLOW_WON : GameState::RED_WON;
             }
+        }
+        // all the slots are filled and there is no winner so it must be a draw
+        if (moveCount == 42){
+            return GameState::DRAW;
         }
         return GameState::ON_GOING;
     }
@@ -83,7 +92,12 @@ namespace engine{
         return this->stackHeights[stack];
     }
 
+    short Position::getMoveCount() {
+        return moveCount;
+    }
+
     int Position::convertFileToMove(int column) {
         return this->stackHeights[column] * 7 + column;
     }
+
 }

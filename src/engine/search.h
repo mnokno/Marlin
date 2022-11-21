@@ -15,8 +15,10 @@ namespace engine {
         int findBestMove(int depth);
     private:
         int alphaBeta(int alpha, int beta, int depthLeft);
+        int miniMax(int depthLeft);
 
         Position position;
+        int count;
     };
 
 } // engine

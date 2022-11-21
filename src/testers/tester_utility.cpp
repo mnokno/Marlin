@@ -39,10 +39,10 @@ namespace testers {
             string line = "";
             for (int j = 0; j < 7; j++){
                 if ((position.getPosition(Player::YELLOW) & BitOps::flipBit(0, i * 7 + j)) != 0){
-                    line += "Y";
+                    line += "X";
                 }
                 else if ((position.getPosition(Player::RED) & BitOps::flipBit(0, i * 7 + j)) != 0){
-                    line += "R";
+                    line += "O";
                 }
                 else{
                     line += "_";

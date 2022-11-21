@@ -13,7 +13,18 @@ namespace engine {
     }
 
     int Search::findBestMove(int depth) {
-        return 0;
+        //todo
+        // currently only work for yellow player
+        int maxScore = -EVAL_INFINITY;
+        int betsMove = -1;
+        for (int& move : MoveGenerator::generateMoves(position)){
+            int score = alphaBeta(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
+            if (score > maxScore){
+                maxScore = score;
+                betsMove = move;
+            }
+        }
+        return betsMove;
     }
 
     int Search::alphaBeta(int alpha, int beta, int depthLeft) {
@@ -22,6 +33,7 @@ namespace engine {
             return Evaluation::eval(this->position);
         }
         for (int& move : MoveGenerator::generateMoves(this->position))  {
+            position.makeMove(move);
             int score = -alphaBeta( -beta, -alpha, depthLeft - 1 );
             if( score >= beta )
                 return score;  // fail-soft beta-cutoff
@@ -30,6 +42,7 @@ namespace engine {
                 if( score > alpha )
                     alpha = score;
             }
+            position.unMakeMove();
         }
         return bestScore;
     }

@@ -70,14 +70,6 @@ namespace engine {
                     stepBacks++;
                 }
 
-                //if (pos == 41){
-                //    std::cout << "Pos: " + std::to_string(pos) + " " +
-                //            "StartPos: " + std::to_string(startPos) + " " +
-                //            "StepBacks: " + std::to_string(stepBacks) + " " +
-                //            "RayDir: " + std::to_string(rayDir) + " "
-                //                << std::endl;
-                //}
-
                 // check the validity of possible wining lines
                 for (int i = 0; i < stepBacks + 1; i++){
 
@@ -111,11 +103,11 @@ namespace engine {
 
         // precalculates adjacencySquareMasks
         short offsetDirections[8] {1, -1, 7, -7, 8, -8, 6, -6};
-        for (int center = 0; center < 42; center++){
+        for (short center = 0; center < 42; center++){
             ulong mask = 0;
             for (short & dir : offsetDirections){
-                if (!hasWrappedOver(center, center + dir)){
-                    mask = BitOps::flipBit(mask, center+dir);
+                if (!hasWrappedOver(center, center + dir) && isOnBoard(center + dir)){
+                    mask = BitOps::flipBit(mask, center + dir);
                 }
             }
             adjacencySquareMasks[center] = mask;
@@ -124,7 +116,7 @@ namespace engine {
 
     std::string PrecalculatedData::formatUlong(ulong number){
         std::string formatted = "";
-        for (ulong i = 0; i < 42; i++){
+        for (ulong i = 0; i < 64; i++){
             if ((number & ((ulong)1 << i)) == (ulong)1 << i){
                 formatted = "1" + formatted;
             }

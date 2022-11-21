@@ -67,3 +67,25 @@ TEST_F(PrecalculatedDataTest, WiningLinesMasks){
         }
     }
 }
+
+TEST_F(PrecalculatedDataTest, AdjacencySquareMasks) {
+    for (int i = 0; i < 42; i++){
+        short flag = 0;
+        for (ulong& boarder : PrecalculatedData::boarderMasks){
+            if ((boarder & BitOps::flipBit(0, i)) != 0){
+                flag++;
+            }
+        }
+        switch (flag) {
+            case 0:
+                ASSERT_EQ(8, BitOps::countBits(PrecalculatedData::adjacencySquareMasks[i]));
+                break;
+            case 1:
+                ASSERT_EQ(5, BitOps::countBits(PrecalculatedData::adjacencySquareMasks[i]));
+                break;
+            default: // case 2
+                ASSERT_EQ(3, BitOps::countBits(PrecalculatedData::adjacencySquareMasks[i]));
+        }
+        std::cout << PrecalculatedData::formatBoard(PrecalculatedData::adjacencySquareMasks[i]) << " " << BitOps::countBits(PrecalculatedData::adjacencySquareMasks[i]) << std::endl;
+    }
+}

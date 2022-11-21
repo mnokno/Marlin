@@ -3,9 +3,12 @@
 //
 
 #include <iostream>
+#include "console_hvh_tester.h"
 
+using namespace testers;
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    ConsoleHvHTester tester = *new ConsoleHvHTester();
+    tester.startGame();
     return 0;
 }

@@ -49,4 +49,6 @@ add_executable(HvH_tester
         src/engine/zobrist_hashing.h
         src/testers/hvh_main.cpp
         src/testers/console_hvh_tester.cpp
-        src/testers/console_hvh_tester.h)
+        src/testers/console_hvh_tester.h
+        src/testers/tester_utility.cpp
+        src/testers/tester_utility.h)

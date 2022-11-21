@@ -12,7 +12,8 @@ namespace engine {
     enum GameState : int{
         YELLOW_WON = 0,
         RED_WON = 1,
-        ON_GOING = 2
+        ON_GOING = 2,
+        DRAW = 3
     };
 
     enum Player : int {

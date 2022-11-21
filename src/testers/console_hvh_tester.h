@@ -5,10 +5,18 @@
 #ifndef MARLIN_CONSOLE_HVH_TESTER_H
 #define MARLIN_CONSOLE_HVH_TESTER_H
 
+#include "position.h"
+
+using namespace engine;
+
 namespace testers {
 
-    class console_hvh_tester {
-
+    class ConsoleHvHTester {
+    public:
+        ConsoleHvHTester();
+        void startGame();
+    private:
+        Position position;
     };
 
 } // testers

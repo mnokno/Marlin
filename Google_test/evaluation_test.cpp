@@ -68,3 +68,19 @@ TEST_F(EvaluationTest, NegativeEval){
     // should be -2 in the current evaluation function version
     ASSERT_LT(Evaluation::eval(position), 0);
 }
+
+TEST_F(EvaluationTest, Draw){
+    Position position = *new Position();
+
+    for (int i = 0; i < 6; i++){
+        position.makeMove(position.convertFileToMove(0));
+        position.makeMove(position.convertFileToMove(5));
+        position.makeMove(position.convertFileToMove(1));
+        position.makeMove(position.convertFileToMove(4));
+        position.makeMove(position.convertFileToMove(2));
+        position.makeMove(position.convertFileToMove(3));
+        position.makeMove(position.convertFileToMove(6));
+    }
+
+    ASSERT_EQ(0, Evaluation::eval(position));
+}

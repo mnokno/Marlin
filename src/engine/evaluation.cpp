@@ -5,4 +5,8 @@
 #include "evaluation.h"
 
 namespace engine {
+    int evaluation::eval(Position position) {
+        // TODO
+        return 0;
+    }
 } // engine

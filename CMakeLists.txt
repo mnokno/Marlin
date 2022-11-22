@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 23)
 add_subdirectory(Google_test src)
 
 # defines main build configuration
-add_executable(Marlin main.cpp src/engine/types.h src/engine/precalculated_data.cpp src/engine/precalculated_data.h src/engine/bitops.cpp src/engine/bitops.h src/engine/position.cpp src/engine/position.h src/engine/prng.cpp src/engine/prng.h src/engine/zobrist_hashing.cpp src/engine/zobrist_hashing.h src/engine/move_generator.cpp src/engine/move_generator.h src/engine/evaluation.cpp src/engine/evaluation.h src/engine/constants.h src/engine/search.cpp src/engine/search.h src/testers/console_hvc_tester.cpp src/testers/console_hvc_tester.h)
+add_executable(Marlin main.cpp src/engine/types.h src/engine/precalculated_data.cpp src/engine/precalculated_data.h src/engine/bitops.cpp src/engine/bitops.h src/engine/position.cpp src/engine/position.h src/engine/prng.cpp src/engine/prng.h src/engine/zobrist_hashing.cpp src/engine/zobrist_hashing.h src/engine/move_generator.cpp src/engine/move_generator.h src/engine/evaluation.cpp src/engine/evaluation.h src/engine/constants.h src/engine/search.cpp src/engine/search.h src/testers/tester_utility.h src/testers/tester_utility.cpp src/testers/console_hvc_tester.cpp src/testers/console_hvc_tester.h src/engine/transposition_table.cpp src/engine/transposition_table.h)
 
 # include directories
 include_directories(src)

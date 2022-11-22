@@ -12,6 +12,8 @@
 namespace engine {
     Search::Search(Position& position) : position(position) {
         this->position = position;
+        this->leafNodes = 0;
+        this->branchNodes = 0;
     }
 
     int Search::findBestMove(int depth) {

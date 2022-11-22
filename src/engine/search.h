@@ -11,7 +11,7 @@ namespace engine {
 
     class Search {
     public:
-        Search(Position &position);
+        explicit Search(Position &position);
         int findBestMove(int depth);
     private:
         int alphaBeta(int alpha, int beta, int depthLeft);

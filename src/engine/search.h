@@ -18,7 +18,8 @@ namespace engine {
         int miniMax(int depthLeft);
 
         Position& position;
-        int count;
+        int leafNodes;
+        int branchNodes;
     };
 
 } // engine

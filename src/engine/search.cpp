@@ -12,12 +12,12 @@
 namespace engine {
     Search::Search(Position& position) : position(position) {
         this->position = position;
-        this->count = 0;
     }
 
     int Search::findBestMove(int depth) {
-        //todo
-        // currently only work for yellow player
+        this->leafNodes = 0;
+        this->branchNodes = 0;
+
         int minScore = EVAL_INFINITY + 100;
         int betsMove = -1;
         for (int& move : MoveGenerator::generateMoves(position)){
@@ -31,15 +31,20 @@ namespace engine {
             }
             position.unMakeMove();
         }
-        std::cout << to_string(betsMove % 7) << ":" << count << ":" << to_string(minScore) << std::endl;
+        std::cout << to_string(betsMove % 7) << ":"
+        << leafNodes << "l:"
+        << branchNodes << "b:"
+        << (leafNodes + branchNodes)  << "t:"
+        << to_string(minScore) << std::endl;
         return betsMove;
     }
 
     int Search::miniMax(int depthLeft) {
         if (depthLeft == 0 || this->position.getGameState() != GameState::ON_GOING) {
-            this->count++;
+            this->leafNodes++;
             return position.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(this->position) : -Evaluation::eval(this->position);
         }
+        this->branchNodes++;
         int max = -EVAL_INFINITY;
         for (int& move : MoveGenerator::generateMoves(this->position))  {
             position.makeMove(move);
@@ -54,9 +59,10 @@ namespace engine {
 
     int Search::alphaBeta(int alpha, int beta, int depthLeft) {
         if(depthLeft == 0 || this->position.getGameState() != GameState::ON_GOING) {
-            this->count++;
+            this->leafNodes++;
             return position.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(this->position) : -Evaluation::eval(this->position);
         }
+        this->branchNodes++;
         for (int& move : MoveGenerator::generateMoves(this->position))  {
             this->position.makeMove(move);
             int score = -alphaBeta( -beta, -alpha, depthLeft - 1 );

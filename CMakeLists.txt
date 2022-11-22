@@ -92,4 +92,37 @@ add_executable(HvC_tester
         src/engine/search.cpp
         src/engine/search.h
         src/testers/console_hvc_tester.cpp
-        src/testers/console_hvc_tester.h src/testers/hvc_main.cpp)
+        src/testers/console_hvc_tester.h
+        src/testers/hvc_main.cpp
+        src/testers/console_cvc_tester.cpp
+        src/testers/console_cvc_tester.h)
+
+# defines testers configuration for computer vs computer
+add_executable(CvC_tester
+        src/engine/types.h
+        src/engine/precalculated_data.h
+        src/engine/precalculated_data.cpp
+        src/engine/bitops.h
+        src/engine/bitops.cpp
+        src/engine/position.cpp
+        src/engine/position.h
+        src/engine/prng.cpp
+        src/engine/prng.h
+        src/engine/zobrist_hashing.cpp
+        src/engine/zobrist_hashing.h
+        src/testers/console_hvh_tester.cpp
+        src/testers/console_hvh_tester.h
+        src/testers/tester_utility.cpp
+        src/testers/tester_utility.h
+        src/engine/move_generator.cpp
+        src/engine/move_generator.h
+        src/engine/evaluation.cpp
+        src/engine/evaluation.h
+        src/engine/constants.h
+        src/engine/search.cpp
+        src/engine/search.h
+        src/testers/console_hvc_tester.cpp
+        src/testers/console_hvc_tester.h
+        src/testers/console_cvc_tester.cpp
+        src/testers/console_cvc_tester.h
+        src/testers/cvc_main.cpp)

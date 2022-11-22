@@ -27,13 +27,13 @@ namespace testers {
                     break;
                 }
                 Search search = *new Search(position);
-                position.makeMove(search.findBestMove(4));
+                position.makeMove(search.findBestMove(depth));
             }
         }
         else{
             while (this->position.getGameState() == GameState::ON_GOING){
                 Search search = *new Search(position);
-                position.makeMove(search.findBestMove(4));
+                position.makeMove(search.findBestMove(depth));
                 if (position.getGameState() != GameState::ON_GOING){
                     break;
                 }

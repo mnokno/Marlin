@@ -19,6 +19,7 @@ namespace testers {
 
     void ConsoleHvCTester::startGame(bool humanFirst, int depth) {
         // plays out the game
+        Search search = *new Search(position);
         if (humanFirst){
             while (this->position.getGameState() == GameState::ON_GOING){
                 cout << TesterUtility::formatPosition(this->position) << endl;
@@ -26,13 +27,11 @@ namespace testers {
                 if (position.getGameState() != GameState::ON_GOING){
                     break;
                 }
-                Search search = *new Search(position);
                 position.makeMove(search.findBestMove(depth));
             }
         }
         else{
             while (this->position.getGameState() == GameState::ON_GOING){
-                Search search = *new Search(position);
                 position.makeMove(search.findBestMove(depth));
                 if (position.getGameState() != GameState::ON_GOING){
                     break;

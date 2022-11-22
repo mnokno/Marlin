@@ -10,7 +10,7 @@
 #include "precalculated_data.h"
 
 namespace engine {
-    Search::Search(Position position) {
+    Search::Search(Position& position) : position(position) {
         this->position = position;
         this->count = 0;
     }

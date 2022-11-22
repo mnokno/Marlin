@@ -19,15 +19,14 @@ namespace testers {
 
     void ConsoleCvCTester::startGame(int depthFirstAI, int depthSecondAI) {
         // plays out the game
+        Search search = *new Search(position);
         while (this->position.getGameState() == GameState::ON_GOING){
-            Search searchFirst = *new Search(position);
-            position.makeMove(searchFirst.findBestMove(depthFirstAI));
+            position.makeMove(search.findBestMove(depthFirstAI));
             cout << TesterUtility::formatPosition(this->position) << endl;
             if (position.getGameState() != GameState::ON_GOING){
                 break;
             }
-            Search searchSecond = *new Search(position);
-            position.makeMove(searchSecond.findBestMove(depthSecondAI));
+            position.makeMove(search.findBestMove(depthSecondAI));
             cout << TesterUtility::formatPosition(this->position) << endl;
         }
 

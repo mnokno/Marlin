@@ -11,13 +11,13 @@ namespace engine {
 
     class Search {
     public:
-        Search(Position position);
+        Search(Position &position);
         int findBestMove(int depth);
     private:
         int alphaBeta(int alpha, int beta, int depthLeft);
         int miniMax(int depthLeft);
 
-        Position position;
+        Position& position;
         int count;
     };
 

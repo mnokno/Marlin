@@ -11,6 +11,7 @@
 #include "transposition_table.h"
 
 namespace engine {
+
     Search::Search(Position& position) : position(position) {
         this->transpositionTable = *new TranspositionTable(999983);
         this->position = position;
@@ -116,7 +117,7 @@ namespace engine {
      * @return the score of the move
      */
     int Search::miniMax(int depthLeft) {
-        // If the target depth was reach or the game is over, return the static evaluation of the position
+        // if the target depth was reach or the game is over, return the static evaluation of the position
         if (depthLeft == 0 || this->position.getGameState() != GameState::ON_GOING) {
             this->leafNodes++;
             return position.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(this->position) : -Evaluation::eval(this->position);
@@ -140,28 +141,32 @@ namespace engine {
         return max;
     }
 
+    /**
+     * Minimax algorithm with transposition table.
+     *
+     * @param depthLeft how many moves to look ahead
+     * @return the score of the move
+     */
     int Search::miniMaxTT(int depthLeft) {
+        // if the target depth was reach or the game is over, return the static evaluation of the position
         if (depthLeft == 0 || this->position.getGameState() != GameState::ON_GOING) {
             this->leafNodes++;
             return position.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(this->position) : -Evaluation::eval(this->position);
         }
 
+        // checks if we have a transpositionTable match
         bool hit;
         TTEntry entry = this->transpositionTable.porbe(this->position.getHash(), hit);
+        // entry.getDepth() == depthLeft, has a high chance to catch a key collision
         if (hit && entry.getDepth() == depthLeft){
-            //if (entry.getDepth() != depthLeft){
-            //    std::cout << "depth missmatch" << std::endl;
-            //}
-            if (entry.getHash() == this->position.getHash()){
                 this->TTHits++;
                 return entry.getEval();
-            }
-            else{
-                std::cout << "hash collision" << std::endl;
-            }
         }
 
+        // updates counters
         this->branchNodes++;
+
+        // finds max value of this position
         int max = -EVAL_INFINITY;
         for (int& move : MoveGenerator::generateMoves(this->position))  {
             position.makeMove(move);
@@ -172,17 +177,30 @@ namespace engine {
             }
         }
 
+        // adds the result to transposition table
         this->transpositionTable.save(position.getHash(), depthLeft, max);
 
+        // returns the max value
         return max;
     }
 
+    /**
+     * Minimax algorithm with alpha beta pruning.
+     *
+     * @param depthLeft how many moves to look ahead
+     * @return the score of the move
+     */
     int Search::alphaBeta(int alpha, int beta, int depthLeft) {
+        // if the target depth was reach or the game is over, return the static evaluation of the position
         if(depthLeft == 0 || this->position.getGameState() != GameState::ON_GOING) {
             this->leafNodes++;
             return position.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(this->position) : -Evaluation::eval(this->position);
         }
+
+        // updates counters
         this->branchNodes++;
+
+        // finds max value of this position
         for (int& move : MoveGenerator::generateMoves(this->position))  {
             this->position.makeMove(move);
             int score = -alphaBeta( -beta, -alpha, depthLeft - 1 );
@@ -194,31 +212,37 @@ namespace engine {
                 alpha = score; // alpha acts like max in MiniMax
             }
         }
+
+        // returns the max (alpha) value
         return alpha;
     }
 
+    /**
+     * Minimax algorithm with alpha beta pruning and transposition table.
+     *
+     * @param depthLeft how many moves to look ahead
+     * @return the score of the move
+     */
     int Search::alphaBetaTT(int alpha, int beta, int depthLeft) {
+        // if the target depth was reach or the game is over, return the static evaluation of the position
         if(depthLeft == 0 || this->position.getGameState() != GameState::ON_GOING) {
             this->leafNodes++;
             return position.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(this->position) : -Evaluation::eval(this->position);
         }
 
+        // checks if we have a transpositionTable match
         bool hit;
         TTEntry entry = this->transpositionTable.porbe(this->position.getHash(), hit);
+        // entry.getDepth() == depthLeft, has a high chance to catch a key collision
         if (hit && entry.getDepth() == depthLeft){
-            //if (entry.getDepth() != depthLeft){
-            //    std::cout << "depth missmatch" << std::endl;
-            //}
-            if (entry.getHash() == this->position.getHash()){
-                this->TTHits++;
-                return entry.getEval();
-            }
-            else{
-                std::cout << "hash collision" << std::endl;
-            }
+            this->TTHits++;
+            return entry.getEval();
         }
 
+        // updates counters
         this->branchNodes++;
+
+        // finds max value of this position
         for (int& move : MoveGenerator::generateMoves(this->position))  {
             this->position.makeMove(move);
             int score = -alphaBetaTT( -beta, -alpha, depthLeft - 1 );
@@ -231,8 +255,10 @@ namespace engine {
             }
         }
 
+        // adds the result to transposition table
         this->transpositionTable.save(position.getHash(), depthLeft, alpha);
 
+        // returns the max (alpha) value
         return alpha;
     }
 

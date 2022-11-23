@@ -46,6 +46,28 @@ protected:
         }
     }
 
+    static void validateLevel(int testLevel, int validationLevel, int upToDepth){
+        for (int depth = 1; depth <= upToDepth; depth++){
+
+            int gameLeafCount = 0;
+            Position tPosition = *new Position();
+            Search tSearch = *new Search(tPosition);
+            list<int> tMoves;
+
+            while (tPosition.getGameState() == GameState::ON_GOING){
+                int move = tSearch.findBestMoveBaseTest(depth, testLevel);
+                tPosition.makeMove(move);
+                tMoves.push_back(move);
+                gameLeafCount += tSearch.getLeafNodes();
+            }
+
+            std::cout << formatPosition(tPosition);
+            std::cout << "^^^ TESTCASE depth: " << depth << " leafs: " << gameLeafCount << " ^^^" << std::endl;
+
+            validateGame(depth, validationLevel, tPosition, tSearch, tMoves);
+        }
+    }
+
     static string formatPosition(Position position) {
         string formatted = "";
         for (int i = 0; i < 6; i++){
@@ -90,70 +112,25 @@ TEST_F(SearchTest, MiniMaxTest) {
 }
 
 TEST_F(SearchTest, AlphaBetaTest) {
-    for (int depth = 1; depth < 7; depth++){
-
-        int gameLeafCount = 0;
-        Position tPosition = *new Position();
-        Search tSearch = *new Search(tPosition);
-        list<int> tMoves;
-
-        while (tPosition.getGameState() == GameState::ON_GOING){
-            // 1 == AlphaBeta
-            int move = tSearch.findBestMoveBaseTest(depth, 1);
-            tPosition.makeMove(move);
-            tMoves.push_back(move);
-            gameLeafCount += tSearch.getLeafNodes();
-        }
-
-        std::cout << formatPosition(tPosition);
-        std::cout << "^^^ TESTCASE depth: " << depth << " leafs: " << gameLeafCount << " ^^^" << std::endl;
-
-        validateGame(depth, 0, tPosition, tSearch, tMoves);
-    }
+    // 0: MiniMax
+    // 1: AlphaBeta
+    validateLevel(1, 0, 7);
 }
 
 TEST_F(SearchTest, MiniMaxTTTest) {
-    for (int depth = 1; depth < 7; depth++){
-
-        int gameLeafCount = 0;
-        Position tPosition = *new Position();
-        Search tSearch = *new Search(tPosition);
-        list<int> tMoves;
-
-        while (tPosition.getGameState() == GameState::ON_GOING){
-            // 2 == MiniMaxTT
-            int move = tSearch.findBestMoveBaseTest(depth, 2);
-            tPosition.makeMove(move);
-            tMoves.push_back(move);
-            gameLeafCount += tSearch.getLeafNodes();
-        }
-
-        std::cout << formatPosition(tPosition);
-        std::cout << "^^^ TESTCASE depth: " << depth << " leafs: " << gameLeafCount << " ^^^" << std::endl;
-
-        validateGame(depth, 0, tPosition, tSearch, tMoves);
-    }
+    // 0: MiniMax
+    // 2: MiniMaxTT
+    validateLevel(2, 0, 7);
 }
 
 TEST_F(SearchTest, AlphaBetaTTTest) {
-    for (int depth = 1; depth < 7; depth++){
+    // 0: AlphaBeta
+    // 3: AlphaBetaTT
+    validateLevel(3, 0, 7);
+}
 
-        int gameLeafCount = 0;
-        Position tPosition = *new Position();
-        Search tSearch = *new Search(tPosition);
-        list<int> tMoves;
-
-        while (tPosition.getGameState() == GameState::ON_GOING){
-            // 3 == AlphaBetaTT
-            int move = tSearch.findBestMoveBaseTest(depth, 3);
-            tPosition.makeMove(move);
-            tMoves.push_back(move);
-            gameLeafCount += tSearch.getLeafNodes();
-        }
-
-        std::cout << formatPosition(tPosition);
-        std::cout << "^^^ TESTCASE depth: " << depth << " leafs: " << gameLeafCount << " ^^^" << std::endl;
-
-        validateGame(depth, 0, tPosition, tSearch, tMoves);
-    }
+TEST_F(SearchTest, ChainTest) {
+    //validateLevel(1, 0, 7);
+    //validateLevel(2, 1, 9);
+    validateLevel(3, 1, 10);
 }

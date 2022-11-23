@@ -16,15 +16,15 @@ namespace engine {
         int findBestMove(int depth);
         int findBestMoveBaseTest(int depth, int baseLevel);
 
+        [[nodiscard]] int getLeafNodes() const;
+        [[nodiscard]] int getBranchNodes() const;
+        [[nodiscard]] int getTTHits() const;
+    private:
         int alphaBeta(int alpha, int beta, int depthLeft);
         int alphaBetaTT(int alpha, int beta, int depthLeft);
         int miniMax(int depthLeft);
         int miniMaxTT(int depthLeft);
 
-        [[nodiscard]] int getLeafNodes() const;
-        [[nodiscard]] int getBranchNodes() const;
-        [[nodiscard]] int getTTHits() const;
-    private:
         Position& position;
         TranspositionTable transpositionTable = TranspositionTable(0);
         int leafNodes;

@@ -29,7 +29,7 @@ namespace engine {
         for (int& move : MoveGenerator::generateMoves(position)){
             position.makeMove(move);
             //int score = miniMax(depth - 1);
-            int score = alphaBeta(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
+            int score = alphaBetaTT(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
             std::cout << "column: " + to_string(move % 7) << " score: " + to_string(score) << std::endl;
             if (score < minScore){
                 minScore = score;
@@ -152,6 +152,45 @@ namespace engine {
                 alpha = score; // alpha acts like max in MiniMax
             }
         }
+        return alpha;
+    }
+
+    int Search::alphaBetaTT(int alpha, int beta, int depthLeft) {
+        if(depthLeft == 0 || this->position.getGameState() != GameState::ON_GOING) {
+            this->leafNodes++;
+            return position.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(this->position) : -Evaluation::eval(this->position);
+        }
+
+        bool hit;
+        TTEntry entry = this->transpositionTable.porbe(this->position.getHash(), hit);
+        if (hit && entry.getDepth() == depthLeft){
+            //if (entry.getDepth() != depthLeft){
+            //    std::cout << "depth missmatch" << std::endl;
+            //}
+            if (entry.getHash() == this->position.getHash()){
+                this->TTHits++;
+                return entry.getEval();
+            }
+            else{
+                std::cout << "hash collision" << std::endl;
+            }
+        }
+
+        this->branchNodes++;
+        for (int& move : MoveGenerator::generateMoves(this->position))  {
+            this->position.makeMove(move);
+            int score = -alphaBetaTT( -beta, -alpha, depthLeft - 1 );
+            this->position.unMakeMove();
+            if(score >= beta){
+                return beta;   //  fail hard beta-cutoff
+            }
+            if(score > alpha){
+                alpha = score; // alpha acts like max in MiniMax
+            }
+        }
+
+        this->transpositionTable.save(position.getHash(), depthLeft, alpha, position);
+
         return alpha;
     }
 } // engine

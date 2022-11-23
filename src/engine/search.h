@@ -17,6 +17,7 @@ namespace engine {
         int findBestMove(int depth, bool useTT);
     private:
         int alphaBeta(int alpha, int beta, int depthLeft);
+        int alphaBetaTT(int alpha, int beta, int depthLeft);
         int miniMax(int depthLeft);
         int miniMaxTT(int depthLeft);
 

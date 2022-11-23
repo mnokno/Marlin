@@ -19,13 +19,16 @@ namespace engine {
         ulong hash;
         int depth;
         int eval;
+        NodeType nodeType;
     };
 
     class TranspositionTable {
     public:
         [[nodiscard]] explicit TranspositionTable(uint tableSize);
-        [[nodiscard]] TTEntry porbe(ulong , bool& found);
+        [[nodiscard]] TTEntry probe(ulong hash, bool& found);
+        [[nodiscard]] TTEntry probe(ulong hash, bool& found, int alpha, int beta);
         void save(ulong hash, int depth, int eval);
+        void save(ulong hash, int depth, int eval, NodeType nodeType);
         void clear() const;
         TTEntry* table;
     private:

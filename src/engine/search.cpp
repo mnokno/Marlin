@@ -37,8 +37,7 @@ namespace engine {
         for (int& move : MoveGenerator::generateMoves(position)){
             // evaluates this move
             position.makeMove(move);
-            //int score = alphaBetaTT(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
-            int score = miniMaxTT(depth - 1);
+            int score = alphaBetaTT(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
             position.unMakeMove();
             // logs branch evaluation data
             std::cout << "column: " + to_string(move % 7) << " score: " + to_string(score) << std::endl;
@@ -156,7 +155,7 @@ namespace engine {
 
         // checks if we have a transpositionTable match
         bool hit;
-        TTEntry entry = this->transpositionTable.porbe(this->position.getHash(), hit);
+        TTEntry entry = this->transpositionTable.probe(this->position.getHash(), hit);
         // entry.getDepth() == depthLeft, has a high chance to catch a key collision
         if (hit && entry.getDepth() == depthLeft){
                 this->TTHits++;
@@ -232,7 +231,7 @@ namespace engine {
 
         // checks if we have a transpositionTable match
         bool hit;
-        TTEntry entry = this->transpositionTable.porbe(this->position.getHash(), hit);
+        TTEntry entry = this->transpositionTable.probe(this->position.getHash(), hit, alpha, beta);
         // entry.getDepth() == depthLeft, has a high chance to catch a key collision
         if (hit && entry.getDepth() == depthLeft){
             this->TTHits++;
@@ -241,6 +240,8 @@ namespace engine {
 
         // updates counters
         this->branchNodes++;
+        // default node type
+        NodeType nodeType = UPPER_BOUND;
 
         // finds max value of this position
         for (int& move : MoveGenerator::generateMoves(this->position))  {
@@ -248,15 +249,17 @@ namespace engine {
             int score = -alphaBetaTT( -beta, -alpha, depthLeft - 1 );
             this->position.unMakeMove();
             if(score >= beta){
+                this->transpositionTable.save(position.getHash(), depthLeft, beta, LOWER_BOUND);
                 return beta;   //  fail hard beta-cutoff
             }
             if(score > alpha){
+                nodeType = EXACT;
                 alpha = score; // alpha acts like max in MiniMax
             }
         }
 
         // adds the result to transposition table
-        this->transpositionTable.save(position.getHash(), depthLeft, alpha);
+        this->transpositionTable.save(position.getHash(), depthLeft, alpha, nodeType);
 
         // returns the max (alpha) value
         return alpha;

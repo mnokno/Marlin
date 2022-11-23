@@ -22,6 +22,12 @@ namespace engine {
         RED = 1
     };
 
+    enum NodeType : int {
+        EXACT = 0,
+        LOWER_BOUND = 1,
+        UPPER_BOUND = 2
+    };
+
 } // engine
 
 #endif //MARLIN_TYPES_H

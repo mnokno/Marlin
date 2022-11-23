@@ -9,6 +9,6 @@ using namespace testers;
 
 int main() {
     ConsoleCvCTester tester = *new ConsoleCvCTester();
-    tester.startGame(2, 6);
+    tester.startGame(2, 10);
     return 0;
 }

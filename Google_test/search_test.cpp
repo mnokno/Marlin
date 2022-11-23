@@ -130,7 +130,7 @@ TEST_F(SearchTest, AlphaBetaTTTest) {
 }
 
 TEST_F(SearchTest, ChainTest) {
-    //validateLevel(1, 0, 7);
-    //validateLevel(2, 1, 9);
+    validateLevel(1, 0, 7);
+    validateLevel(2, 1, 9);
     validateLevel(3, 1, 10);
 }

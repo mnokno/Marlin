@@ -36,7 +36,8 @@ namespace engine {
         for (int& move : MoveGenerator::generateMoves(position)){
             // evaluates this move
             position.makeMove(move);
-            int score = alphaBetaTT(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
+            //int score = alphaBetaTT(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
+            int score = miniMaxTT(depth - 1);
             position.unMakeMove();
             // logs branch evaluation data
             std::cout << "column: " + to_string(move % 7) << " score: " + to_string(score) << std::endl;
@@ -86,10 +87,10 @@ namespace engine {
                 case 1:
                     score = alphaBeta(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
                     break;
-                case 3:
+                case 2:
                     score = miniMaxTT(depth - 1);
                     break;
-                case 4:
+                case 3:
                     score = alphaBetaTT(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
                     break;
                 default:

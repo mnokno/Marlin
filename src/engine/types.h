@@ -8,6 +8,7 @@
 namespace engine {
 
     typedef unsigned long long ulong;
+    typedef unsigned int uint;
 
     enum GameState : int{
         YELLOW_WON = 0,

@@ -5,38 +5,32 @@
 #ifndef MARLIN_TRANSPOSITION_TABLE_H
 #define MARLIN_TRANSPOSITION_TABLE_H
 
-#include <cstdint>
 #include "types.h"
-#include "position.h"
 
 namespace engine {
 
     struct TTEntry {
     public:
-        ulong getHash() {return this->hash;}
-        int getDepth() {return this->depth;}
-        int getEval() {return this->eval;}
-        ulong getRed() {return this->red;}
-        ulong getYellow() {return this->yellow;}
+        [[nodiscard]] ulong getHash() const {return this->hash;}
+        [[nodiscard]] int getDepth() const {return this->depth;}
+        [[nodiscard]] int getEval() const {return this->eval;}
     private:
         friend class TranspositionTable;
         ulong hash;
         int depth;
         int eval;
-        ulong red;
-        ulong yellow;
     };
 
     class TranspositionTable {
     public:
-        TranspositionTable(int tableSize);
-        TTEntry porbe(ulong , bool& found);
-        void save(ulong hash, int depth, int eval, Position position);
-        void clear();
+        [[nodiscard]] explicit TranspositionTable(uint tableSize);
+        [[nodiscard]] TTEntry porbe(ulong , bool& found);
+        void save(ulong hash, int depth, int eval);
+        void clear() const;
         TTEntry* table;
     private:
-        int getHashIndex(ulong hash);
-        int tableSize;
+        [[nodiscard]] uint getHashIndex(ulong hash) const;
+        uint tableSize;
         int writes;
     };
 

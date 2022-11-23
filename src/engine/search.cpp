@@ -130,7 +130,7 @@ namespace engine {
             }
         }
 
-        this->transpositionTable.save(position.getHash(), depthLeft, max, position);
+        this->transpositionTable.save(position.getHash(), depthLeft, max);
 
         return max;
     }
@@ -189,7 +189,7 @@ namespace engine {
             }
         }
 
-        this->transpositionTable.save(position.getHash(), depthLeft, alpha, position);
+        this->transpositionTable.save(position.getHash(), depthLeft, alpha);
 
         return alpha;
     }

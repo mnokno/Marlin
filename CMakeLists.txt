@@ -95,7 +95,9 @@ add_executable(HvC_tester
         src/testers/console_hvc_tester.h
         src/testers/hvc_main.cpp
         src/testers/console_cvc_tester.cpp
-        src/testers/console_cvc_tester.h)
+        src/testers/console_cvc_tester.h
+        src/engine/transposition_table.h
+        src/engine/transposition_table.cpp)
 
 # defines testers configuration for computer vs computer
 add_executable(CvC_tester
@@ -125,4 +127,6 @@ add_executable(CvC_tester
         src/testers/console_hvc_tester.h
         src/testers/console_cvc_tester.cpp
         src/testers/console_cvc_tester.h
-        src/testers/cvc_main.cpp)
+        src/testers/cvc_main.cpp
+        src/engine/transposition_table.cpp
+        src/engine/transposition_table.h)

@@ -14,26 +14,30 @@ namespace engine {
     struct TTEntry {
     public:
         ulong getHash() {return this->hash;}
-        uint8_t getDepth() {return this->depth;}
-        uint8_t getEval() {return this->eval;}
-        uint8_t getMove() {return this->move;}
+        int getDepth() {return this->depth;}
+        int getEval() {return this->eval;}
+        ulong getRed() {return this->red;}
+        ulong getYellow() {return this->yellow;}
     private:
         friend class TranspositionTable;
         ulong hash;
-        uint8_t depth;
-        uint8_t eval;
-        uint8_t move;
+        int depth;
+        int eval;
+        ulong red;
+        ulong yellow;
     };
 
     class TranspositionTable {
     public:
         TranspositionTable(int tableSize);
         TTEntry porbe(ulong , bool& found);
-        void save(ulong hash, uint8_t depth, uint8_t eval, uint8_t move);
+        void save(ulong hash, int depth, int eval, Position position);
+        void clear();
         TTEntry* table;
     private:
         int getHashIndex(ulong hash);
         int tableSize;
+        int writes;
     };
 
 } // engine

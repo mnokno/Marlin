@@ -9,6 +9,7 @@
 #include "move_generator.h"
 #include "precalculated_data.h"
 #include "transposition_table.h"
+#include "types.h"
 
 namespace engine {
 
@@ -66,7 +67,7 @@ namespace engine {
      * Other bases can be also used for testing with greater depth and speed, but they need to be validated
      * using base level 0 first.
      */
-    int Search::findBestMoveBaseTest(int depth, int baseLevel) {
+    int Search::findBestMoveBaseTest(int depth, BaseLevel baseLevel) {
         // rests counters used for data collection
         this->leafNodes = 0;
         this->branchNodes = 0;
@@ -81,16 +82,16 @@ namespace engine {
             // evaluates this move using the specified base level algorithm
             position.makeMove(move);
             switch (baseLevel) {
-                case 0:
+                case MINI_MAX:
                     score = miniMax(depth - 1);
                     break;
-                case 1:
+                case ALPHA_BETA:
                     score = alphaBeta(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
                     break;
-                case 2:
+                case MINI_MAX_TT:
                     score = miniMaxTT(depth - 1);
                     break;
-                case 3:
+                case ALPHA_BETA_TT:
                     score = alphaBetaTT(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
                     break;
                 default:

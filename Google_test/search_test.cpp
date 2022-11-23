@@ -9,6 +9,7 @@
 #include "search.h"
 #include "bitops.h"
 #include "constants.h"
+#include "types.h"
 
 using namespace engine;
 
@@ -20,7 +21,7 @@ protected:
         PrecalculatedData::init();
     }
 
-    static void calculateControlCase(int depth, int baseLevel, Position &position, Search &search, list<int> &moves) {
+    static void calculateControlCase(int depth, BaseLevel baseLevel, Position &position, Search &search, list<int> &moves) {
         int gameLeafCount = 0;
         while (position.getGameState() == GameState::ON_GOING){
             int move = search.findBestMoveBaseTest(depth, baseLevel);
@@ -32,7 +33,7 @@ protected:
         std::cout << "^^^ CONTROL depth: " << depth << " leafs: " << gameLeafCount << " ^^^" << std::endl;
     }
 
-    static void validateGame(int depth, int baseLevel, Position &position, Search &search, list<int> &moves){
+    static void validateGame(int depth, BaseLevel baseLevel, Position &position, Search &search, list<int> &moves){
         // calculates control case
         Position cPosition = *new Position();
         Search cSearch = *new Search(cPosition);
@@ -46,7 +47,7 @@ protected:
         }
     }
 
-    static void validateLevel(int testLevel, int validationLevel, int upToDepth){
+    static void validateLevel(BaseLevel testLevel, BaseLevel validationLevel, int upToDepth){
         for (int depth = 1; depth <= upToDepth; depth++){
 
             int gameLeafCount = 0;
@@ -94,7 +95,7 @@ TEST_F(SearchTest, MiniMaxTest) {
     Search search = *new Search(position);
     // from 1 to 6
     for (int depth = 1; depth < 7; depth++){
-        search.findBestMoveBaseTest(depth, 0);
+        search.findBestMoveBaseTest(depth, MINI_MAX);
         ASSERT_EQ(search.getLeafNodes(), pow(7,depth));
     }
 
@@ -112,25 +113,19 @@ TEST_F(SearchTest, MiniMaxTest) {
 }
 
 TEST_F(SearchTest, AlphaBetaTest) {
-    // 0: MiniMax
-    // 1: AlphaBeta
-    validateLevel(1, 0, 7);
+    validateLevel(engine::ALPHA_BETA, engine::MINI_MAX, 7);
 }
 
 TEST_F(SearchTest, MiniMaxTTTest) {
-    // 0: MiniMax
-    // 2: MiniMaxTT
-    validateLevel(2, 0, 7);
+    validateLevel(engine::MINI_MAX_TT, engine::MINI_MAX, 7);
 }
 
 TEST_F(SearchTest, AlphaBetaTTTest) {
-    // 0: AlphaBeta
-    // 3: AlphaBetaTT
-    validateLevel(3, 0, 7);
+    validateLevel(engine::ALPHA_BETA_TT, engine::MINI_MAX, 7);
 }
 
 TEST_F(SearchTest, ChainTest) {
-    validateLevel(1, 0, 7);
-    validateLevel(2, 1, 9);
-    validateLevel(3, 1, 10);
+    validateLevel(engine::MINI_MAX_TT, MINI_MAX, 7);
+    validateLevel(engine::ALPHA_BETA, engine::MINI_MAX_TT, 8);
+    validateLevel(engine::ALPHA_BETA_TT,ALPHA_BETA, 9);
 }

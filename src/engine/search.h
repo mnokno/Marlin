@@ -7,6 +7,7 @@
 
 #include "position.h"
 #include "transposition_table.h"
+#include "types.h"
 
 namespace engine {
 
@@ -14,7 +15,7 @@ namespace engine {
     public:
         explicit Search(Position &position);
         int findBestMove(int depth);
-        int findBestMoveBaseTest(int depth, int baseLevel);
+        int findBestMoveBaseTest(int depth, BaseLevel baseLevel);
 
         [[nodiscard]] int getLeafNodes() const;
         [[nodiscard]] int getBranchNodes() const;

@@ -14,7 +14,10 @@ namespace engine {
     public:
         explicit Search(Position &position);
         int findBestMove(int depth);
-        int findBestMove(int depth, bool useTT);
+        int findBestMoveBaseTest(int depth, int baseLevel);
+        int getLeafNodes() const;
+        int getBranchNodes() const;
+        int getTTHits() const;
     private:
         int alphaBeta(int alpha, int beta, int depthLeft);
         int alphaBetaTT(int alpha, int beta, int depthLeft);

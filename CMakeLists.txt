@@ -36,7 +36,13 @@ add_executable(Google_Tests_run
         src/engine/move_generator.h
         Google_test/move_generator_test.cpp
         src/engine/evaluation.cpp
-        src/engine/evaluation.h src/engine/constants.h Google_test/evaluation_test.cpp src/engine/search.cpp src/engine/search.h src/testers/console_hvc_tester.cpp src/testers/console_hvc_tester.h src/engine/transposition_table.cpp src/engine/transposition_table.h)
+        src/engine/evaluation.h src/engine/constants.h
+        Google_test/evaluation_test.cpp
+        src/engine/search.cpp
+        src/engine/search.h
+        src/engine/transposition_table.cpp
+        src/engine/transposition_table.h
+        Google_test/search_test.cpp)
 target_link_libraries(Google_Tests_run gtest gtest_main)
 
 # defines testers configuration for human vs human

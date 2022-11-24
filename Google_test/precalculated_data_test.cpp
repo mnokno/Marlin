@@ -88,3 +88,14 @@ TEST_F(PrecalculatedDataTest, AdjacencySquareMasks) {
         }
     }
 }
+
+TEST_F(PrecalculatedDataTest, PillarMasks) {
+    for (int x = 0; x < 7; x++){
+        for (int y = 0; y < 6; y++){
+            int layerSize = (x == 0 || x == 6) ? 2 : 3;
+            int height = 6 - y + (y == 0 ? 0 : 1);
+            int expected = height * layerSize;
+            ASSERT_EQ(expected, BitOps::countBits(PrecalculatedData::pillarMasks[x + 7 * y]));
+        }
+    }
+}

@@ -133,6 +133,8 @@ namespace engine {
                 for (int h = y - 1; h < 5; h++){
                     mask |= pillarBaseMasks[x] << (h * 7);
                 }
+                // gets rid of overflow
+                mask = ((mask << 22) >> 22);
                 pillarMasks[x + y * 7] = mask;
             }
         }

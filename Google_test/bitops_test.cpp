@@ -39,3 +39,22 @@ TEST(BitOpsTest, CountBits){
         ASSERT_EQ(i + 1, BitOps::countBits(num));
     }
 }
+
+TEST(BitOpsTest, GetFirstBit){
+    for (int i = 0; i < 64; i++){
+        ulong mask = (ulong)1 << (ulong)i;
+        for (int j = i + 1; j < 64; j++){
+            if (rand() % 1000 < 500){
+                mask ^= (ulong)1 << (ulong)j;
+            }
+            ASSERT_EQ(i, BitOps::bitScanForward(mask));
+        }
+
+        while (!BitOps::isEmpty(mask)){
+            int firstBit = BitOps::bitScanForward(mask);
+            mask ^= (ulong)1 << (ulong)firstBit;
+
+        }
+        ASSERT_EQ(0, mask);
+    }
+}

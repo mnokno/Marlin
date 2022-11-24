@@ -9,7 +9,7 @@
 #include "bitops.h"
 
 namespace engine {
-    int Evaluation::eval(Position position) {
+    int Evaluation::eval(Position& position) {
         switch (position.getGameState()) {
             case GameState::ON_GOING:
                 return staticEval(position);
@@ -23,7 +23,11 @@ namespace engine {
         return 0;
     }
 
-    int Evaluation::staticEval(Position position) {
+    int Evaluation::staticEval(Position& position) {
+        return basicOpennessEval(position) + winingPossibilityEval(position);
+    }
+
+    int Evaluation::basicOpennessEval(Position& position) {
         ulong yellow = 0;
         ulong red = 0;
         for (int i = 0; i < 7; i++){
@@ -34,5 +38,9 @@ namespace engine {
             }
         }
         return BitOps::countBits(yellow) - BitOps::countBits(red);
+    }
+
+    int Evaluation::winingPossibilityEval(Position& position) {
+        return 0;
     }
 } // engine

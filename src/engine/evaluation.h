@@ -13,9 +13,11 @@ namespace engine {
 
     class Evaluation {
     public:
-        static int eval(Position position);
+        static int eval(Position& position);
     private:
-        static int staticEval(Position position);
+        static int staticEval(Position& position);
+        static int basicOpennessEval(Position& position);
+        static int winingPossibilityEval(Position& position);
     };
 
 } // engine

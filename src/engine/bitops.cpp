@@ -3,6 +3,7 @@
 //
 
 #include "bitops.h"
+#include "constants.h"
 
 namespace engine{
 
@@ -22,5 +23,9 @@ namespace engine{
             board &= board - (ulong)1; // reset least significant one bit
         }
         return count;
+    }
+
+    int BitOps::bitScanForward(ulong board) {
+        return index64[((board ^ (board - 1)) * DEBRUIJN64) >> 58];
     }
 }

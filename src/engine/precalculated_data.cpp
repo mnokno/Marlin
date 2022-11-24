@@ -112,6 +112,30 @@ namespace engine {
             }
             adjacencySquareMasks[center] = mask;
         }
+
+        // precalculate pillarMasks bases
+        ulong pillarBaseMasks[7];
+        for (int i = 0; i <= 6; i++){
+            ulong mask = 0;
+            mask = BitOps::flipBit(mask, i);
+            if (!hasWrappedOver(i, i - 1) && isOnBoard(i - 1)){
+                mask = BitOps::flipBit(mask, i - 1);
+            }
+            if (!hasWrappedOver(i, i + 1) && isOnBoard(i + 1)){
+                mask = BitOps::flipBit(mask, i + 1);
+            }
+            pillarBaseMasks[i] = (mask | (mask << 7));
+        }
+        // precalculate pillarMasks
+        for (int x = 0; x < 7; x++){
+            for (int y = 0; y < 6; y++){
+                ulong mask = 0;
+                for (int h = y - 1; h < 5; h++){
+                    mask |= pillarBaseMasks[x] << (h * 7);
+                }
+                pillarMasks[x + y * 7] = mask;
+            }
+        }
     }
 
     std::string PrecalculatedData::formatUlong(ulong number){

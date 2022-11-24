@@ -9,6 +9,7 @@
 #include "bitops.h"
 
 namespace engine {
+
     int Evaluation::eval(Position& position) {
         switch (position.getGameState()) {
             case GameState::ON_GOING:
@@ -24,7 +25,7 @@ namespace engine {
     }
 
     int Evaluation::staticEval(Position& position) {
-        return basicOpennessEval(position) + winingPossibilityEval(position);
+        return winingPossibilityEval(position);
     }
 
     int Evaluation::basicOpennessEval(Position& position) {
@@ -69,4 +70,5 @@ namespace engine {
         // return the difference between yellows and reds score
         return score[0] - score[1];
     }
+
 } // engine

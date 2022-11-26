@@ -32,7 +32,8 @@ namespace engine {
         MINI_MAX = 0,
         ALPHA_BETA = 1,
         MINI_MAX_TT = 2,
-        ALPHA_BETA_TT = 3
+        ALPHA_BETA_TT = 3,
+        ALPHA_BETA_TT_MO = 4
     };
 
 } // engine

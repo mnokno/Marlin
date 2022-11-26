@@ -129,3 +129,7 @@ TEST_F(SearchTest, ChainTest) {
     validateLevel(engine::ALPHA_BETA, engine::MINI_MAX_TT, 8);
     validateLevel(engine::ALPHA_BETA_TT,ALPHA_BETA, 9);
 }
+
+TEST_F(SearchTest, SpeedTest) {
+    validateLevel(engine::ALPHA_BETA_TT_MO, engine::ALPHA_BETA_TT_MO, 9);
+}

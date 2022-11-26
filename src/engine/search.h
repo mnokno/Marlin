@@ -23,6 +23,7 @@ namespace engine {
     private:
         int alphaBeta(int alpha, int beta, int depthLeft);
         int alphaBetaTT(int alpha, int beta, int depthLeft);
+        int alphaBetaTTMO(int alpha, int beta, int depthLeft);
         int miniMax(int depthLeft);
         int miniMaxTT(int depthLeft);
 

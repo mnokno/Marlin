@@ -132,10 +132,17 @@ namespace engine {
             int minScore = EVAL_INFINITY + 100;
             int iterationBetsMove = -1;
 
-            for (int& move : MoveGenerator::generateMoves(position)){
+            // generate and orders moves
+            list<int> moveList = MoveGenerator::generateMoves(this->position);
+            int arr[moveList.size()];
+            std::copy(moveList.begin(), moveList.end(), arr);
+            int* moves = arr;
+            MoveOrdering::orderMove(moves, moveList.size(), this->position, bestMove);
+
+            for (int i = 0; i < moveList.size(); i++){
                 int score;
                 // evaluates this move using the specified base level algorithm
-                position.makeMove(move);
+                position.makeMove(moves[i]);
                 switch (baseLevel) {
                     case ALPHA_BETA_TT_MO_PD:
                         score = alphaBetaTTMO(-EVAL_INFINITY, EVAL_INFINITY, cDepth - 1);
@@ -148,7 +155,7 @@ namespace engine {
                 // if this move is better than previous best move, it becomes the new best move
                 if (score < minScore){
                     minScore = score;
-                    iterationBetsMove = move;
+                    iterationBetsMove = moves[i];
                 }
             }
 

@@ -20,6 +20,22 @@ namespace engine {
         bobbleSort(moves, scores, size);
     }
 
+    void MoveOrdering::orderMove(int *&moves, int size, Position &position, int previousBestMove) {
+        // defines an array of scores
+        int* scores = new int[size]();
+
+        // scores each move
+        for (int i = 0;  i < size; i++){
+            scores[i] = position.getStackHeight(moves[i]);
+            if (moves[i] == previousBestMove){
+                scores[i] += 1000;
+            }
+        }
+
+        // sorts the moves according to scores
+        bobbleSort(moves, scores, size);
+    }
+
     void MoveOrdering::bobbleSort(int *&moves, int *&scores, int size) {
         for (int i = 0; i < size - 1; i++){
             for (int j = 0; j < size - 1 - i; j++){

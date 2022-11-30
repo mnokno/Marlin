@@ -69,6 +69,11 @@ namespace engine {
      * using base level 0 first.
      */
     int Search::findBestMoveBaseTest(int depth, BaseLevel baseLevel) {
+        // is PD (progressing deepening) enabled so different method needs to be used.
+        if (baseLevel == ALPHA_BETA_TT_MO_PD){
+            return findBestMoveProgressiveTest(depth, baseLevel);
+        }
+
         // rests counters used for data collection
         this->leafNodes = 0;
         this->branchNodes = 0;
@@ -112,6 +117,48 @@ namespace engine {
 
         // returns best move
         return betsMove;
+    }
+
+    int Search::findBestMoveProgressiveTest(int depth, BaseLevel baseLevel){
+        // rests counters used for data collection
+        this->leafNodes = 0;
+        this->branchNodes = 0;
+        this->TTHits = 0;
+        // initial there is no best move
+        int bestMove = -1;
+
+        for (int cDepth = 1; cDepth <= depth; cDepth++){
+            // at the binning there is no best move, hence score is greater than wining score
+            int minScore = EVAL_INFINITY + 100;
+            int iterationBetsMove = -1;
+
+            for (int& move : MoveGenerator::generateMoves(position)){
+                int score;
+                // evaluates this move using the specified base level algorithm
+                position.makeMove(move);
+                switch (baseLevel) {
+                    case ALPHA_BETA_TT_MO_PD:
+                        score = alphaBetaTTMO(-EVAL_INFINITY, EVAL_INFINITY, cDepth - 1);
+                        break;
+                    default:
+                        throw std::invalid_argument("Base level not supported!");
+                }
+                position.unMakeMove();
+
+                // if this move is better than previous best move, it becomes the new best move
+                if (score < minScore){
+                    minScore = score;
+                    iterationBetsMove = move;
+                }
+            }
+
+            // sets best move to the best move from this iteration (it's always the iteration from the highest depth)
+            bestMove = iterationBetsMove;
+        }
+
+
+        // returns best move
+        return bestMove;
     }
 
     /**

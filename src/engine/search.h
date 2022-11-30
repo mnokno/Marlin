@@ -16,6 +16,7 @@ namespace engine {
         explicit Search(Position &position);
         int findBestMove(int depth);
         int findBestMoveBaseTest(int depth, BaseLevel baseLevel);
+        int findBestMoveProgressiveTest(int depth, BaseLevel baseLevel);
 
         [[nodiscard]] int getLeafNodes() const;
         [[nodiscard]] int getBranchNodes() const;

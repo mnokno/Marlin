@@ -131,5 +131,5 @@ TEST_F(SearchTest, ChainTest) {
 }
 
 TEST_F(SearchTest, SpeedTest) {
-    validateLevel(engine::ALPHA_BETA_TT_MO_PD, engine::ALPHA_BETA_TT_MO, 9);
+    validateLevel(engine::ALPHA_BETA_TT_MO, engine::ALPHA_BETA_TT_MO_PD, 9);
 }

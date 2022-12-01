@@ -14,11 +14,13 @@ namespace engine {
         [[nodiscard]] ulong getHash() const {return this->hash;}
         [[nodiscard]] int getDepth() const {return this->depth;}
         [[nodiscard]] int getEval() const {return this->eval;}
+        [[nodiscard]] int getMove() const {return this->move;}
     private:
         friend class TranspositionTable;
         ulong hash;
         int depth;
         int eval;
+        int move;
         NodeType nodeType;
     };
 
@@ -28,7 +30,7 @@ namespace engine {
         [[nodiscard]] TTEntry probe(ulong hash, bool& found);
         [[nodiscard]] TTEntry probe(ulong hash, bool& found, int alpha, int beta);
         void save(ulong hash, int depth, int eval);
-        void save(ulong hash, int depth, int eval, NodeType nodeType);
+        void save(ulong hash, int depth, int eval, int move, NodeType nodeType);
         void clear() const;
         TTEntry* table;
     private:

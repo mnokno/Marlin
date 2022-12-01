@@ -16,7 +16,7 @@ namespace engine {
 
     Search::Search(Position& position) : position(position) {
         // 999983 9999991
-        this->transpositionTable = *new TranspositionTable(9999991);
+        this->transpositionTable = *new TranspositionTable(999983);
         this->position = position;
         this->leafNodes = 0;
         this->branchNodes = 0;
@@ -302,6 +302,8 @@ namespace engine {
         this->branchNodes++;
         // default node type
         NodeType nodeType = UPPER_BOUND;
+        // keeps track of the best move
+        int bestMove = -1;
 
         // finds max value of this position
         for (int& move : MoveGenerator::generateMoves(this->position))  {
@@ -309,17 +311,18 @@ namespace engine {
             int score = -alphaBetaTT( -beta, -alpha, depthLeft - 1 );
             this->position.unMakeMove();
             if(score >= beta){
-                this->transpositionTable.save(position.getHash(), depthLeft, beta, LOWER_BOUND);
+                this->transpositionTable.save(position.getHash(), depthLeft, beta, move, LOWER_BOUND);
                 return beta;   //  fail hard beta-cutoff
             }
             if(score > alpha){
+                bestMove = move;
                 nodeType = EXACT;
                 alpha = score; // alpha acts like max in MiniMax
             }
         }
 
         // adds the result to transposition table
-        this->transpositionTable.save(position.getHash(), depthLeft, alpha, nodeType);
+        this->transpositionTable.save(position.getHash(), depthLeft, alpha, bestMove, nodeType);
 
         // returns the max (alpha) value
         return alpha;
@@ -351,13 +354,15 @@ namespace engine {
         this->branchNodes++;
         // default node type
         NodeType nodeType = UPPER_BOUND;
+        // keeps track of the best move
+        int bestMove = -1;
 
         // generate and orders moves
         list<int> moveList = MoveGenerator::generateMoves(this->position);
         int arr[moveList.size()];
         std::copy(moveList.begin(), moveList.end(), arr);
         int* moves = arr;
-        MoveOrdering::orderMove(moves, moveList.size(), this->position);
+        MoveOrdering::orderMove(moves, moveList.size(), this->position, transpositionTable);
 
         // finds max value of this position
         for (int i = 0; i < moveList.size(); i++) {
@@ -365,17 +370,18 @@ namespace engine {
             int score = -alphaBetaTT( -beta, -alpha, depthLeft - 1 );
             this->position.unMakeMove();
             if(score >= beta){
-                this->transpositionTable.save(position.getHash(), depthLeft, beta, LOWER_BOUND);
+                this->transpositionTable.save(position.getHash(), depthLeft, beta, moves[i], LOWER_BOUND);
                 return beta;   //  fail hard beta-cutoff
             }
             if(score > alpha){
+                bestMove = moves[i];
                 nodeType = EXACT;
                 alpha = score; // alpha acts like max in MiniMax
             }
         }
 
         // adds the result to transposition table
-        this->transpositionTable.save(position.getHash(), depthLeft, alpha, nodeType);
+        this->transpositionTable.save(position.getHash(), depthLeft, alpha, bestMove, nodeType);
 
         // returns the max (alpha) value
         return alpha;

@@ -102,11 +102,12 @@ namespace engine {
      * @param eval Evaluation found from the search
      * @param nodeType Node type of the position
      */
-     void TranspositionTable::save(ulong hash, int depth, int eval, NodeType nodeType) {
+     void TranspositionTable::save(ulong hash, int depth, int eval, int move, NodeType nodeType) {
         writes++;
         this->table[this->getHashIndex(hash)].hash = hash;
         this->table[this->getHashIndex(hash)].depth = depth;
         this->table[this->getHashIndex(hash)].eval = eval;
+        this->table[this->getHashIndex(hash)].move = move;
         this->table[this->getHashIndex(hash)].nodeType = nodeType;
     }
 

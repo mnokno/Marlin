@@ -15,7 +15,8 @@
 namespace engine {
 
     Search::Search(Position& position) : position(position) {
-        this->transpositionTable = *new TranspositionTable(999983);
+        // 999983 9999991
+        this->transpositionTable = *new TranspositionTable(9999991);
         this->position = position;
         this->leafNodes = 0;
         this->branchNodes = 0;

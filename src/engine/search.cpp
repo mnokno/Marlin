@@ -120,6 +120,13 @@ namespace engine {
         return betsMove;
     }
 
+    /**
+     * Finds the best move using the specified base level algorithm and progressive deepening.
+     *
+     * @param depth depth to which the search should be performed.
+     * @param baseLevel Algorithm to be used for search.
+     * @return best move.
+     */
     int Search::findBestMoveProgressiveTest(int depth, BaseLevel baseLevel){
         // rests counters used for data collection
         this->leafNodes = 0;
@@ -387,14 +394,29 @@ namespace engine {
         return alpha;
     }
 
+    /**
+     * Getter for the number of leaf nodes.
+     *
+     * @return number of leafs nodes.
+     */
     int Search::getLeafNodes() const {
         return this->leafNodes;
     }
 
+    /**
+     * Getter for the number of branch nodes.
+     *
+     * @return number of branch nodes.
+     */
     int Search::getBranchNodes() const {
         return this->branchNodes;
     }
 
+    /**
+     *  Getter for the number of transposition table hits.
+     *
+     *  @return transposition table hits.
+     */
     int Search::getTTHits() const {
         return this->TTHits;
     }

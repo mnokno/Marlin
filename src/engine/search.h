@@ -14,7 +14,7 @@ namespace engine {
 
     class Search {
     public:
-        explicit Search(Position &position);
+        explicit Search(Position &position, TranspositionTable &transpositionTable);
         int findBestMove(int depth);
         int findBestMoveBaseTest(int depth, BaseLevel baseLevel);
         int findBestMoveProgressiveTest(int depth, BaseLevel baseLevel);
@@ -25,12 +25,13 @@ namespace engine {
         [[nodiscard]] int getTTHits() const;
     private:
         int alphaBeta(int alpha, int beta, int depthLeft);
+        int alphaBetaSimple(int alpha, int beta, int depthLeft);
         int miniMax(int depthLeft);
         static int alphaBetaStatic(int alpha, int beta, Position& position, TranspositionTable& tt, int depthLeft, Search& search);
         static void searchTask(Search *search, Position lPosition, int move, int depth);
 
         Position& position;
-        TranspositionTable transpositionTable = TranspositionTable(0);
+        TranspositionTable& transpositionTable;
         int leafNodes;
         int branchNodes;
         int TTHits;

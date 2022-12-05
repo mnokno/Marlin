@@ -9,6 +9,7 @@ namespace engine {
 
     /**
      * Constructor for TranspositionTable
+     * Primes 999983 9999991
      *
      * @param tableSize Size of the table in entries
      */

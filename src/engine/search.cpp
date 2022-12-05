@@ -15,9 +15,8 @@
 
 namespace engine {
 
-    Search::Search(Position& position) : position(position) {
-        // 999983 9999991
-        this->transpositionTable = *new TranspositionTable(999983);
+    Search::Search(Position& position, TranspositionTable& transpositionTable) : position(position), transpositionTable(transpositionTable) {
+        this->transpositionTable = transpositionTable;
         this->position = position;
         this->leafNodes = 0;
         this->branchNodes = 0;
@@ -72,13 +71,13 @@ namespace engine {
      * using base level 0 first.
      */
     int Search::findBestMoveBaseTest(int depth, BaseLevel baseLevel) {
-        if (baseLevel == ALPHA_BETA_MT){
-            return findBestMoveMT(depth);
-        }
-        // is PD (progressing deepening) enabled so different method needs to be used.
-        if (baseLevel == ALPHA_BETA_TT_MO_PD){
-            return findBestMoveProgressiveTest(depth, baseLevel);
-        }
+        //if (baseLevel == ALPHA_BETA_MT){
+        //    return findBestMoveMT(depth);
+        //}
+        //// is PD (progressing deepening) enabled so different method needs to be used.
+        //if (baseLevel == ALPHA_BETA_TT_MO_PD){
+        //    return findBestMoveProgressiveTest(depth, baseLevel);
+        //}
 
         // rests counters used for data collection
         this->leafNodes = 0;
@@ -98,7 +97,7 @@ namespace engine {
                     score = miniMax(depth - 1);
                     break;
                 case ALPHA_BETA:
-                    score = alphaBeta(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
+                    score = alphaBetaSimple(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
                     break;
                 default:
                     throw std::invalid_argument("Base level not supported!");
@@ -219,6 +218,8 @@ namespace engine {
         search->results.insert({move, alphaBetaStatic(-EVAL_INFINITY, EVAL_INFINITY, lPosition, search->transpositionTable, depth, *search)});
     }
 
+#pragma region Algorythms
+
     /**
      * Basic implementation of the minimax algorithm without any enchantments.
      *
@@ -258,59 +259,85 @@ namespace engine {
      */
     int Search::alphaBeta(int alpha, int beta, int depthLeft) {
         // if the target depth was reach or the game is over, return the static evaluation of the position
-        if(depthLeft == 0 || this->position.getGameState() != GameState::ON_GOING) {
+        if (depthLeft == 0 || this->position.getGameState() != GameState::ON_GOING) {
             this->leafNodes++;
             return position.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(this->position) : -Evaluation::eval(this->position);
         }
 
-        // checks if we have a transpositionTable match
-        bool hit;
-        TTEntry entry = this->transpositionTable.probe(this->position.getHash(), hit, alpha, beta);
-        // entry.getDepth() == depthLeft, has a high chance to catch a key collision
-        if (hit && entry.getDepth() == depthLeft){
-            this->TTHits++;
-            return entry.getEval();
-        }
+        //// checks if we have a transpositionTable match
+        //bool hit;
+        //TTEntry entry = this->transpositionTable.probe(this->position.getHash(), hit, alpha, beta);
+        //// entry.getDepth() == depthLeft, has a high chance to catch a key collision
+        //if (hit && entry.getDepth() == depthLeft){
+        //    this->TTHits++;
+        //    return entry.getEval();
+        //}
 
         // updates counters
         this->branchNodes++;
-        // default node type
-        NodeType nodeType = UPPER_BOUND;
-        // keeps track of the best move
-        int bestMove = -1;
+        //// default node type
+        //NodeType nodeType = UPPER_BOUND;
+        //// keeps track of the best move
+        //int bestMove = -1;
 
         // generate and orders moves
-        list<int> moveList = MoveGenerator::generateMoves(this->position);
-        int arr[moveList.size()];
-        std::copy(moveList.begin(), moveList.end(), arr);
-        int* moves = arr;
-        MoveOrdering::orderMove(moves, moveList.size(), this->position, transpositionTable);
+        //list<int> moveList = MoveGenerator::generateMoves(this->position);
+        //int arr[moveList.size()];
+        //std::copy(moveList.begin(), moveList.end(), arr);
+        //int* moves = arr;
+        //MoveOrdering::orderMove(moves, moveList.size(), this->position, transpositionTable);
 
         // finds max value of this position
-        for (int i = 0; i < moveList.size(); i++) {
-            this->position.makeMove(moves[i]);
+        for (int& move : MoveGenerator::generateMoves(this->position)){
+            this->position.makeMove(move);
             int score = -alphaBeta( -beta, -alpha, depthLeft - 1 );
             this->position.unMakeMove();
             if(score >= beta){
-                this->transpositionTable.save(position.getHash(), depthLeft, beta, moves[i], LOWER_BOUND);
+                //this->transpositionTable.save(position.getHash(), depthLeft, beta, moves[i], LOWER_BOUND);
                 return beta;   //  fail hard beta-cutoff
             }
             if(score > alpha){
-                bestMove = moves[i];
-                nodeType = EXACT;
+                //bestMove = move;
+                //nodeType = EXACT;
                 alpha = score; // alpha acts like max in MiniMax
             }
         }
 
         // adds the result to transposition table
-        this->transpositionTable.save(position.getHash(), depthLeft, alpha, bestMove, nodeType);
+        //this->transpositionTable.save(position.getHash(), depthLeft, alpha, bestMove, nodeType);
 
         // returns the max (alpha) value
         return alpha;
     }
 
-    int Search::alphaBetaStatic(int alpha, int beta, Position &position, TranspositionTable &tt, int depthLeft,
-                              Search& search) {
+    int Search::alphaBetaSimple(int alpha, int beta, int depthLeft){
+        // if the target depth was reach or the game is over, return the static evaluation of the position
+        if (depthLeft == 0 || this->position.getGameState() != GameState::ON_GOING) {
+            this->leafNodes++;
+            return position.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(this->position) : -Evaluation::eval(this->position);
+        }
+
+        // updates counters
+        this->branchNodes++;
+
+        for (int& move : MoveGenerator::generateMoves(this->position)){
+            position.makeMove(move);
+            int score = -alphaBetaSimple(-beta, -alpha, depthLeft - 1);
+            position.unMakeMove();
+
+            if (score >= beta){
+                return beta;
+            }
+            else if (score > alpha){
+                alpha = score;
+            }
+        }
+
+        return alpha;
+    }
+
+    // TODO
+    int Search::alphaBetaStatic(int alpha, int beta, Position &position, TranspositionTable &tt, int depthLeft, Search& search) {
         // if the target depth was reach or the game is over, return the static evaluation of the position
         if(depthLeft == 0 || position.getGameState() != GameState::ON_GOING) {
             search.leafNodes++;
@@ -362,6 +389,10 @@ namespace engine {
         return alpha;
     }
 
+#pragma endregion Algorythms
+
+#pragma region Getters
+
     /**
      * Getter for the number of leaf nodes.
      *
@@ -388,5 +419,7 @@ namespace engine {
     int Search::getTTHits() const {
         return this->TTHits;
     }
+
+#pragma endregion Getters
 
 } // engine

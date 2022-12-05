@@ -16,7 +16,7 @@ using namespace engine;
 class SearchTest : public ::testing::Test {
 
 protected:
-    virtual void SetUp() {
+    void SetUp() override {
         ZobristHashing::initHashes();
         PrecalculatedData::init();
     }
@@ -39,13 +39,15 @@ protected:
         for (int i = 1; i <= upToDepth; i++){
             // calculates test data
             Position tPosition = *new Position();
-            Search tSearch = *new Search(tPosition);
+            TranspositionTable ttt = *new TranspositionTable(TEST_TT_SIZE);
+            Search tSearch = *new Search(tPosition, ttt);
             list<int> tMoves = *new list<int>();
             calculateGameData(i, testLevel, tPosition, tSearch, tMoves);
 
             // calculates validation data
             Position vPosition = *new Position();
-            Search vSearch = *new Search(vPosition);
+            TranspositionTable vtt = *new TranspositionTable(TEST_TT_SIZE);
+            Search vSearch = *new Search(vPosition, vtt);
             list<int> vMoves = *new list<int>();
             calculateGameData(i, validationLevel, vPosition, vSearch, vMoves);
 
@@ -81,7 +83,8 @@ protected:
 
 TEST_F(SearchTest, MiniMaxTest) {
     Position position = *new Position();
-    Search search = *new Search(position);
+    TranspositionTable tt = *new TranspositionTable(TEST_TT_SIZE);
+    Search search = *new Search(position, tt);
     // from 1 to 6
     for (int depth = 1; depth < 7; depth++){
         search.findBestMoveBaseTest(depth, MINI_MAX);
@@ -102,5 +105,5 @@ TEST_F(SearchTest, MiniMaxTest) {
 }
 
 TEST_F(SearchTest, AlphaBetaTest) {
-    validateLevel(engine::ALPHA_BETA, engine::MINI_MAX, 7);
+    validateLevel(engine::ALPHA_BETA, engine::ALPHA_BETA, 7);
 }

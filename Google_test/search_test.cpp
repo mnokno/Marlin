@@ -21,7 +21,8 @@ protected:
         PrecalculatedData::init();
     }
 
-    static void calculateControlCase(int depth, BaseLevel baseLevel, Position &position, Search &search, list<int> &moves) {
+    static void calculateGameData(int depth, BaseLevel baseLevel, Position &position, Search &search, list<int> &moves){
+        // calculates the data
         int gameLeafCount = 0;
         while (position.getGameState() == GameState::ON_GOING){
             int move = search.findBestMoveBaseTest(depth, baseLevel);
@@ -29,43 +30,31 @@ protected:
             moves.push_back(move);
             gameLeafCount += search.getLeafNodes();
         }
+        // logs results for manual inspection
         std::cout << formatPosition(position);
-        std::cout << "^^^ CONTROL depth: " << depth << " leafs: " << gameLeafCount << " ^^^" << std::endl;
-    }
-
-    static void validateGame(int depth, BaseLevel baseLevel, Position &position, Search &search, list<int> &moves){
-        // calculates control case
-        Position cPosition = *new Position();
-        Search cSearch = *new Search(cPosition);
-        list<int> cMoves;
-        SearchTest::calculateControlCase(depth, baseLevel, cPosition, cSearch, cMoves);
-
-        // compares control case against test case
-        for (int move : moves){
-            ASSERT_EQ(move, cMoves.front());
-            cMoves.pop_front();
-        }
+        std::cout << "^^^ CONTROL depth: " << depth << " leafs: " << gameLeafCount << std::endl;
     }
 
     static void validateLevel(BaseLevel testLevel, BaseLevel validationLevel, int upToDepth){
-        for (int depth = 1; depth <= upToDepth; depth++){
-
-            int gameLeafCount = 0;
+        for (int i = 1; i <= upToDepth; i++){
+            // calculates test data
             Position tPosition = *new Position();
             Search tSearch = *new Search(tPosition);
-            list<int> tMoves;
+            list<int> tMoves = *new list<int>();
+            calculateGameData(i, testLevel, tPosition, tSearch, tMoves);
 
-            while (tPosition.getGameState() == GameState::ON_GOING){
-                int move = tSearch.findBestMoveBaseTest(depth, testLevel);
-                tPosition.makeMove(move);
-                tMoves.push_back(move);
-                gameLeafCount += tSearch.getLeafNodes();
+            // calculates validation data
+            Position vPosition = *new Position();
+            Search vSearch = *new Search(vPosition);
+            list<int> vMoves = *new list<int>();
+            calculateGameData(i, validationLevel, vPosition, vSearch, vMoves);
+
+            // compares results
+            for (int move = 0; move < vMoves.size(); move++){
+                ASSERT_EQ(tMoves.front(), vMoves.front());
+                tMoves.pop_front();
+                vMoves.pop_front();
             }
-
-            std::cout << formatPosition(tPosition);
-            std::cout << "^^^ TESTCASE depth: " << depth << " leafs: " << gameLeafCount << " ^^^" << std::endl;
-
-            validateGame(depth, validationLevel, tPosition, tSearch, tMoves);
         }
     }
 
@@ -114,22 +103,4 @@ TEST_F(SearchTest, MiniMaxTest) {
 
 TEST_F(SearchTest, AlphaBetaTest) {
     validateLevel(engine::ALPHA_BETA, engine::MINI_MAX, 7);
-}
-
-TEST_F(SearchTest, MiniMaxTTTest) {
-    validateLevel(engine::MINI_MAX_TT, engine::MINI_MAX, 7);
-}
-
-TEST_F(SearchTest, AlphaBetaTTTest) {
-    validateLevel(engine::ALPHA_BETA_TT, engine::MINI_MAX, 7);
-}
-
-TEST_F(SearchTest, ChainTest) {
-    validateLevel(engine::MINI_MAX_TT, MINI_MAX, 7);
-    validateLevel(engine::ALPHA_BETA, engine::MINI_MAX_TT, 8);
-    validateLevel(engine::ALPHA_BETA_TT,ALPHA_BETA, 9);
-}
-
-TEST_F(SearchTest, SpeedTest) {
-    validateLevel(engine::ALPHA_BETA_TT_MO, engine::ALPHA_BETA_TT_MO_PD, 9);
 }

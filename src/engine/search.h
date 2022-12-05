@@ -5,6 +5,7 @@
 #ifndef MARLIN_SEARCH_H
 #define MARLIN_SEARCH_H
 
+#include <map>
 #include "position.h"
 #include "transposition_table.h"
 #include "types.h"
@@ -17,22 +18,24 @@ namespace engine {
         int findBestMove(int depth);
         int findBestMoveBaseTest(int depth, BaseLevel baseLevel);
         int findBestMoveProgressiveTest(int depth, BaseLevel baseLevel);
+        int findBestMoveMT(int depth);
 
         [[nodiscard]] int getLeafNodes() const;
         [[nodiscard]] int getBranchNodes() const;
         [[nodiscard]] int getTTHits() const;
     private:
         int alphaBeta(int alpha, int beta, int depthLeft);
-        int alphaBetaTT(int alpha, int beta, int depthLeft);
-        int alphaBetaTTMO(int alpha, int beta, int depthLeft);
         int miniMax(int depthLeft);
-        int miniMaxTT(int depthLeft);
+        static int alphaBetaStatic(int alpha, int beta, Position& position, TranspositionTable& tt, int depthLeft, Search& search);
+        static void searchTask(Search *search, Position lPosition, int move, int depth);
 
         Position& position;
         TranspositionTable transpositionTable = TranspositionTable(0);
         int leafNodes;
         int branchNodes;
         int TTHits;
+
+        map<int, int> results;
     };
 
 } // engine

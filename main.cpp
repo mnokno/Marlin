@@ -11,6 +11,7 @@ int main() {
     //std::cout << "Hello, World!" << std::endl;
     Position p1 = *new Position();
     p1.makeMove(2);
+
     Position p2 = p1;
     p1.makeMove(1);
     std::cout << to_string(p1.getMoveCount()) << std::endl;

@@ -174,7 +174,7 @@ namespace engine {
         return bestMove;
     }
 
-    int Search::findBestMoveMT(int depth) {
+    int Search::findBestMoveABMT(int depth) {
         // rests counters used for data collection
         this->leafNodes = 0;
         this->branchNodes = 0;
@@ -186,7 +186,7 @@ namespace engine {
         for (int& move : MoveGenerator::generateMoves(position)){
             // evaluates this move
             position.makeMove(move);
-            threads.emplace_back(thread(searchTask, this, position, move, depth - 1));
+            threads.emplace_back(thread(searchAlphaBetaTask, ref(*this), position, move, depth - 1));
             position.unMakeMove();
         }
 
@@ -218,7 +218,7 @@ namespace engine {
         return betsMove;
     }
 
-    void Search::searchTask(Search& search, Position lPosition, int move, int depth) {
+    void Search::searchAlphaBetaTask(Search& search, Position lPosition, int move, int depth) {
         search.results.insert({move, alphaBetaStatic(-EVAL_INFINITY, EVAL_INFINITY, lPosition, search.transpositionTable, depth, search)});
     }
 
@@ -246,6 +246,39 @@ namespace engine {
             position.makeMove(move);
             int score = -miniMax( depthLeft - 1 );
             position.unMakeMove();
+            if(score > max){
+                max = score;
+            }
+        }
+
+        // returns the max value
+        return max;
+    }
+
+    /**
+     * Static implementation of minimax algorithm without any enchantments.
+     *
+     * @param depthLeft how many moves to look ahead
+     * @param search reference to the parent search
+     * @param lPosition reference to the thread local position
+     * @return the score of the move
+     */
+    int Search::miniMaxStatic(int depthLeft, Search &search, Position& lPosition) {
+        // if the target depth was reach or the game is over, return the static evaluation of the position
+        if (depthLeft == 0 || lPosition.getGameState() != GameState::ON_GOING) {
+            search.leafNodes++;
+            return lPosition.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(lPosition) : -Evaluation::eval(lPosition);
+        }
+
+        // updates counters
+        search.branchNodes++;
+
+        // finds max value of this position
+        int max = -EVAL_INFINITY;
+        for (int& move : MoveGenerator::generateMoves(lPosition))  {
+            lPosition.makeMove(move);
+            int score = -miniMaxStatic(depthLeft - 1, search, lPosition);
+            lPosition.unMakeMove();
             if(score > max){
                 max = score;
             }

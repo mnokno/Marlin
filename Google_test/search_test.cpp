@@ -32,7 +32,7 @@ protected:
         }
         // logs results for manual inspection
         std::cout << formatPosition(position);
-        std::cout << "^^^ CONTROL depth: " << depth << " leafs: " << gameLeafCount << std::endl;
+        std::cout << "^^^" << to_string(baseLevel) << "L depth: " << depth << " leafs: " << gameLeafCount << std::endl;
     }
 
     static void validateLevel(BaseLevel testLevel, BaseLevel validationLevel, int upToDepth){
@@ -105,5 +105,5 @@ TEST_F(SearchTest, MiniMaxTest) {
 }
 
 TEST_F(SearchTest, AlphaBetaTest) {
-    validateLevel(engine::ALPHA_BETA, engine::ALPHA_BETA, 7);
+    validateLevel(engine::ALPHA_BETA, engine::ALPHA_BETA_SIMPLE, 10);
 }

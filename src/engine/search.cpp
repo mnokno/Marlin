@@ -96,8 +96,11 @@ namespace engine {
                 case MINI_MAX:
                     score = miniMax(depth - 1);
                     break;
-                case ALPHA_BETA:
+                case ALPHA_BETA_SIMPLE:
                     score = alphaBetaSimple(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
+                    break;
+                case ALPHA_BETA:
+                    score = alphaBeta(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
                     break;
                 default:
                     throw std::invalid_argument("Base level not supported!");
@@ -264,52 +267,60 @@ namespace engine {
             return position.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(this->position) : -Evaluation::eval(this->position);
         }
 
-        //// checks if we have a transpositionTable match
-        //bool hit;
-        //TTEntry entry = this->transpositionTable.probe(this->position.getHash(), hit, alpha, beta);
-        //// entry.getDepth() == depthLeft, has a high chance to catch a key collision
-        //if (hit && entry.getDepth() == depthLeft){
-        //    this->TTHits++;
-        //    return entry.getEval();
-        //}
+        // checks if we have a transpositionTable match
+        bool hit;
+        TTEntry entry = this->transpositionTable.probe(this->position.getHash(), hit, alpha, beta);
+        // entry.getDepth() == depthLeft, has a high chance to catch a key collision
+        if (hit && entry.getDepth() == depthLeft){
+            this->TTHits++;
+            return entry.getEval();
+        }
 
         // updates counters
         this->branchNodes++;
-        //// default node type
-        //NodeType nodeType = UPPER_BOUND;
-        //// keeps track of the best move
-        //int bestMove = -1;
+        // default node type
+        NodeType nodeType = UPPER_BOUND;
+        // keeps track of the best move
+        int bestMove = -1;
 
-        // generate and orders moves
-        //list<int> moveList = MoveGenerator::generateMoves(this->position);
-        //int arr[moveList.size()];
-        //std::copy(moveList.begin(), moveList.end(), arr);
-        //int* moves = arr;
-        //MoveOrdering::orderMove(moves, moveList.size(), this->position, transpositionTable);
+        // generates moves
+        list<int> moveList = MoveGenerator::generateMoves(this->position);
+        // converts the list to array
+        int arr[moveList.size()];
+        std::copy(moveList.begin(), moveList.end(), arr);
+        int* moves = arr;
+        // orders the moves
+        MoveOrdering::orderMove(moves, moveList.size(), this->position, transpositionTable);
 
         // finds max value of this position
-        for (int& move : MoveGenerator::generateMoves(this->position)){
-            this->position.makeMove(move);
+        for (int i = 0; i < moveList.size(); i++){
+            this->position.makeMove(moves[i]);
             int score = -alphaBeta( -beta, -alpha, depthLeft - 1 );
             this->position.unMakeMove();
             if(score >= beta){
-                //this->transpositionTable.save(position.getHash(), depthLeft, beta, moves[i], LOWER_BOUND);
+                this->transpositionTable.save(position.getHash(), depthLeft, beta, moves[i], LOWER_BOUND);
                 return beta;   //  fail hard beta-cutoff
             }
             if(score > alpha){
-                //bestMove = move;
-                //nodeType = EXACT;
+                bestMove = moves[i];
+                nodeType = EXACT;
                 alpha = score; // alpha acts like max in MiniMax
             }
         }
 
         // adds the result to transposition table
-        //this->transpositionTable.save(position.getHash(), depthLeft, alpha, bestMove, nodeType);
+        this->transpositionTable.save(position.getHash(), depthLeft, alpha, bestMove, nodeType);
 
         // returns the max (alpha) value
         return alpha;
     }
 
+    /**
+     * Simple implementation of alpha beta using negamax
+     *
+     * @param depthLeft how many moves to look ahead
+     * @return the score of the move
+     */
     int Search::alphaBetaSimple(int alpha, int beta, int depthLeft){
         // if the target depth was reach or the game is over, return the static evaluation of the position
         if (depthLeft == 0 || this->position.getGameState() != GameState::ON_GOING) {

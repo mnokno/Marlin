@@ -31,6 +31,7 @@ namespace engine {
     enum BaseLevel : int {
         MINI_MAX = 0,
         ALPHA_BETA = 1,
+        ALPHA_BETA_SIMPLE = 2,
         ALPHA_BETA_TT_MO_PD = 5,
         ALPHA_BETA_MT = 6
     };

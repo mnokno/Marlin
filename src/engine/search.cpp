@@ -186,12 +186,13 @@ namespace engine {
         for (int& move : MoveGenerator::generateMoves(position)){
             // evaluates this move
             position.makeMove(move);
-            threads.push_back(thread(searchTask, this, position, move, depth - 1));
+            threads.emplace_back(thread(searchTask, this, position, move, depth - 1));
             position.unMakeMove();
         }
 
-        for (int i = 0; i < threads.size(); i++){
-            threads[i].join();
+        // waits for all the threads to finish
+        for (thread& thread : threads){
+            thread.join();
         }
 
         // at the binning there is no best move, hence score is greater than wining score
@@ -217,8 +218,8 @@ namespace engine {
         return betsMove;
     }
 
-    void Search::searchTask(Search* search, Position lPosition, int move, int depth) {
-        search->results.insert({move, alphaBetaStatic(-EVAL_INFINITY, EVAL_INFINITY, lPosition, search->transpositionTable, depth, *search)});
+    void Search::searchTask(Search& search, Position lPosition, int move, int depth) {
+        search.results.insert({move, alphaBetaStatic(-EVAL_INFINITY, EVAL_INFINITY, lPosition, search.transpositionTable, depth, search)});
     }
 
 #pragma region Algorythms

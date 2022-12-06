@@ -28,7 +28,7 @@ namespace engine {
         int alphaBetaSimple(int alpha, int beta, int depthLeft);
         int miniMax(int depthLeft);
         static int alphaBetaStatic(int alpha, int beta, Position& position, TranspositionTable& tt, int depthLeft, Search& search);
-        static void searchTask(Search *search, Position lPosition, int move, int depth);
+        static void searchTask(Search &search, Position lPosition, int move, int depth);
 
         Position& position;
         TranspositionTable& transpositionTable;

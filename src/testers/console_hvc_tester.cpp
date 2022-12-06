@@ -5,6 +5,7 @@
 #include "console_hvc_tester.h"
 #include <iostream>
 #include "position.h"
+#include "constants.h"
 #include "tester_utility.h"
 #include "zobrist_hashing.h"
 #include "precalculated_data.h"
@@ -19,7 +20,8 @@ namespace testers {
 
     void ConsoleHvCTester::startGame(bool humanFirst, int depth) {
         // plays out the game
-        Search search = *new Search(position);
+        TranspositionTable transpositionTable = *new TranspositionTable(TEST_TT_SIZE);
+        Search search = *new Search(position, transpositionTable);
         if (humanFirst){
             while (this->position.getGameState() == GameState::ON_GOING){
                 cout << TesterUtility::formatPosition(this->position) << endl;

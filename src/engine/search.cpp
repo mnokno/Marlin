@@ -222,6 +222,64 @@ namespace engine {
         search.results.insert({move, alphaBetaStatic(-EVAL_INFINITY, EVAL_INFINITY, lPosition, search.transpositionTable, depth, search)});
     }
 
+    int Search::findBestMoveMMMT(int depth) {
+        // rests counters used for data collection
+        this->leafNodes = 0;
+        this->branchNodes = 0;
+        this->TTHits = 0;
+
+        vector<thread> threads;
+
+        // finds the best move from the generated moves
+        for (int& move : MoveGenerator::generateMoves(position)){
+            // evaluates this move
+            position.makeMove(move);
+            threads.emplace_back(thread(searchMiniMaxTask, ref(*this), position, move, depth - 1));
+            position.unMakeMove();
+        }
+
+        // waits for all the threads to finish
+        for (thread& thread : threads){
+            thread.join();
+        }
+
+        // at the binning there is no best move, hence score is greater than wining score
+        int minScore = EVAL_INFINITY + 100;
+        int betsMove = -1;
+
+        for ( auto [key, value]: results ) {
+            if (value < minScore){
+                minScore = value;
+                betsMove = key;
+            }
+        }
+
+        // logs data about this search
+        std::cout << to_string(betsMove % 7) << ":"
+                  << leafNodes << "l:"
+                  << branchNodes << "b:"
+                  << (leafNodes + branchNodes)  << "t:"
+                  << TTHits << "tth:"
+                  << to_string(minScore) << std::endl;
+
+        // returns best move
+        return betsMove;
+    }
+
+    /**
+     * Starts a search and saves the result, can by used to spawn multiple threads
+     *
+     * @param search Reference to initial search
+     * @param lPosition Copy of the position
+     * @param move Move for which to associate the result
+     * @param depth Depth of the search
+     */
+    void Search::searchMiniMaxTask(engine::Search &search, engine::Position lPosition, int move, int depth) {
+        search.results.insert({move, miniMaxStatic(depth, search, lPosition)});
+        std::cout << PrecalculatedData::formatBoard(lPosition.getPosition(Player::YELLOW)) << std::endl;
+        std::cout << move << " :::: " << search.leafNodes + search.branchNodes << std::endl;
+    }
+
 #pragma region Algorythms
 
     /**

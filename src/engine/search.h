@@ -19,6 +19,7 @@ namespace engine {
         int findBestMoveBaseTest(int depth, BaseLevel baseLevel);
         int findBestMoveProgressiveTest(int depth, BaseLevel baseLevel);
         int findBestMoveABMT(int depth);
+        int findBestMoveMMMT(int depth);
 
         [[nodiscard]] int getLeafNodes() const;
         [[nodiscard]] int getBranchNodes() const;
@@ -31,9 +32,7 @@ namespace engine {
 
         int miniMax(int depthLeft);
         static int miniMaxStatic(int depthLeft, Search& search, Position& lPosition);
-
-
-
+        static void searchMiniMaxTask(Search& search, Position lPosition, int move, int depth);
 
         Position& position;
         TranspositionTable& transpositionTable;

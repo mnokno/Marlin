@@ -1,20 +1,19 @@
 #include <iostream>
 #include "search.h"
 #include "position.h"
+#include "constants.h"
+#include "precalculated_data.h"
+#include "zobrist_hashing.h"
 
 using namespace engine;
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
-    //engine::Search search = *new engine::Search(*new engine::Position());
-    //search.findBestMoveMT(9);
-    //std::cout << "Hello, World!" << std::endl;
-    Position p1 = *new Position();
-    p1.makeMove(2);
-
-    Position p2 = p1;
-    p1.makeMove(1);
-    std::cout << to_string(p1.getMoveCount()) << std::endl;
-    std::cout << to_string(p2.getMoveCount()) << std::endl;
+    PrecalculatedData::init();
+    ZobristHashing::initHashes();
+    Position position = *new Position();
+    TranspositionTable tt = *new TranspositionTable(TEST_TT_SIZE);
+    Search search = *new Search(position, tt);
+    search.findBestMoveMMMT(6);
     return 0;
 }

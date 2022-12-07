@@ -105,5 +105,5 @@ TEST_F(SearchTest, MiniMaxTest) {
 }
 
 TEST_F(SearchTest, AlphaBetaTest) {
-    validateLevel(engine::ALPHA_BETA, engine::ALPHA_BETA_SIMPLE, 10);
+    validateLevel(engine::MINI_MAX, engine::MINI_MAX, 7);
 }

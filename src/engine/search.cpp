@@ -22,6 +22,7 @@ namespace engine {
         this->branchNodes = 0;
         this->TTHits = 0;
         this->results = map<int, int>();
+        this->nodeCount = map<int, int>();
     }
 
     /**
@@ -235,13 +236,14 @@ namespace engine {
             // evaluates this move
             position.makeMove(move);
             threads.emplace_back(thread(searchMiniMaxTask, ref(*this), position, move, depth - 1));
+            threads.back().join();
             position.unMakeMove();
         }
 
         // waits for all the threads to finish
-        for (thread& thread : threads){
-            thread.join();
-        }
+        //for (thread& thread : threads){
+        //    thread.join();
+        //}
 
         // at the binning there is no best move, hence score is greater than wining score
         int minScore = EVAL_INFINITY + 100;
@@ -288,7 +290,7 @@ namespace engine {
      * @param depthLeft how many moves to look ahead
      * @return the score of the move
      */
-    int Search::miniMax(int depthLeft) {
+    int Search::           miniMax(int depthLeft) {
         // if the target depth was reach or the game is over, return the static evaluation of the position
         if (depthLeft == 0 || this->position.getGameState() != GameState::ON_GOING) {
             this->leafNodes++;

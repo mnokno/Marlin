@@ -41,6 +41,7 @@ namespace engine {
         int TTHits;
 
         map<int, int> results;
+        map<int, int> nodeCount;
     };
 
 } // engine

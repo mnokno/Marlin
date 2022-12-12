@@ -14,7 +14,7 @@ int main() {
     Position position = *new Position();
     TranspositionTable tt = *new TranspositionTable(TEST_TT_SIZE);
     Search search = *new Search(position, tt);
-    //cout << search.findBestMoveMMMT(8) << endl;
-    cout << search.findBestMoveBaseTest(8, BaseLevel::MINI_MAX) << endl;
+    cout << search.findBestMoveABMT(15) << endl;
+    //cout << search.findBestMoveBaseTest(12, BaseLevel::ALPHA_BETA) << endl;
     return 0;
 }

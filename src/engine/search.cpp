@@ -40,41 +40,7 @@ namespace engine {
      * @param depth Depth of the search
      */
     int Search::findBestMove(int depth) {
-        throw std::invalid_argument("Outdated code!");
-        // rests counters used for data collection
-        this->leafNodes = 0;
-        this->branchNodes = 0;
-        this->TTHits = 0;
-
-        // at the binning there is no best move, hence score is greater than wining score
-        int minScore = EVAL_INFINITY + 100;
-        int betsMove = -1;
-
-        // finds the best move from the generated moves
-        for (int& move : MoveGenerator::generateMoves(position)){
-            // evaluates this move
-            position.makeMove(move);
-            int score = alphaBeta(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
-            position.unMakeMove();
-            // logs branch evaluation data
-            std::cout << "column: " + to_string(move % 7) << " score: " + to_string(score) << std::endl;
-            // if this move is better than previous best move, it becomes the new best move
-            if (score < minScore){
-                minScore = score;
-                betsMove = move;
-            }
-        }
-
-        // logs data about this search
-        std::cout << to_string(betsMove % 7) << ":"
-                  << leafNodes << "l:"
-                  << branchNodes << "b:"
-                  << (leafNodes + branchNodes)  << "t:"
-                  << TTHits << "tth:"
-                  << to_string(minScore) << std::endl;
-
-        // returns best move
-        return betsMove;
+        return findBestMoveABMT(depth);
     }
 
     /**
@@ -112,14 +78,16 @@ namespace engine {
             switch (baseLevel) {
                 case MINI_MAX:
                     score = miniMax(depth - 1);
-                    std::cout << leafNodes << std::endl;
-                    leafNodes = 0;
                     break;
                 case ALPHA_BETA_SIMPLE:
                     score = alphaBetaSimple(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
                     break;
                 case ALPHA_BETA:
                     score = alphaBeta(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
+                    std::cout << leafNodes << "   " << branchNodes << "   " << TTHits << std::endl;
+                    leafNodes = 0;
+                    branchNodes = 0;
+                    TTHits = 0;
                     break;
                 default:
                     throw std::invalid_argument("Base level not supported!");
@@ -194,79 +162,13 @@ namespace engine {
     }
 
     /**
-     * Finds best move using alphaBeta and utilizing multithreading
-     *
-     * @param depth Depth of the search
-     * @return reruns best move
-     */
-    int Search::findBestMoveABMT(int depth) {
-        // rests counters used for data collection
-        this->leafNodes = 0;
-        this->branchNodes = 0;
-        this->TTHits = 0;
-
-        vector<thread> threads;
-
-        // finds the best move from the generated moves
-        for (int& move : MoveGenerator::generateMoves(position)){
-            // evaluates this move
-            position.makeMove(move);
-            threads.emplace_back(thread(searchAlphaBetaTask, ref(*this), position, move, depth - 1));
-            position.unMakeMove();
-        }
-
-        // waits for all the threads to finish
-        for (thread& thread : threads){
-            thread.join();
-        }
-
-        // at the binning there is no best move, hence score is greater than wining score
-        int minScore = EVAL_INFINITY + 100;
-        int betsMove = -1;
-
-        for ( auto [key, value]: results ) {
-            if (value > minScore){
-                minScore = value;
-                betsMove = key;
-            }
-        }
-
-        // logs data about this search
-        std::cout << to_string(betsMove % 7) << ":"
-                  << leafNodes << "l:"
-                  << branchNodes << "b:"
-                  << (leafNodes + branchNodes)  << "t:"
-                  << TTHits << "tth:"
-                  << to_string(minScore) << std::endl;
-
-        // returns best move
-        return betsMove;
-    }
-
-    /**
-     * Starts a search and saves the result, can by used to spawn multiple threads
-     *
-     * @param search Reference to initial search
-     * @param lPosition Copy of the position
-     * @param id Id for which to associate the result
-     * @param depth Depth of the search
-     */
-    void Search::searchAlphaBetaTask(Search& search, Position lPosition, int id, int depth) {
-        search.results.insert({id, alphaBetaStatic(-EVAL_INFINITY, EVAL_INFINITY, lPosition, search.transpositionTable, depth, search, id)});
-    }
-
-    /**
      * Finds best move using minimax and utilizing multithreading
      *
      * @param depth Depth of the search
      * @return reruns best move
      */
     int Search::findBestMoveMMMT(int depth) {
-        // rests counters used for data collection
-        this->leafNodes = 0;
-        this->branchNodes = 0;
-        this->TTHits = 0;
-
+        // stores threads
         vector<thread> threads;
 
         // finds the best move from the generated moves
@@ -287,20 +189,71 @@ namespace engine {
         int betsMove = -1;
 
         for ( auto [key, value]: results ) {
-            std::cout << to_string(leafCounts[key]) << "   " << key << std::endl;
+            std::cout
+                    << to_string(leafCounts[key])
+                    << "   "
+                    << to_string(branchCounts[key])
+                    << "   "
+                    << to_string(TTCounts[key])
+                    << "   "
+                    << to_string(value)
+                    << "   "
+                    << key
+                    << std::endl;
             if (value < minScore){
                 minScore = value;
                 betsMove = key;
             }
         }
 
-        // logs data about this search
-        std::cout << to_string(betsMove % 7) << ":"
-                  << leafNodes << "l:"
-                  << branchNodes << "b:"
-                  << (leafNodes + branchNodes)  << "t:"
-                  << TTHits << "tth:"
-                  << to_string(minScore) << std::endl;
+        // returns best move
+        return betsMove;
+    }
+
+    /**
+     * Finds best move using alphaBeta and utilizing multithreading
+     *
+     * @param depth Depth of the search
+     * @return reruns best move
+     */
+    int Search::findBestMoveABMT(int depth) {
+        // stores threads
+        vector<thread> threads;
+
+        // finds the best move from the generated moves
+        for (int& move : MoveGenerator::generateMoves(position)){
+            // evaluates this move
+            position.makeMove(move);
+            threads.emplace_back(thread(searchAlphaBetaTask, ref(*this), position, move, depth - 1));
+            position.unMakeMove();
+        }
+
+        // waits for all the threads to finish
+        for (thread& thread : threads){
+            thread.join();
+        }
+
+        // at the binning there is no best move, hence score is greater than wining score
+        int minScore = EVAL_INFINITY + 100;
+        int betsMove = -1;
+
+        for ( auto [key, value]: results ) {
+            std::cout
+                    << to_string(leafCounts[key])
+                    << "   "
+                    << to_string(branchCounts[key])
+                    << "   "
+                    << to_string(TTCounts[key])
+                    << "   "
+                    << to_string(value)
+                    << "   "
+                    << key
+                    << std::endl;
+            if (value < minScore){
+                minScore = value;
+                betsMove = key;
+            }
+        }
 
         // returns best move
         return betsMove;
@@ -316,6 +269,18 @@ namespace engine {
      */
     void Search::searchMiniMaxTask(engine::Search &search, engine::Position lPosition, int id, int depth) {
         search.results.insert({id, miniMaxStatic(depth, search, lPosition, id)});
+    }
+
+    /**
+     * Starts a search and saves the result, can by used to spawn multiple threads
+     *
+     * @param search Reference to initial search
+     * @param lPosition Copy of the position
+     * @param id Id for which to associate the result
+     * @param depth Depth of the search
+     */
+    void Search::searchAlphaBetaTask(Search& search, Position lPosition, int id, int depth) {
+        search.results.insert({id, alphaBetaStatic(-EVAL_INFINITY, EVAL_INFINITY, lPosition, search.transpositionTable, depth, search, id)});
     }
 
 #pragma region Algorythms

@@ -27,12 +27,12 @@ namespace engine {
     private:
         int alphaBeta(int alpha, int beta, int depthLeft);
         int alphaBetaSimple(int alpha, int beta, int depthLeft);
-        static int alphaBetaStatic(int alpha, int beta, Position& position, TranspositionTable& tt, int depthLeft, Search& search);
-        static void searchAlphaBetaTask(Search& search, Position lPosition, int move, int depth);
+        static int alphaBetaStatic(int alpha, int beta, Position& position, TranspositionTable& tt, int depthLeft, Search& search, int id);
+        static void searchAlphaBetaTask(Search& search, Position lPosition, int id, int depth);
 
         int miniMax(int depthLeft);
-        static int miniMaxStatic(int depthLeft, Search& search, Position& lPosition);
-        static void searchMiniMaxTask(Search& search, Position lPosition, int move, int depth);
+        static int miniMaxStatic(int depthLeft, Search& search, Position& lPosition, int id);
+        static void searchMiniMaxTask(Search& search, Position lPosition, int id, int depth);
 
         Position& position;
         TranspositionTable& transpositionTable;
@@ -41,7 +41,9 @@ namespace engine {
         int TTHits;
 
         map<int, int> results;
-        map<int, int> nodeCount;
+        map<int, int> leafCounts;
+        map<int, int> branchCounts;
+        map<int, int> TTCounts;
     };
 
 } // engine

@@ -9,26 +9,28 @@ namespace engine {
 
     typedef unsigned long long ulong;
     typedef unsigned int uint;
+    typedef signed char byte;
 
-    enum GameState : int{
+    enum GameState : byte {
         YELLOW_WON = 0,
         RED_WON = 1,
         ON_GOING = 2,
         DRAW = 3
     };
 
-    enum Player : int {
+    enum Player : byte {
         YELLOW = 0,
         RED = 1
     };
 
-    enum NodeType : int {
+    enum NodeType : byte {
         EXACT = 0,
         LOWER_BOUND = 1,
-        UPPER_BOUND = 2
+        UPPER_BOUND = 2,
+        END = 4
     };
 
-    enum BaseLevel : int {
+    enum BaseLevel : byte {
         MINI_MAX = 0,
         ALPHA_BETA = 1,
         ALPHA_BETA_SIMPLE = 2,

@@ -84,10 +84,6 @@ namespace engine {
                     break;
                 case ALPHA_BETA:
                     score = alphaBeta(-EVAL_INFINITY, EVAL_INFINITY, depth - 1);
-                    std::cout << leafNodes << "   " << branchNodes << "   " << TTHits << std::endl;
-                    leafNodes = 0;
-                    branchNodes = 0;
-                    TTHits = 0;
                     break;
                 default:
                     throw std::invalid_argument("Base level not supported!");

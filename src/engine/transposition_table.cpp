@@ -15,9 +15,9 @@ namespace engine {
      *
      * @param tableSize Size of the table in entries
      */
-    TranspositionTable::TranspositionTable(uint tableSize) {
-        std::cout << sizeof(TTEntry) << std::endl;
-        this->tableSize = (uint)tableSize;
+    TranspositionTable::TranspositionTable(uint tableSizeInEntries) {
+        std::cout << tableSizeInEntries << std::endl;
+        this->tableSize = (uint)tableSizeInEntries;
         this->writes = 0;
         this->table = new TTEntry[tableSize];
         clear();

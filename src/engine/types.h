@@ -7,7 +7,7 @@
 
 namespace engine {
 
-    typedef unsigned long long ulong;
+    typedef unsigned long long int ulong;
     typedef unsigned int uint;
     typedef signed char byte;
 

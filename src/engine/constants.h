@@ -8,7 +8,7 @@
 #include "types.h"
 
 namespace engine{
-    #define EVAL_INFINITY 9999999
+    #define EVAL_INFINITY 9999
     #define DEBRUIJN64 (ulong)0x03f79d71b4cb0a89
     #define TEST_TT_SIZE 999983
 }

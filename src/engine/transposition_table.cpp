@@ -2,6 +2,8 @@
 // Created by kubaa on 22/11/2022.
 //
 
+#include <iostream>
+#include "constants.h"
 #include "transposition_table.h"
 #include "types.h"
 
@@ -14,10 +16,22 @@ namespace engine {
      * @param tableSize Size of the table in entries
      */
     TranspositionTable::TranspositionTable(uint tableSize) {
+        std::cout << sizeof(TTEntry) << std::endl;
         this->tableSize = (uint)tableSize;
         this->writes = 0;
         this->table = new TTEntry[tableSize];
         clear();
+    }
+
+    /**
+     * Calculates the max amount of entries that the translation table
+     * can store while not exceeding the specified memory size;
+     *
+     * @param maxTableSizeInMb How much space will be allocated to the transportation table in MB
+     * @return How many entries can be stored while remaining under specified memory size
+     */
+    int TranspositionTable::calculateTableCapacity(int maxTableSizeInMb) {
+        return (int)((maxTableSizeInMb / sizeof(TTEntry)) * BYTES_IN_MB);
     }
 
     /**
@@ -88,7 +102,7 @@ namespace engine {
      * @param depth Depth of the search with was conducted to find the eval
      * @param eval Evaluation found from the search
      */
-    void TranspositionTable::save(ulong hash, int depth, int eval) {
+    void TranspositionTable::save(ulong hash, byte depth, short eval) {
         writes++;
         this->table[this->getHashIndex(hash)].hash = hash;
         this->table[this->getHashIndex(hash)].depth = depth;
@@ -103,7 +117,7 @@ namespace engine {
      * @param eval Evaluation found from the search
      * @param nodeType Node type of the position
      */
-     void TranspositionTable::save(ulong hash, int depth, int eval, int move, NodeType nodeType) {
+     void TranspositionTable::save(ulong hash, byte depth, short eval, byte move, NodeType nodeType) {
         writes++;
         this->table[this->getHashIndex(hash)].hash = hash;
         this->table[this->getHashIndex(hash)].depth = depth;

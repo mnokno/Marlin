@@ -12,25 +12,26 @@ namespace engine {
     struct TTEntry {
     public:
         [[nodiscard]] ulong getHash() const {return this->hash;}
-        [[nodiscard]] int getDepth() const {return this->depth;}
-        [[nodiscard]] int getEval() const {return this->eval;}
-        [[nodiscard]] int getMove() const {return this->move;}
+        [[nodiscard]] byte getDepth() const {return this->depth;}
+        [[nodiscard]] short getEval() const {return this->eval;}
+        [[nodiscard]] byte getMove() const {return this->move;}
     private:
         friend class TranspositionTable;
         ulong hash;
-        int depth;
-        int eval;
-        int move;
+        byte depth;
+        short eval;
+        byte move;
         NodeType nodeType;
     };
 
     class TranspositionTable {
     public:
         [[nodiscard]] explicit TranspositionTable(uint tableSize);
+        [[nodiscard]] static int calculateTableCapacity(int maxTableSizeInMb);
         [[nodiscard]] TTEntry probe(ulong hash, bool& found);
         [[nodiscard]] TTEntry probe(ulong hash, bool& found, int alpha, int beta);
-        void save(ulong hash, int depth, int eval);
-        void save(ulong hash, int depth, int eval, int move, NodeType nodeType);
+        void save(ulong hash, byte depth, short eval);
+        void save(ulong hash, byte depth, short eval, byte move, NodeType nodeType);
         void clear() const;
         TTEntry* table;
     private:

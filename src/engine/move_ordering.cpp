@@ -18,6 +18,7 @@ namespace engine {
 
         // sorts the moves according to scores
         bobbleSort(moves, scores, size);
+        delete [] scores;
     }
 
 
@@ -38,6 +39,7 @@ namespace engine {
 
         // sorts the moves according to scores
         bobbleSort(moves, scores, size);
+        delete [] scores;
     }
 
     void MoveOrdering::orderMove(int *&moves, int size, Position &position, int previousBestMove) {
@@ -54,6 +56,7 @@ namespace engine {
 
         // sorts the moves according to scores
         bobbleSort(moves, scores, size);
+        delete [] scores;
     }
 
     void MoveOrdering::bobbleSort(int *&moves, int *&scores, int size) {

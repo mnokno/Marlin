@@ -363,7 +363,7 @@ namespace engine {
 
         // checks if we have a transpositionTable match
         bool hit;
-        TTEntry entry = this->transpositionTable.probe(this->position.getHash(), hit, alpha, beta);
+        TTEntry entry = this->transpositionTable.probe(this->position.getHash(), depthLeft, hit, alpha, beta);
         // entry.getDepth() == depthLeft, has a high chance to catch a key collision
         if (hit && entry.getDepth() == depthLeft){
             this->TTHits++;
@@ -462,9 +462,8 @@ namespace engine {
 
         // checks if we have a transpositionTable match
         bool hit;
-        TTEntry entry = tt.probe(position.getHash(), hit, alpha, beta);
-        //// entry.getDepth() == depthLeft, has a high chance to catch a key collision
-        if (hit && entry.getDepth() == depthLeft){
+        TTEntry entry = tt.probe(position.getHash(), depthLeft, hit, alpha, beta);
+        if (hit) {
             search.TTCounts[id]++;
             return entry.getEval();
         }
@@ -488,6 +487,12 @@ namespace engine {
             position.makeMove(moves[i]);
             int score = -alphaBetaStatic(-beta, -alpha, position, tt, depthLeft - 1, search, id);
             position.unMakeMove();
+            // this move is wining for the current player, we cant do better than this, hence this
+            // depth evaluation can be used for gather depths when fetching data from transition table
+            if (score == EVAL_INFINITY){
+                tt.save(position.getHash(), depthLeft, beta, moves[i], END);
+                return beta;
+            }
             if(score >= beta){
                 tt.save(position.getHash(), depthLeft, beta, moves[i], LOWER_BOUND);
                 return beta;   //  fail hard beta-cutoff

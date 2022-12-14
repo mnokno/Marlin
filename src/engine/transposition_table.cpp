@@ -69,27 +69,33 @@ namespace engine {
      * @param beta Beta value
      * @return The entry associated with the hash
      */
-    TTEntry TranspositionTable::probe(ulong hash, bool &found, int alpha, int beta) {
+    TTEntry TranspositionTable::probe(ulong hash, int depth, bool &found, int alpha, int beta) {
         if (this->table[this->getHashIndex(hash)].hash == hash){
-            // We have stored the exact evaluation for this position, so return it
-            if (this->table[this->getHashIndex(hash)].nodeType == EXACT) {
+            if (this->table[this->getHashIndex(hash)].nodeType == END){
                 found = true;
                 return this->table[this->getHashIndex(hash)];
             }
+            else if (this->table[this->getHashIndex(hash)].depth == depth){
+                // We have stored the exact evaluation for this position, so return it
+                if (this->table[this->getHashIndex(hash)].nodeType == EXACT) {
+                    found = true;
+                    return this->table[this->getHashIndex(hash)];
+                }
 
-            // We have stored the upper bound of the eval for this position. If it's less than alpha then we don't need to
-            // search the moves in this position as they won't interest us; otherwise we will have to search to find the exact value
-            if (this->table[this->getHashIndex(hash)].nodeType == UPPER_BOUND &&
-                        this->table[this->getHashIndex(hash)].eval <= alpha) {
-                found = true;
-                return this->table[this->getHashIndex(hash)];
-            }
+                // We have stored the upper bound of the eval for this position. If it's less than alpha then we don't need to
+                // search the moves in this position as they won't interest us; otherwise we will have to search to find the exact value
+                if (this->table[this->getHashIndex(hash)].nodeType == UPPER_BOUND &&
+                    this->table[this->getHashIndex(hash)].eval <= alpha) {
+                    found = true;
+                    return this->table[this->getHashIndex(hash)];
+                }
 
-            // We have stored the lower bound of the eval for this position. Only return if it causes a beta cut-off.
-            if (this->table[this->getHashIndex(hash)].nodeType == LOWER_BOUND &&
-                     this->table[this->getHashIndex(hash)].eval >= beta) {
-                found = true;
-                return this->table[this->getHashIndex(hash)];
+                // We have stored the lower bound of the eval for this position. Only return if it causes a beta cut-off.
+                if (this->table[this->getHashIndex(hash)].nodeType == LOWER_BOUND &&
+                    this->table[this->getHashIndex(hash)].eval >= beta) {
+                    found = true;
+                    return this->table[this->getHashIndex(hash)];
+                }
             }
         }
         found = false;

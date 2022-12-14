@@ -107,3 +107,8 @@ TEST_F(SearchTest, MiniMaxTest) {
 TEST_F(SearchTest, AlphaBetaTest) {
     validateLevel(engine::MINI_MAX, engine::ALPHA_BETA, 7);
 }
+
+
+TEST_F(SearchTest, MultiThreading) {
+    validateLevel(engine::ALPHA_BETA, engine::ALPHA_BETA_MT, 14);
+}

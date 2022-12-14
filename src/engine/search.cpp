@@ -54,14 +54,6 @@ namespace engine {
      * @return reruns best move
      */
     int Search::findBestMoveBaseTest(int depth, BaseLevel baseLevel) {
-        //if (baseLevel == ALPHA_BETA_MT){
-        //    return findBestMoveMT(depth);
-        //}
-        //// is PD (progressing deepening) enabled so different method needs to be used.
-        //if (baseLevel == ALPHA_BETA_TT_MO_PD){
-        //    return findBestMoveProgressiveTest(depth, baseLevel);
-        //}
-
         // rests counters used for data collection
         this->leafNodes = 0;
         this->branchNodes = 0;
@@ -70,6 +62,11 @@ namespace engine {
         // at the binning there is no best move, hence score is greater than wining score
         int minScore = EVAL_INFINITY + 100;
         int betsMove = -1;
+
+        if (baseLevel == ALPHA_BETA_MT){
+            transpositionTable.clear();
+            return findBestMoveABMT(depth);
+        }
 
         for (int& move : MoveGenerator::generateMoves(position)){
             int score;
@@ -89,9 +86,9 @@ namespace engine {
                     throw std::invalid_argument("Base level not supported!");
             }
             position.unMakeMove();
-
+            //std::cout << "M:" << move << " S:" << score << std::endl;
             // if this move is better than previous best move, it becomes the new best move
-            if (score < minScore){
+            if (score < minScore || (score == minScore && move < betsMove)){
                 minScore = score;
                 betsMove = move;
             }
@@ -133,11 +130,14 @@ namespace engine {
     int Search::findBestMoveMMMT(int depth) {
         // stores threads
         vector<thread> threads;
+        // stores results
+        results.clear();
 
         // finds the best move from the generated moves
         for (int& move : MoveGenerator::generateMoves(position)){
             // evaluates this move
             position.makeMove(move);
+            std::cout << "Spawning thread for move " << move << std::endl;
             threads.emplace_back(thread(searchMiniMaxTask, ref(*this), position, move, depth - 1));
             position.unMakeMove();
         }
@@ -152,17 +152,18 @@ namespace engine {
         int betsMove = -1;
 
         for ( auto [key, value]: results ) {
-            std::cout
-                    << to_string(leafCounts[key])
-                    << "   "
-                    << to_string(branchCounts[key])
-                    << "   "
-                    << to_string(TTCounts[key])
-                    << "   "
-                    << to_string(value)
-                    << "   "
-                    << key
-                    << std::endl;
+            //std::cout
+            //        << "LC:"
+            //        << to_string(leafCounts[key])
+            //        << "   BC:"
+            //        << to_string(branchCounts[key])
+            //        << "   TTC:"
+            //        << to_string(TTCounts[key])
+            //        << "   EVAL:"
+            //        << to_string(value)
+            //        << "   KEY:"
+            //        << key
+            //        << std::endl;
             if (value < minScore){
                 minScore = value;
                 betsMove = key;
@@ -182,6 +183,8 @@ namespace engine {
     int Search::findBestMoveABMT(int depth) {
         // stores threads
         vector<thread> threads;
+        // stores results
+        results.clear();
 
         // finds the best move from the generated moves
         for (int& move : MoveGenerator::generateMoves(position)){
@@ -201,17 +204,18 @@ namespace engine {
         int betsMove = -1;
 
         for ( auto [key, value]: results ) {
-            std::cout
-                    << to_string(leafCounts[key])
-                    << "   "
-                    << to_string(branchCounts[key])
-                    << "   "
-                    << to_string(TTCounts[key])
-                    << "   "
-                    << to_string(value)
-                    << "   "
-                    << key
-                    << std::endl;
+            //std::cout
+            //        << "LC:"
+            //        << to_string(leafCounts[key])
+            //        << "   BC:"
+            //        << to_string(branchCounts[key])
+            //        << "   TTC:"
+            //        << to_string(TTCounts[key])
+            //        << "   EVAL:"
+            //        << to_string(value)
+            //        << "   KEY:"
+            //        << key
+            //        << std::endl;
             if (value < minScore){
                 minScore = value;
                 betsMove = key;

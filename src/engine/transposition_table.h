@@ -32,7 +32,7 @@ namespace engine {
         [[nodiscard]] TTEntry probe(ulong hash, int depth, bool& found, int alpha, int beta);
         void save(ulong hash, byte depth, short eval);
         void save(ulong hash, byte depth, short eval, byte move, NodeType nodeType);
-        void clear() const;
+        void clear();
         TTEntry* table;
     private:
         [[nodiscard]] uint getHashIndex(ulong hash) const;

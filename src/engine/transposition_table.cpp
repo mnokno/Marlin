@@ -71,7 +71,7 @@ namespace engine {
      */
     TTEntry TranspositionTable::probe(ulong hash, int depth, bool &found, int alpha, int beta) {
         if (this->table[this->getHashIndex(hash)].hash == hash){
-            if (this->table[this->getHashIndex(hash)].nodeType == END){
+            if (this->table[this->getHashIndex(hash)].nodeType == END && false){
                 found = true;
                 return this->table[this->getHashIndex(hash)];
             }
@@ -135,11 +135,14 @@ namespace engine {
     /**
      * Clears the transposition table
      */
-    void TranspositionTable::clear() const {
+    void TranspositionTable::clear() {
+        writes = 0;
         for (int i = 0; i < this->tableSize; i++) {
             this->table[i].hash = (ulong)0;
             this->table[i].depth = (int)0;
             this->table[i].eval = (int)0;
+            this->table[i].move = -1;
+            this->table[i].nodeType = EMPTY;
         }
     }
 

@@ -27,7 +27,8 @@ namespace engine {
         EXACT = 0,
         LOWER_BOUND = 1,
         UPPER_BOUND = 2,
-        END = 4
+        END = 4,
+        EMPTY = 5
     };
 
     enum BaseLevel : byte {

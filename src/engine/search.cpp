@@ -108,50 +108,17 @@ namespace engine {
      * @param baseLevel Algorithm to be used for search.
      * @return best move.
      */
-    int Search::findBestMoveProgressiveTest(int depth, BaseLevel baseLevel){
-        // rests counters used for data collection
-        this->leafNodes = 0;
-        this->branchNodes = 0;
-        this->TTHits = 0;
-        // initial there is no best move
+    int Search::findBestMoveABPD(int depth){
         int bestMove = -1;
 
-        for (int cDepth = 1; cDepth <= depth; cDepth++){
-            // at the binning there is no best move, hence score is greater than wining score
-            int minScore = EVAL_INFINITY + 100;
-            int iterationBetsMove = -1;
-
-            // generate and orders moves
-            list<int> moveList = MoveGenerator::generateMoves(this->position);
-            int arr[moveList.size()];
-            std::copy(moveList.begin(), moveList.end(), arr);
-            int* moves = arr;
-            MoveOrdering::orderMove(moves, moveList.size(), this->position, bestMove);
-
-            for (int i = 0; i < moveList.size(); i++){
-                int score;
-                // evaluates this move using the specified base level algorithm
-                position.makeMove(moves[i]);
-                switch (baseLevel) {
-                    case ALPHA_BETA_TT_MO_PD:
-                        score = alphaBeta(-EVAL_INFINITY, EVAL_INFINITY, cDepth - 1);
-                        break;
-                    default:
-                        throw std::invalid_argument("Base level not supported!");
-                }
-                position.unMakeMove();
-
-                // if this move is better than previous best move, it becomes the new best move
-                if (score < minScore){
-                    minScore = score;
-                    iterationBetsMove = moves[i];
-                }
-            }
-
-            // sets best move to the best move from this iteration (it's always the iteration from the highest depth)
-            bestMove = iterationBetsMove;
+        for (int i = 1; i < depth + 1; i++){
+            leafCounts.clear();
+            branchCounts.clear();
+            TTCounts.clear();
+            transpositionTable.clear();
+            std::cout << std::endl;
+            bestMove = findBestMoveABMT(i);
         }
-
 
         // returns best move
         return bestMove;

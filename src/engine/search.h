@@ -17,7 +17,7 @@ namespace engine {
         explicit Search(Position &position, TranspositionTable &transpositionTable);
         int findBestMove(int depth);
         int findBestMoveBaseTest(int depth, BaseLevel baseLevel);
-        int findBestMoveProgressiveTest(int depth, BaseLevel baseLevel);
+        int findBestMoveABPD(int depth);
         int findBestMoveABMT(int depth);
         int findBestMoveMMMT(int depth);
 

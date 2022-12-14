@@ -16,7 +16,7 @@ namespace engine {
      * @param tableSize Size of the table in entries
      */
     TranspositionTable::TranspositionTable(uint tableSizeInEntries) {
-        std::cout << tableSizeInEntries << std::endl;
+        std::cout << "Created new TT table Allocated entries: " << tableSizeInEntries << " In memory size: " << tableSizeInEntries * sizeof(TTEntry) / 1000000000 << "GB" <<std::endl;
         this->tableSize = (uint)tableSizeInEntries;
         this->writes = 0;
         this->table = new TTEntry[tableSize];

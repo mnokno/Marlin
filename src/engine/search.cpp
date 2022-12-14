@@ -137,7 +137,6 @@ namespace engine {
         for (int& move : MoveGenerator::generateMoves(position)){
             // evaluates this move
             position.makeMove(move);
-            std::cout << "Spawning thread for move " << move << std::endl;
             threads.emplace_back(thread(searchMiniMaxTask, ref(*this), position, move, depth - 1));
             position.unMakeMove();
         }

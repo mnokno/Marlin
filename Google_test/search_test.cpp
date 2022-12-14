@@ -39,14 +39,14 @@ protected:
         for (int i = 1; i <= upToDepth; i++){
             // calculates test data
             Position tPosition = *new Position();
-            TranspositionTable ttt = *new TranspositionTable(TEST_TT_SIZE);
+            TranspositionTable ttt = *new TranspositionTable(TranspositionTable::calculateTableCapacity(2500));
             Search tSearch = *new Search(tPosition, ttt);
             list<int> tMoves = *new list<int>();
             calculateGameData(i, testLevel, tPosition, tSearch, tMoves);
 
             // calculates validation data
             Position vPosition = *new Position();
-            TranspositionTable vtt = *new TranspositionTable(TEST_TT_SIZE);
+            TranspositionTable vtt = *new TranspositionTable(TranspositionTable::calculateTableCapacity(2500));
             Search vSearch = *new Search(vPosition, vtt);
             list<int> vMoves = *new list<int>();
             calculateGameData(i, validationLevel, vPosition, vSearch, vMoves);

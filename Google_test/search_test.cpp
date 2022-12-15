@@ -57,6 +57,9 @@ protected:
                 tMoves.pop_front();
                 vMoves.pop_front();
             }
+
+            delete ttt.table;
+            delete vtt.table;
         }
     }
 
@@ -109,6 +112,14 @@ TEST_F(SearchTest, AlphaBetaTest) {
 }
 
 
-TEST_F(SearchTest, MultiThreading) {
-    validateLevel(engine::ALPHA_BETA, engine::ALPHA_BETA_MT, 14);
+TEST_F(SearchTest, MultiThreadingTest) {
+    validateLevel(engine::ALPHA_BETA, engine::ALPHA_BETA_MT, 8);
+}
+
+TEST_F(SearchTest, ProgressiveDeepningTest) {
+    validateLevel(engine::ALPHA_BETA_MT, engine::ALPHA_BETA_PD, 12);
+}
+
+TEST_F(SearchTest, SpeedTest) {
+    validateLevel(engine::ALPHA_BETA_PD, engine::ALPHA_BETA_PD, 8);
 }

@@ -64,8 +64,10 @@ namespace engine {
         int betsMove = -1;
 
         if (baseLevel == ALPHA_BETA_MT){
-            transpositionTable.clear();
             return findBestMoveABMT(depth);
+        }
+        else if (baseLevel == ALPHA_BETA_PD){
+            return findBestMoveABPD(depth);
         }
 
         for (int& move : MoveGenerator::generateMoves(position)){
@@ -109,11 +111,7 @@ namespace engine {
         int bestMove = -1;
 
         for (int i = 1; i < depth + 1; i++){
-            leafCounts.clear();
-            branchCounts.clear();
-            TTCounts.clear();
-            transpositionTable.clear();
-            std::cout << std::endl;
+            //transpositionTable.clear();
             bestMove = findBestMoveABMT(i);
         }
 

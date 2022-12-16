@@ -53,7 +53,10 @@ namespace engine {
      * @return Returns the best found move
      */
     int Search::findBestMoveIn(int milliseconds) {
-
+        thread waitThread = thread(abortAfter, ref(*this), milliseconds);
+        thread searchThread = thread(timedSearchTask, ref(*this));
+        waitThread.join();
+        return currentBestMove;
     }
 
     /**
@@ -261,6 +264,18 @@ namespace engine {
         search.results.insert({id, alphaBetaStatic(-EVAL_INFINITY, EVAL_INFINITY, lPosition, search.transpositionTable, depth, search, id)});
     }
 
+    void Search::timedSearchTask(Search &search) {
+        int currentDepth = 1;
+        while (!search.abort){
+            int newBest = search.findBestMoveABMT(currentDepth);
+            // we check if the eval is valid
+            if (!search.abort){
+                search.currentBestMove = newBest;
+            }
+            currentDepth++;
+        }
+    }
+
 #pragma region Algorythms
 
     /**
@@ -436,6 +451,10 @@ namespace engine {
      * @return the score of the move
      */
     int Search::alphaBetaStatic(int alpha, int beta, Position &position, TranspositionTable &tt, int depthLeft, Search& search, int id) {
+        if (search.abort){
+            return 0;
+        }
+
         // if the target depth was reach or the game is over, return the static evaluation of the position
         if(depthLeft == 0 || position.getGameState() != GameState::ON_GOING) {
             search.leafCounts[id]++;

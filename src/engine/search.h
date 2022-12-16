@@ -16,6 +16,7 @@ namespace engine {
     public:
         explicit Search(Position &position, TranspositionTable &transpositionTable);
         int findBestMove(int depth);
+        int findBestMoveIn(int milliseconds);
         int findBestMoveBaseTest(int depth, BaseLevel baseLevel);
         int findBestMoveABPD(int depth);
         int findBestMoveABMT(int depth);
@@ -34,6 +35,8 @@ namespace engine {
         static int miniMaxStatic(int depthLeft, Search& search, Position& lPosition, int id);
         static void searchMiniMaxTask(Search& search, Position lPosition, int id, int depth);
 
+        static void abortAfter(Search& search, int milliseconds);
+
         Position& position;
         TranspositionTable& transpositionTable;
         int leafNodes;
@@ -44,6 +47,8 @@ namespace engine {
         map<int, int> leafCounts;
         map<int, int> branchCounts;
         map<int, int> TTCounts;
+        int currentBestMove;
+        bool abort;
     };
 
 } // engine

@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <thread>
+#include <unistd.h>
 #include "search.h"
 #include "constants.h"
 #include "evaluation.h"
@@ -27,6 +28,7 @@ namespace engine {
         this->leafNodes = 0;
         this->branchNodes = 0;
         this->TTHits = 0;
+        this->abort = false;
 
         this->results = map<int, int>();
         this->leafCounts = map<int, int>();
@@ -38,9 +40,20 @@ namespace engine {
      * Current best implementation fo the search algorithm.
      *
      * @param depth Depth of the search
+     * @return Returns the best found move at the specified depth
      */
     int Search::findBestMove(int depth) {
         return findBestMoveABMT(depth);
+    }
+
+    /**
+     * Find bet move in the given amount of time
+     *
+     * @param milliseconds How much time the function will have to find the best move in milliseconds
+     * @return Returns the best found move
+     */
+    int Search::findBestMoveIn(int milliseconds) {
+
     }
 
     /**
@@ -113,6 +126,7 @@ namespace engine {
         for (int i = 1; i < depth + 1; i++){
             //transpositionTable.clear();
             bestMove = findBestMoveABMT(i);
+            this->currentBestMove = bestMove;
         }
 
         // returns best move
@@ -480,6 +494,15 @@ namespace engine {
     }
 
 #pragma endregion Algorythms
+
+#pragma region Other
+
+    void Search::abortAfter(Search &search, int milliseconds) {
+        usleep(milliseconds * 1000);
+        search.abort = true;
+    }
+
+#pragma endregion
 
 #pragma region Getters
 

@@ -22,12 +22,12 @@ namespace testers {
         TranspositionTable tt = *new TranspositionTable(TranspositionTable::calculateTableCapacity(5000));
         Search search = *new Search(position, tt);
         while (this->position.getGameState() == GameState::ON_GOING){
-            position.makeMove(search.findBestMove(depthFirstAI));
+            position.makeMove(search.findBestMoveIn(15000));
             cout << TesterUtility::formatPosition(this->position) << endl;
             if (position.getGameState() != GameState::ON_GOING){
                 break;
             }
-            position.makeMove(search.findBestMove(depthSecondAI));
+            position.makeMove(search.findBestMoveIn(15000));
             cout << TesterUtility::formatPosition(this->position) << endl;
         }
 

@@ -20,7 +20,7 @@ namespace testers {
 
     void ConsoleHvCTester::startGame(bool humanFirst, int depth) {
         // plays out the game
-        TranspositionTable transpositionTable = *new TranspositionTable(TEST_TT_SIZE);
+        TranspositionTable transpositionTable = *new TranspositionTable(TranspositionTable::calculateTableCapacity(5000));
         Search search = *new Search(position, transpositionTable);
         if (humanFirst){
             while (this->position.getGameState() == GameState::ON_GOING){
@@ -29,12 +29,14 @@ namespace testers {
                 if (position.getGameState() != GameState::ON_GOING){
                     break;
                 }
-                position.makeMove(search.findBestMove(depth));
+                std::cout << "C1" << std::endl;
+                position.makeMove(search.findBestMoveIn(5000));
+                std::cout << "C2" << std::endl;
             }
         }
         else{
             while (this->position.getGameState() == GameState::ON_GOING){
-                position.makeMove(search.findBestMove(depth));
+                position.makeMove(search.findBestMoveIn(5000));
                 if (position.getGameState() != GameState::ON_GOING){
                     break;
                 }

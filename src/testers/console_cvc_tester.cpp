@@ -19,7 +19,8 @@ namespace testers {
 
     void ConsoleCvCTester::startGame(int depthFirstAI, int depthSecondAI) {
         // plays out the game
-        Search search = *new Search(position);
+        TranspositionTable tt = *new TranspositionTable(TranspositionTable::calculateTableCapacity(5000));
+        Search search = *new Search(position, tt);
         while (this->position.getGameState() == GameState::ON_GOING){
             position.makeMove(search.findBestMove(depthFirstAI));
             cout << TesterUtility::formatPosition(this->position) << endl;

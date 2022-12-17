@@ -53,9 +53,13 @@ namespace engine {
      * @return Returns the best found move
      */
     int Search::findBestMoveIn(int milliseconds) {
+        this->abort = false;
         thread waitThread = thread(abortAfter, ref(*this), milliseconds);
         thread searchThread = thread(timedSearchTask, ref(*this));
+        std::cout << "HERE 3" << std::endl;
         waitThread.join();
+        searchThread.join();
+        std::cout << "HERE 2" << std::endl;
         return currentBestMove;
     }
 
@@ -266,14 +270,18 @@ namespace engine {
 
     void Search::timedSearchTask(Search &search) {
         int currentDepth = 1;
+        std::cout << "Calculated depths: ";
         while (!search.abort){
             int newBest = search.findBestMoveABMT(currentDepth);
             // we check if the eval is valid
             if (!search.abort){
                 search.currentBestMove = newBest;
+                std::cout << currentDepth << ":" << search.currentBestMove << " ";
             }
             currentDepth++;
         }
+        std::cout << std::endl;
+        std::cout << "HERE 4" << std::endl;
     }
 
 #pragma region Algorythms
@@ -518,7 +526,9 @@ namespace engine {
 
     void Search::abortAfter(Search &search, int milliseconds) {
         usleep(milliseconds * 1000);
+        std::cout << "HERE 1" << std::endl;
         search.abort = true;
+        std::cout << "HERE 11" << std::endl;
     }
 
 #pragma endregion

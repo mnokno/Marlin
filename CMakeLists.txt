@@ -4,8 +4,19 @@ project(Marlin)
 set(CMAKE_CXX_STANDARD 23)
 add_subdirectory(Google_test src)
 
+# defines group of source files
+file(GLOB engine_SOURCES
+        "src/engine/*.h"
+        "src/engine/*.cpp"
+        )
+
+file(GLOB gtest_SOURCES
+        "Google_test/*.h"
+        "Google_test/*.cpp"
+        )
+
 # defines main build configuration
-add_executable(Marlin main.cpp src/engine/types.h src/engine/precalculated_data.cpp src/engine/precalculated_data.h src/engine/bitops.cpp src/engine/bitops.h src/engine/position.cpp src/engine/position.h src/engine/prng.cpp src/engine/prng.h src/engine/zobrist_hashing.cpp src/engine/zobrist_hashing.h src/engine/move_generator.cpp src/engine/move_generator.h src/engine/evaluation.cpp src/engine/evaluation.h src/engine/constants.h src/engine/search.cpp src/engine/search.h src/testers/tester_utility.h src/testers/tester_utility.cpp src/testers/console_hvc_tester.cpp src/testers/console_hvc_tester.h src/engine/transposition_table.cpp src/engine/transposition_table.h src/engine/move_ordering.cpp src/engine/move_ordering.h src/server/server.cpp src/server/server.h)
+add_executable(Marlin main.cpp ${engine_SOURCES} ${gtest_SOURCES})
 
 # include directories
 include_directories(src)
@@ -16,33 +27,10 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 # 'Google_Tests_run' is the target name
 # 'test1.cpp tests2.cpp' are source files with tests
 add_executable(Google_Tests_run
-        Google_test/precalculated_data_test.cpp
-        src/engine/types.h
-        src/engine/precalculated_data.h
-        src/engine/precalculated_data.cpp
-        src/engine/bitops.h
-        src/engine/bitops.cpp
-        Google_test/bitops_test.cpp
-        src/engine/position.cpp
-        src/engine/position.h
-        src/engine/prng.cpp
-        src/engine/prng.h
-        Google_test/prng_test.cpp
-        src/engine/zobrist_hashing.cpp
-        src/engine/zobrist_hashing.h
-        Google_test/zobrist_hashing_test.cpp
-        Google_test/position.cpp
-        src/engine/move_generator.cpp
-        src/engine/move_generator.h
-        Google_test/move_generator_test.cpp
-        src/engine/evaluation.cpp
-        src/engine/evaluation.h src/engine/constants.h
-        Google_test/evaluation_test.cpp
-        src/engine/search.cpp
-        src/engine/search.h
-        src/engine/transposition_table.cpp
-        src/engine/transposition_table.h
-        Google_test/search_test.cpp src/engine/move_ordering.cpp src/engine/move_ordering.h)
+        ${engine_SOURCES}
+        ${gtest_SOURCES}
+        )
+
 target_link_libraries(Google_Tests_run gtest gtest_main)
 
 # defines testers configuration for human vs human

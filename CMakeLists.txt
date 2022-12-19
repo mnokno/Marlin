@@ -19,7 +19,7 @@ file(GLOB server_SOURCES
         )
 
 # defines main build configuration
-add_executable(Marlin main.cpp ${engine_SOURCES} ${gtest_SOURCES} ${server_SOURCES})
+add_executable(Marlin main.cpp ${engine_SOURCES})
 
 # include directories
 include_directories(src)
@@ -63,4 +63,10 @@ add_executable(CvC_tester
         src/testers/console_cvc_tester.h
         src/testers/tester_utility.cpp
         src/testers/tester_utility.h
+        )
+
+# defines configuration for server
+add_executable(server
+        ${engine_SOURCES}
+        ${server_SOURCES}
         )

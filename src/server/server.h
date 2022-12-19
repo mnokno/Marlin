@@ -7,8 +7,9 @@
 
 namespace hosting {
 
-    class server {
-
+    class Server {
+    public:
+        void test();
     };
 
 } // hosting

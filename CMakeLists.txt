@@ -71,3 +71,9 @@ add_executable(server
         ${server_SOURCES}
         )
 target_link_libraries(server PRIVATE ws2_32)
+
+# defines server test configuration
+add_executable(server_test
+        src/testers/server_tester_main.cpp
+        )
+target_link_libraries(server_test PRIVATE ws2_32)

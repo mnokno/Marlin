@@ -70,3 +70,4 @@ add_executable(server
         ${engine_SOURCES}
         ${server_SOURCES}
         )
+target_link_libraries(server PRIVATE ws2_32)

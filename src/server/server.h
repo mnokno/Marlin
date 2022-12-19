@@ -9,7 +9,7 @@ namespace hosting {
 
     class Server {
     public:
-        void test();
+        int test();
     };
 
 } // hosting

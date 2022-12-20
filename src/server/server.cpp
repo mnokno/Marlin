@@ -6,9 +6,12 @@
 // https://learn.microsoft.com/en-us/windows/win32/winsock/getting-started-with-winsock
 
 #include <ws2tcpip.h>
-
 #include <iostream>
 #include "server.h"
+
+// Need to link with Ws2_32.lib
+#pragma comment (lib, "Ws2_32.lib")
+#pragma comment (lib, "Mswsock.lib")
 
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "27015"

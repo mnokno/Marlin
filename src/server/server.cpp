@@ -125,6 +125,7 @@ namespace hosting {
                 return 1;
             }
 
+            memset(recvbuf, 0, sizeof recvbuf);
         } while (iResult > 0);
 
         // shutdown the connection since we're done

@@ -135,18 +135,31 @@ namespace hosting {
                 printf("Message received: %s\n", recvbuf);
 
                 // converts the message to a map
-                map<string, string> message = stringToMap(recvbuf);
+                map<string, string> request = stringToMap(recvbuf);
+
+                string response = "ERROR";
+                if (request.contains("requestType")){
+                    if (request["requestType"] == "initialization"){
+                        if (request.contains("TTMemoryPool")){
+                            response = handleInitializeEngineRequest(stoi(request["TTMemoryPool"]));
+                        }
+                    } else if (request["requestType"] == "moveCalculation"){
+                        if (request.contains("opponentMove") && request.contains("timeLimit")) {
+                            response = handleMoveRequest(stoi(request["opponentMove"]), stoi(request["timeLimit"]));
+                        }
+                    }
+                }
 
                 // Echo the buffer back to the sender
-                iSendResult = send( ClientSocket, recvbuf, iResult, 0 );
+                iSendResult = send( ClientSocket, response.c_str(),  response.size(), 0 );
                 if (iSendResult == SOCKET_ERROR) {
                     printf("send failed with error: %d\n", WSAGetLastError());
                     closesocket(ClientSocket);
                     WSACleanup();
                     return 1;
                 }
-                printf("Bytes sent: %d\n", iSendResult);
-                printf("Message sent: %s\n", recvbuf);
+                printf("Bytes sent: %llu\n", response.size());
+                printf("Message sent: %s\n", response.c_str());
                 printf("---------------------------------\n");
             }
             else if (iResult == 0)

@@ -5,7 +5,11 @@
 // developed using recourses from
 // https://learn.microsoft.com/en-us/windows/win32/winsock/getting-started-with-winsock
 
+#include <iostream>
+#include <map>
+#include <sstream>
 #include <string>
+#include <vector>
 #include <ws2tcpip.h>
 #include <iostream>
 #include "server.h"
@@ -207,6 +211,48 @@ namespace hosting {
         this->position->makeMove(bestMove);
         // returns response
         return "exitCode:0 move:" + to_string(bestMove) + " gameStatus:" + to_string(this->position->getGameState());
+    }
+
+    /**
+     * Converts input string to a map, expected input key:value,key:value,...
+     *
+     * @param input the input string
+     * @return the string converted to a map
+     */
+    map<string, string> Server::stringToMap(const string& input) {
+        // Initialize the input string and the output map
+        map<string, string> output;
+
+        // Split the input string on the ',' character to get a list of key-value pairs
+        vector<string> pairs;
+        istringstream iss(input);
+        string pair;
+        while (getline(iss, pair, ',')) {
+            pairs.push_back(pair);
+        }
+
+        // Iterate through the list of key-value pairs and add them to the output map
+        for (const string& p : pairs) {
+            // Split the pair on the ':' character to separate the key and value
+            istringstream pairIss(p);
+            vector<string> pairParts;
+            string pairPart;
+            while (std::getline(pairIss, pairPart, ':')) {
+                pairParts.push_back(pairPart);
+            }
+
+            // Add the key-value pair to the output map
+            if (pairParts.size() == 2) {
+                output[pairParts[0]] = pairParts[1];
+            }
+        }
+
+        // Print the contents of the output map
+        for (const auto& [key, value] : output) {
+            cout << key << "-" << value << endl;
+        }
+
+        return output;
     }
 
 } // hosting

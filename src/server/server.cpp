@@ -129,9 +129,13 @@ namespace hosting {
 
             iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
             if (iResult > 0) {
+                // Logs received message
                 printf("---------------------------------\n");
                 printf("Bytes received: %d\n", iResult);
                 printf("Message received: %s\n", recvbuf);
+
+                // converts the message to a map
+                map<string, string> message = stringToMap(recvbuf);
 
                 // Echo the buffer back to the sender
                 iSendResult = send( ClientSocket, recvbuf, iResult, 0 );
@@ -248,9 +252,9 @@ namespace hosting {
         }
 
         // Print the contents of the output map
-        for (const auto& [key, value] : output) {
-            cout << key << "-" << value << endl;
-        }
+        //for (const auto& [key, value] : output) {
+        //    cout << key << "-" << value << endl;
+        //}
 
         return output;
     }

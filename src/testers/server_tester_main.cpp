@@ -96,15 +96,7 @@ int __cdecl main(int argc, char **argv)
 
     printf("Bytes Sent: %ld\n", iResult);
 
-    // shutdown the connection since no more data will be sent
-    //iResult = shutdown(ConnectSocket, SD_SEND);
-    //if (iResult == SOCKET_ERROR) {
-    //    printf("shutdown failed with error: %d\n", WSAGetLastError());
-    //    closesocket(ConnectSocket);
-    //    WSACleanup();
-    //    std::cout << "C7" << std::endl;
-    //    return 1;
-    //}
+
 
     // Receive until the peer closes the connection
     do {
@@ -119,6 +111,20 @@ int __cdecl main(int argc, char **argv)
         char input[100];
         std::cin.getline(input,sizeof(input));
         std::cout << "sendbuf: " << input << std::endl;
+
+        if ((std::string)input == "EXIT") {
+            // shutdown the connection since no more data will be sent
+            iResult = shutdown(ConnectSocket, SD_SEND);
+            if (iResult == SOCKET_ERROR) {
+                printf("shutdown failed with error: %d\n", WSAGetLastError());
+                closesocket(ConnectSocket);
+                WSACleanup();
+                std::cout << "C7" << std::endl;
+                return 1;
+            }
+            break;
+        }
+
         send( ConnectSocket, input, (int)strlen(input), 0 );
 
     } while( iResult > 0 );

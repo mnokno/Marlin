@@ -8,6 +8,6 @@ using namespace hosting;
 
 int main() {
     Server server = *new Server();
-    server.test();
+    server.startServer();
     return 0;
 }

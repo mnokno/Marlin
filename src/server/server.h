@@ -18,13 +18,11 @@ namespace hosting {
     class Server {
     public:
         int startServer();
-        int test();
 
     private:
         int runServer(string port);
         string handleInitializeEngineRequest(int TTMemoryPool);
         string handleMoveRequest(int opponentMove, int timeLimit);
-
 
         Position* position;
         TranspositionTable* transpositionTable;

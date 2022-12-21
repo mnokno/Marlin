@@ -45,50 +45,6 @@ namespace hosting {
      */
     int Server::runServer(string port) {
 
-    }
-
-    /**
-     * Handles the initialize engine request.
-     *
-     * @param TTMemoryPool the memory pool for the transposition table
-     * @return the response to the request
-     */
-    string Server::handleInitializeEngineRequest(int TTMemoryPool) {
-        // deletes previews data
-        delete this->position;
-        delete this->transpositionTable;
-        delete this->search;
-        // precalculates data
-        PrecalculatedData::init();
-        ZobristHashing::initHashes();
-        // creates new objects
-        this->position = new Position();
-        this->transpositionTable = new TranspositionTable(TranspositionTable::calculateTableCapacity(TTMemoryPool));
-        this->search = new Search(*this->position, *this->transpositionTable);
-        // returns response
-        return "exitCode:0";
-    }
-
-    /**
-     * Handles the move request.
-     *
-     * @param opponentMove the opponent's move
-     * @param timeLimit the time limit for the engine to make a move
-     * @return the response to the request
-     */
-    string Server::handleMoveRequest(int opponentMove, int timeLimit) {
-        // updates position
-        this->position->makeMove(opponentMove);
-        // searches for the best move
-        int bestMove = this->search->findBestMoveIn(timeLimit);
-        // updates position
-        this->position->makeMove(bestMove);
-        // returns response
-        return "exitCode:0 move:" + to_string(bestMove) + " gameStatus:" + to_string(this->position->getGameState());
-    }
-
-    int Server::test() {
-
         WSADATA wsaData;
         int iResult;
 
@@ -116,7 +72,7 @@ namespace hosting {
         hints.ai_flags = AI_PASSIVE;
 
         // Resolve the server address and port
-        iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
+        iResult = getaddrinfo(NULL, port.c_str(), &hints, &result);
         if ( iResult != 0 ) {
             printf("getaddrinfo failed with error: %d\n", iResult);
             WSACleanup();
@@ -161,7 +117,7 @@ namespace hosting {
             return 1;
         }
 
-        // No longer need server socket
+        // No longer need server socket, since a connection has been made and this server is single-threaded
         closesocket(ListenSocket);
 
         // Receive until the peer shuts down the connection
@@ -169,10 +125,11 @@ namespace hosting {
 
             iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
             if (iResult > 0) {
-                printf("Bytes received: %d\n", iResult);
                 printf("---------------------------------\n");
-                printf(recvbuf);
-                printf("\n");
+                printf("Bytes received: %d\n", iResult);
+                printf("Message received: %s\n", recvbuf);
+                string message = recvbuf;
+                printf("---------------------------------\n");
 
                 // Echo the buffer back to the sender
                 iSendResult = send( ClientSocket, recvbuf, iResult, 0 );
@@ -209,7 +166,47 @@ namespace hosting {
         closesocket(ClientSocket);
         WSACleanup();
 
-        cout << "TEST" << endl;
         return 0;
     }
+
+    /**
+     * Handles the initialize engine request.
+     *
+     * @param TTMemoryPool the memory pool for the transposition table
+     * @return the response to the request
+     */
+    string Server::handleInitializeEngineRequest(int TTMemoryPool) {
+        // deletes previews data
+        delete this->position;
+        delete this->transpositionTable;
+        delete this->search;
+        // precalculates data
+        PrecalculatedData::init();
+        ZobristHashing::initHashes();
+        // creates new objects
+        this->position = new Position();
+        this->transpositionTable = new TranspositionTable(TranspositionTable::calculateTableCapacity(TTMemoryPool));
+        this->search = new Search(*this->position, *this->transpositionTable);
+        // returns response
+        return "exitCode:0";
+    }
+
+    /**
+     * Handles the move request.
+     *
+     * @param opponentMove the opponent's move
+     * @param timeLimit the time limit for the engine to make a move
+     * @return the response to the request
+     */
+    string Server::handleMoveRequest(int opponentMove, int timeLimit) {
+        // updates position
+        this->position->makeMove(opponentMove);
+        // searches for the best move
+        int bestMove = this->search->findBestMoveIn(timeLimit);
+        // updates position
+        this->position->makeMove(bestMove);
+        // returns response
+        return "exitCode:0 move:" + to_string(bestMove) + " gameStatus:" + to_string(this->position->getGameState());
+    }
+
 } // hosting

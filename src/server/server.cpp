@@ -54,7 +54,19 @@ namespace hosting {
      * @return the response to the request
      */
     string Server::handleInitializeEngineRequest(int TTMemoryPool) {
-
+        // deletes previews data
+        delete this->position;
+        delete this->transpositionTable;
+        delete this->search;
+        // precalculates data
+        PrecalculatedData::init();
+        ZobristHashing::initHashes();
+        // creates new objects
+        this->position = new Position();
+        this->transpositionTable = new TranspositionTable(TranspositionTable::calculateTableCapacity(TTMemoryPool));
+        this->search = new Search(*this->position, *this->transpositionTable);
+        // returns response
+        return "0";
     }
 
     /**

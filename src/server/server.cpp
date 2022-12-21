@@ -5,9 +5,17 @@
 // developed using recourses from
 // https://learn.microsoft.com/en-us/windows/win32/winsock/getting-started-with-winsock
 
+#include <string>
 #include <ws2tcpip.h>
 #include <iostream>
 #include "server.h"
+
+// includes engine
+#include "position.h"
+#include "transposition_table.h"
+#include "search.h"
+#include "precalculated_data.h"
+#include "zobrist_hashing.h"
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -17,8 +25,49 @@
 #define DEFAULT_PORT "27015"
 
 using namespace std;
+using namespace engine;
 
 namespace hosting {
+
+    /**
+     * Starts the server at DEFAULT_PORT.
+     *
+     * @return 0 if server exited successfully, 1 otherwise
+     */
+    int Server::startServer() {
+        return runServer(DEFAULT_PORT);
+    }
+
+    /**
+     * Runs the server at the given port.
+     *
+     * @return 0 if server exited successfully, 1 otherwise
+     */
+    int Server::runServer(string port) {
+
+    }
+
+    /**
+     * Handles the initialize engine request.
+     *
+     * @param TTMemoryPool the memory pool for the transposition table
+     * @return the response to the request
+     */
+    string Server::handleInitializeEngineRequest(int TTMemoryPool) {
+
+    }
+
+    /**
+     * Handles the move request.
+     *
+     * @param opponentMove the opponent's move
+     * @param timeLimit the time limit for the engine to make a move
+     * @return the response to the request
+     */
+    string Server::handleMoveRequest(int opponentMove, int timeLimit) {
+
+    }
+
     int Server::test() {
 
         WSADATA wsaData;

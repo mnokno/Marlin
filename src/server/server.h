@@ -5,11 +5,30 @@
 #ifndef MARLIN_SERVER_H
 #define MARLIN_SERVER_H
 
+#include <string>
+#include "position.h"
+#include "transposition_table.h"
+#include "search.h"
+
+using namespace engine;
+using namespace std;
+
 namespace hosting {
 
     class Server {
     public:
+        int startServer();
         int test();
+
+    private:
+        int runServer(string port);
+        string handleInitializeEngineRequest(int TTMemoryPool);
+        string handleMoveRequest(int opponentMove, int timeLimit);
+
+
+        Position* position;
+        TranspositionTable* transpositionTable;
+        Search* search;
     };
 
 } // hosting

@@ -66,7 +66,7 @@ namespace hosting {
         this->transpositionTable = new TranspositionTable(TranspositionTable::calculateTableCapacity(TTMemoryPool));
         this->search = new Search(*this->position, *this->transpositionTable);
         // returns response
-        return "0";
+        return "exitCode:0";
     }
 
     /**
@@ -77,7 +77,14 @@ namespace hosting {
      * @return the response to the request
      */
     string Server::handleMoveRequest(int opponentMove, int timeLimit) {
-
+        // updates position
+        this->position->makeMove(opponentMove);
+        // searches for the best move
+        int bestMove = this->search->findBestMoveIn(timeLimit);
+        // updates position
+        this->position->makeMove(bestMove);
+        // returns response
+        return "exitCode:0 move:" + to_string(bestMove) + " gameStatus:" + to_string(this->position->getGameState());
     }
 
     int Server::test() {

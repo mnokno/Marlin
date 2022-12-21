@@ -128,8 +128,6 @@ namespace hosting {
                 printf("---------------------------------\n");
                 printf("Bytes received: %d\n", iResult);
                 printf("Message received: %s\n", recvbuf);
-                string message = recvbuf;
-                printf("---------------------------------\n");
 
                 // Echo the buffer back to the sender
                 iSendResult = send( ClientSocket, recvbuf, iResult, 0 );
@@ -140,6 +138,8 @@ namespace hosting {
                     return 1;
                 }
                 printf("Bytes sent: %d\n", iSendResult);
+                printf("Message sent: %s\n", recvbuf);
+                printf("---------------------------------\n");
             }
             else if (iResult == 0)
                 printf("Connection closing...\n");

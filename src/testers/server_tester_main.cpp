@@ -24,7 +24,7 @@ int __cdecl main(int argc, char **argv)
     struct addrinfo *result = NULL,
             *ptr = NULL,
             hints;
-    char *sendbuf = "this is a test";
+    char *sendbuf = "this:is,a:test";
     char recvbuf[DEFAULT_BUFLEN];
     int iResult;
     int recvbuflen = DEFAULT_BUFLEN;
@@ -116,13 +116,9 @@ int __cdecl main(int argc, char **argv)
             printf("Connection closed\n");
         else
             printf("recv failed with error: %d\n", WSAGetLastError());
-        std::string s = "rtet we fw ?";
         char input[100];
         std::cin.getline(input,sizeof(input));
-        //std::cin >> s;
-        //strcpy(sendbuf, s.c_str());
-        sendbuf = (char*)s.c_str();
-        std::cout << "sendbuf: " << s << std::endl;
+        std::cout << "sendbuf: " << input << std::endl;
         send( ConnectSocket, input, (int)strlen(input), 0 );
 
     } while( iResult > 0 );

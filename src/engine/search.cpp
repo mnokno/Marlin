@@ -222,18 +222,6 @@ namespace engine {
         int betsMove = -1;
 
         for ( auto [key, value]: results ) {
-            //std::cout
-            //        << "LC:"
-            //        << to_string(leafCounts[key])
-            //        << "   BC:"
-            //        << to_string(branchCounts[key])
-            //        << "   TTC:"
-            //        << to_string(TTCounts[key])
-            //        << "   EVAL:"
-            //        << to_string(value)
-            //        << "   KEY:"
-            //        << key
-            //        << std::endl;
             if (value < minScore){
                 minScore = value;
                 betsMove = key;

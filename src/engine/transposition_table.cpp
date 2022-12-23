@@ -75,7 +75,7 @@ namespace engine {
                 found = true;
                 return this->table[this->getHashIndex(hash)];
             }
-            else if (this->table[this->getHashIndex(hash)].depth == depth){
+            else if (this->table[this->getHashIndex(hash)].depth >= depth){
                 // We have stored the exact evaluation for this position, so return it
                 if (this->table[this->getHashIndex(hash)].nodeType == EXACT) {
                     found = true;

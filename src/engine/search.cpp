@@ -86,9 +86,6 @@ namespace engine {
         if (baseLevel == ALPHA_BETA_MT){
             return findBestMoveABMT(depth);
         }
-        else if (baseLevel == ALPHA_BETA_PD){
-            return findBestMoveABPD(depth);
-        }
 
         for (int& move : MoveGenerator::generateMoves(position)){
             int score;
@@ -118,26 +115,6 @@ namespace engine {
 
         // returns best move
         return betsMove;
-    }
-
-    /**
-     * Finds the best move using the specified base level algorithm and progressive deepening.
-     *
-     * @param depth depth to which the search should be performed.
-     * @param baseLevel Algorithm to be used for search.
-     * @return best move.
-     */
-    int Search::findBestMoveABPD(int depth){
-        int bestMove = -1;
-
-        for (int i = 1; i < depth + 1; i++){
-            //transpositionTable.clear();
-            bestMove = findBestMoveABMT(i);
-            this->currentBestMove = bestMove;
-        }
-
-        // returns best move
-        return bestMove;
     }
 
     /**

@@ -18,7 +18,6 @@ namespace engine {
         int findBestMove(int depth);
         int findBestMoveIn(int milliseconds);
         int findBestMoveBaseTest(int depth, BaseLevel baseLevel);
-        int findBestMoveABPD(int depth);
         int findBestMoveABMT(int depth);
         int findBestMoveMMMT(int depth);
 

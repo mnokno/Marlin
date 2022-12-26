@@ -4,6 +4,7 @@
 
 #include "move_ordering.h"
 #include <iostream>
+#include <random>
 
 namespace engine {
 
@@ -57,6 +58,11 @@ namespace engine {
         // sorts the moves according to scores
         bobbleSort(moves, scores, size);
         delete [] scores;
+    }
+
+    void MoveOrdering::shuffleMoves(int *&moves, int size) {
+        // NOT TESTED
+        shuffle(moves, moves + size, std::mt19937(std::random_device()()));
     }
 
     void MoveOrdering::bobbleSort(int *&moves, int *&scores, int size) {

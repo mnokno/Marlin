@@ -52,13 +52,14 @@ namespace engine {
      * @return Returns the best found move
      */
     int Search::findBestMoveIn(int milliseconds) {
-        thread waitThread = thread(abortAfter, ref(*this), milliseconds);
-        thread searchThread = thread(timedSearchTask, ref(*this));
-        std::cout << "HERE 3" << std::endl;
-        waitThread.join();
-        searchThread.join();
-        std::cout << "HERE 2" << std::endl;
-        return currentBestMove;
+        //thread waitThread = thread(abortAfter, ref(*this), milliseconds);
+        //thread searchThread = thread(timedSearchTask, ref(*this));
+        //std::cout << "HERE 3" << std::endl;
+        //waitThread.join();
+        //searchThread.join();
+        //std::cout << "HERE 2" << std::endl;
+        //return currentBestMove;
+        return 0;
     }
 
     /**
@@ -184,8 +185,14 @@ namespace engine {
         bool abort = false;
         // spawns search threads
         for (int i = 0; i < threads; i++){
-            threadPool.push_back(thread(searchAlphaBetaTask, position, depth, ref(bestMove), ref(abort), i));
+            threadPool.push_back(thread(searchAlphaBetaTask, position, depth, ref(bestMove), ref(abort), ref(transpositionTable), i));
         }
+        // waits for all the threads to finish
+        for (thread& thread : threadPool){
+            thread.join();
+        }
+        // returns the best move
+        return bestMove;
     }
 
     /**
@@ -208,8 +215,58 @@ namespace engine {
      * @param id Id for which to associate the result
      * @param depth Depth of the search
      */
-    void Search::searchAlphaBetaTask(Position lPosition, int depth, int& result, bool& abort, int id) {
-        search.results.insert({id, alphaBetaStatic(-EVAL_INFINITY, EVAL_INFINITY, lPosition, search.transpositionTable, depth, search, id)});
+    void Search::searchAlphaBetaTask(Position lPosition, int depth, int& result, bool& abort, TranspositionTable& tt, int id) {
+        // ensures that correct abort flag is used
+        if (abort){
+            std::cout << "Something is wrong wiht abort flags, we should not be here!" << std::endl;
+            result = 0;
+            return;
+        }
+        // ensures that the thread will only search ongoing passions
+        if (depth == 0 || lPosition.getGameState() != GameState::ON_GOING) {
+            std::cout << "Incorrect use of searchAlphaBetaTask, we should not be here!" << std::endl;
+            result = lPosition.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(lPosition) : -Evaluation::eval(lPosition);
+            return;
+        }
+
+        // generates moves, and shuffles them
+        list<int> moveList = MoveGenerator::generateMoves(lPosition);
+        int arr[moveList.size()];
+        std::copy(moveList.begin(), moveList.end(), arr);
+        int* moves = arr;
+        MoveOrdering::shuffleMoves(moves, moveList.size());
+
+        // keeps track of the bet move as they are progressively evaluated
+        int bestMove = -1;
+        int betsScore = -EVAL_INFINITY;
+
+        for (int i = 0; i < moveList.size(); i++){
+            // check if we should abort, other thread could have found a solution
+            if (abort){
+                return;
+            }
+
+            // makes the move
+            lPosition.makeMove(moves[i]);
+            // keeps track of this moves score
+            int score = -Search::alphaBetaStatic(-EVAL_INFINITY, EVAL_INFINITY, lPosition, tt, depth - 1, abort, id);
+            // unmake the move
+            lPosition.unMakeMove();
+
+            // checks if this move is better than the current best
+            if (score > betsScore){
+                betsScore = score;
+                bestMove = moves[i];
+            }
+        }
+
+        // ensures that the result was calculated and not aborted
+        if (!abort){
+            // result is passed by reference, main thread will retrieve the result from them
+            result = bestMove;
+            // tell other thread that this one has found a solution, so they should abort
+            abort = true;
+        }
     }
 
     void Search::timedSearchTask(Search &search) {
@@ -406,14 +463,14 @@ namespace engine {
      * @param id id of the thread performing the search (used to correctly assign collected data to the processes)
      * @return the score of the move
      */
-    int Search::alphaBetaStatic(int alpha, int beta, Position &position, TranspositionTable &tt, int depthLeft, Search& search, int id, bool& abort) {
+    int Search::alphaBetaStatic(int alpha, int beta, Position &position, TranspositionTable &tt, int depthLeft, bool& abort, int id) {
+        // checks if we should abort
         if (abort){
             return 0;
         }
 
         // if the target depth was reach or the game is over, return the static evaluation of the position
         if(depthLeft == 0 || position.getGameState() != GameState::ON_GOING) {
-            search.leafCounts[id]++;
             return position.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(position) : -Evaluation::eval(position);
         }
 
@@ -421,12 +478,9 @@ namespace engine {
         bool hit;
         TTEntry entry = tt.probe(position.getHash(), depthLeft, hit, alpha, beta);
         if (hit) {
-            search.TTCounts[id]++;
             return entry.getEval();
         }
 
-        // updates counters
-        search.branchCounts[id]++;
         // default node type
         NodeType nodeType = UPPER_BOUND;
         // keeps track of the best move
@@ -442,7 +496,7 @@ namespace engine {
         // finds max value of this position
         for (int i = 0; i < moveList.size(); i++) {
             position.makeMove(moves[i]);
-            int score = -alphaBetaStatic(-beta, -alpha, position, tt, depthLeft - 1, search, id, abort);
+            int score = -alphaBetaStatic(-beta, -alpha, position, tt, depthLeft - 1, abort, id);
             position.unMakeMove();
             // this move is wining for the current player, we cant do better than this, hence this
             // depth evaluation can be used for gather depths when fetching data from transition table

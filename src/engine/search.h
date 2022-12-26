@@ -27,8 +27,10 @@ namespace engine {
     private:
         int alphaBeta(int alpha, int beta, int depthLeft);
         int alphaBetaSimple(int alpha, int beta, int depthLeft);
-        static int alphaBetaStatic(int alpha, int beta, Position& position, TranspositionTable& tt, int depthLeft, Search& search, int id, bool& abort);
-        static void searchAlphaBetaTask(Position lPosition, int depth, int& result, bool& abort, int id);
+
+        static int alphaBetaStatic(int alpha, int beta, Position& position, TranspositionTable& tt, int depthLeft, bool& abort, int id);
+
+        static void searchAlphaBetaTask(Position lPosition, int depth, int& result, bool& abort, TranspositionTable& tt, int id);
 
         int miniMax(int depthLeft);
         static int miniMaxStatic(int depthLeft, Search& search, Position& lPosition, int id, bool& abort);

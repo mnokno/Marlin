@@ -18,7 +18,7 @@ namespace engine {
         int findBestMove(int depth);
         int findBestMoveIn(int milliseconds);
         int findBestMoveBaseTest(int depth, BaseLevel baseLevel);
-        int findBestMoveABMT(int depth);
+        int findBestMoveABMT(int depth, int threads);
         int findBestMoveMMMT(int depth);
 
         [[nodiscard]] int getLeafNodes() const;
@@ -27,16 +27,16 @@ namespace engine {
     private:
         int alphaBeta(int alpha, int beta, int depthLeft);
         int alphaBetaSimple(int alpha, int beta, int depthLeft);
-        static int alphaBetaStatic(int alpha, int beta, Position& position, TranspositionTable& tt, int depthLeft, Search& search, int id);
-        static void searchAlphaBetaTask(Search& search, Position lPosition, int id, int depth);
+        static int alphaBetaStatic(int alpha, int beta, Position& position, TranspositionTable& tt, int depthLeft, Search& search, int id, bool& abort);
+        static void searchAlphaBetaTask(Position lPosition, int depth, int& result, bool& abort, int id);
 
         int miniMax(int depthLeft);
-        static int miniMaxStatic(int depthLeft, Search& search, Position& lPosition, int id);
-        static void searchMiniMaxTask(Search& search, Position lPosition, int id, int depth);
+        static int miniMaxStatic(int depthLeft, Search& search, Position& lPosition, int id, bool& abort);
+        static void searchMiniMaxTask(Search& search, Position lPosition, int id, int depth, bool& abort);
 
         static void timedSearchTask(Search& search);
 
-        static void abortAfter(Search& search, int milliseconds);
+        static void abortAfter(bool& abortFlag, int milliseconds);
 
         Position& position;
         TranspositionTable& transpositionTable;
@@ -49,7 +49,6 @@ namespace engine {
         map<int, int> branchCounts;
         map<int, int> TTCounts;
         int currentBestMove;
-        bool abort;
     };
 
 } // engine

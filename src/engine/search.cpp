@@ -276,20 +276,44 @@ namespace engine {
         }
     }
 
-    void Search::timedSearchTask(Search &search) {
-        //int currentDepth = 1;
-        //std::cout << "Calculated depths: ";
-        //while (!search.abort){
-        //    int newBest = search.findBestMoveABMT(currentDepth);
-        //    // we check if the eval is valid
-        //    if (!search.abort){
-        //        search.currentBestMove = newBest;
-        //        std::cout << currentDepth << ":" << search.currentBestMove << " ";
-        //    }
-        //    currentDepth++;
-        //}
-        //std::cout << std::endl;
-        //std::cout << "HERE 4" << std::endl;
+    /**
+     * Finds bets move in the given amount of time
+     *
+     * @param result Reference to the result
+     * @param position Position to search
+     * @param tt Transposition table
+     * @param milliseconds Time to search in milliseconds
+     */
+    void Search::timedSearchTask(int& result, Position position, TranspositionTable& tt, int milliseconds) {
+        // stores current search depth
+        int currentDepth = 1;
+        // reference to abort flag
+        bool abort = false;
+        // start timer, will set abort flag to true when time is up
+        thread waitThread = thread(abortAfter, ref(abort), milliseconds);
+
+        // start search using progressive deepening
+        do {
+            int betsMove = -1;
+            int betsScore = -EVAL_INFINITY;
+
+            for (int &move: MoveGenerator::generateMoves(position)) {
+                position.makeMove(move);
+                int score = -Search::alphaBetaStatic(-EVAL_INFINITY, EVAL_INFINITY, position, tt, currentDepth - 1,abort, 0);
+                position.unMakeMove();
+                if (score > betsScore) {
+                    betsScore = score;
+                    betsMove = move;
+                }
+            }
+
+            if (!abort) {
+                result = betsMove;
+                std::cout << "Calculated depth " + to_string(currentDepth) + " best move " + to_string(betsMove) + "\n";
+            }
+            currentDepth++;
+
+        } while (!abort);
     }
 
 #pragma region Algorythms

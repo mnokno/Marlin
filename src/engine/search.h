@@ -36,7 +36,7 @@ namespace engine {
         static int miniMaxStatic(Position& position, int depthLeft, bool& abort, int id);
         static void searchMiniMaxTask(Search& search, Position lPosition, int id, int depth, bool& abort);
 
-        static void timedSearchTask(Search& search);
+        static void timedSearchTask(int& result, Position position, TranspositionTable& tt, int milliseconds);
 
         static void abortAfter(bool& abortFlag, int milliseconds);
 

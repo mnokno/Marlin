@@ -28,7 +28,7 @@ namespace engine {
         int* scores = new int[size]();
 
         bool hasFound = false;
-        TTEntry entry = transpositionTable.probe(position.getHash(), hasFound);
+        TTEntry entry = transpositionTable.probe(position.getHash(), 0, hasFound);
 
         // scores each move
         for (int i = 0;  i < size; i++){

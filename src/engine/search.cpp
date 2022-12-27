@@ -198,10 +198,11 @@ namespace engine {
     /**
      * Starts a search and saves the result, can by used to spawn multiple threads
      *
-     * @param search Reference to initial search
      * @param lPosition Copy of the position
-     * @param id Id for which to associate the result
      * @param depth Depth of the search
+     * @param result Reference to the result
+     * @param abort Reference to the abort flag
+     * @param id thread id
      */
     void Search::searchMiniMaxTask(Position lPosition, int depth, int& result, bool& abort, int id) {
         // ensures that correct abort flag is used

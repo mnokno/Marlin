@@ -27,17 +27,13 @@ namespace engine {
     private:
         int alphaBeta(int alpha, int beta, int depthLeft);
         int alphaBetaSimple(int alpha, int beta, int depthLeft);
-
         static int alphaBetaStatic(int alpha, int beta, Position& position, TranspositionTable& tt, int depthLeft, bool& abort, int id);
-
         static void searchAlphaBetaTask(Position lPosition, int depth, int& result, bool& abort, TranspositionTable& tt, int id);
 
         int miniMax(int depthLeft);
         static int miniMaxStatic(Position& position, int depthLeft, bool& abort, int id);
         static void searchMiniMaxTask(Position lPosition, int depth, int& result, bool& abort, int id);
-
         static void timedSearchTask(int& result, Position position, TranspositionTable& tt, int milliseconds);
-
         static void abortAfter(bool& abortFlag, int milliseconds);
 
         Position& position;

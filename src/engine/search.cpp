@@ -58,7 +58,7 @@ namespace engine {
         if (result == -1){
             std::cout << "We should not be here" << std::endl;
         }
-        return 0;
+        return result;
     }
 
     /**
@@ -326,6 +326,7 @@ namespace engine {
         bool abort = false;
         // start timer, will set abort flag to true when time is up
         thread waitThread = thread(abortAfter, ref(abort), milliseconds);
+        waitThread.detach();
 
         // start search using progressive deepening
         do {

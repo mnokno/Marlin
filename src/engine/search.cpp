@@ -42,7 +42,7 @@ namespace engine {
      * @return Returns the best found move at the specified depth
      */
     int Search::findBestMove(int depth) {
-        return findBestMoveABMT(depth, 12);
+        return findBestMoveBaseTest(depth, BaseLevel::ALPHA_BETA);
     }
 
     /**
@@ -243,10 +243,13 @@ namespace engine {
         for (int i = 0; i < moveList.size(); i++){
             // check if we should abort, other thread could have found a solution
             if (abort){
+                std::cout << "thread " + to_string(id) +  " returns due to abort flag evaluating to true!" << std::endl;
                 return;
             }
 
-            // makes the move
+            std::cout << "Thread " + to_string(id) + " is searching move " + to_string(moves[i]) + "\n";
+
+            // make.s the move
             lPosition.makeMove(moves[i]);
             // keeps track of this moves score
             int score = -Search::alphaBetaStatic(-EVAL_INFINITY, EVAL_INFINITY, lPosition, tt, depth - 1, abort, id);
@@ -261,11 +264,15 @@ namespace engine {
         }
 
         // ensures that the result was calculated and not aborted
+        std::cout << to_string(id) +  " FINISHED SEARCH A " + to_string(result) << std::endl;
         if (!abort){
-            // result is passed by reference, main thread will retrieve the result from them
-            result = bestMove;
+            std::cout << to_string(id) + " FINISHED SEARCH B " + to_string(result)<< std::endl;
             // tell other thread that this one has found a solution, so they should abort
             abort = true;
+            // result is passed by reference, main thread will retrieve the result from them
+            result = bestMove;
+
+            std::cout << to_string(id) + " FINISHED SEARCH C " + to_string(result) << std::endl;
         }
     }
 

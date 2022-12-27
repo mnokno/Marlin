@@ -28,7 +28,7 @@ namespace engine {
     public:
         [[nodiscard]] explicit TranspositionTable(uint tableSizeInEntries);
         [[nodiscard]] static int calculateTableCapacity(int maxTableSizeInMb);
-        [[nodiscard]] TTEntry probe(ulong hash, bool& found);
+        [[nodiscard]] TTEntry probe(ulong hash, int depth, bool& found);
         [[nodiscard]] TTEntry probe(ulong hash, int depth, bool& found, int alpha, int beta);
         void save(ulong hash, byte depth, short eval);
         void save(ulong hash, byte depth, short eval, byte move, NodeType nodeType);

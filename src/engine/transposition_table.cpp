@@ -50,14 +50,15 @@ namespace engine {
      * @param found Reference to a boolean that will be set to true if the hash was found
      * @return The entry associated with the hash
      */
-    TTEntry TranspositionTable::probe(ulong hash, bool& found) {
-        if (this->table[this->getHashIndex(hash)].hash == hash && this->table[this->getHashIndex(hash)].nodeType == EXACT) {
+    TTEntry TranspositionTable::probe(ulong hash, int depth, bool & found) {
+        TTEntry entry = this->table[this->getHashIndex(hash)];
+        if (entry.hash == hash && ((entry.nodeType == EXACT && entry.depth >= depth) || entry.nodeType == END)) {
             found = true;
-            return this->table[this->getHashIndex(hash)];
+            return entry;
         }
         else{
             found = false;
-            return this->table[this->getHashIndex(hash)];
+            return entry;
         }
     }
 

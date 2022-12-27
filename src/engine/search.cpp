@@ -52,13 +52,12 @@ namespace engine {
      * @return Returns the best found move
      */
     int Search::findBestMoveIn(int milliseconds) {
-        //thread waitThread = thread(abortAfter, ref(*this), milliseconds);
-        //thread searchThread = thread(timedSearchTask, ref(*this));
-        //std::cout << "HERE 3" << std::endl;
-        //waitThread.join();
-        //searchThread.join();
-        //std::cout << "HERE 2" << std::endl;
-        //return currentBestMove;
+        int result = -1;
+        thread search = thread(timedSearchTask, ref(result), position, ref(transpositionTable), milliseconds);
+        search.join();
+        if (result == -1){
+            std::cout << "We should not be here" << std::endl;
+        }
         return 0;
     }
 

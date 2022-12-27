@@ -85,6 +85,9 @@ namespace engine {
         if (baseLevel == ALPHA_BETA_MT){
             return findBestMoveABMT(depth, 12);
         }
+        else if (baseLevel == MINI_MAX_MT){
+            return findBestMoveMMMT(depth, 12);
+        }
 
         for (int& move : MoveGenerator::generateMoves(position)){
             int score;

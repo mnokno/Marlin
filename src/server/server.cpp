@@ -5,6 +5,10 @@
 // developed using recourses from
 // https://learn.microsoft.com/en-us/windows/win32/winsock/getting-started-with-winsock
 
+// STANDARD REQUESTS
+// requestType:moveCalculation,opponentMove:0,timeLimit:2000
+// requestType:initialization,TTMemoryPool:3000
+
 #include <iostream>
 #include <map>
 #include <sstream>

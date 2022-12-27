@@ -120,61 +120,34 @@ namespace engine {
      * Finds best move using minimax and utilizing multithreading
      *
      * @param depth Depth of the search
+     * @param threads Number of threads to use
      * @return reruns best move
      */
-    int Search::findBestMoveMMMT(int depth) {
+    int Search::findBestMoveMMMT(int depth, int threads) {
         // stores threads
-        vector<thread> threads;
-        // stores results
-        results.clear();
+        vector<thread> threadPool;
+        // will be used to stores the results of the search
+        int bestMove = -1;
         // flags used to tell other threads to abort the search
         bool abort = false;
-
-        // finds the best move from the generated moves
-        for (int& move : MoveGenerator::generateMoves(position)){
-            // evaluates this move
-            position.makeMove(move);
-            threads.emplace_back(thread(searchMiniMaxTask, ref(*this), position, move, depth - 1, ref(abort)));
-            position.unMakeMove();
+        // spawns search threads
+        for (int i = 0; i < threads; i++){
+            threadPool.push_back(thread(searchMiniMaxTask, position, depth, ref(bestMove), ref(abort), i));
         }
-
         // waits for all the threads to finish
-        for (thread& thread : threads){
+        for (thread& thread : threadPool){
             thread.join();
         }
-
-        // at the binning there is no best move, hence score is greater than wining score
-        int minScore = EVAL_INFINITY + 100;
-        int betsMove = -1;
-
-        for ( auto [key, value]: results ) {
-            //std::cout
-            //        << "LC:"
-            //        << to_string(leafCounts[key])
-            //        << "   BC:"
-            //        << to_string(branchCounts[key])
-            //        << "   TTC:"
-            //        << to_string(TTCounts[key])
-            //        << "   EVAL:"
-            //        << to_string(value)
-            //        << "   KEY:"
-            //        << key
-            //        << std::endl;
-            if (value < minScore) {
-                minScore = value;
-                betsMove = key;
-            }
-        }
-
-        // returns best move
-        return betsMove;
+        // returns the best move
+        return bestMove;
     }
 
     /**
      * Finds best move using alphaBeta and utilizing multithreading
      *
      * @param depth Depth of the search
-     * @return reruns best move
+     * @param threads Number of threads to use
+     * @return Reruns best move
      */
     int Search::findBestMoveABMT(int depth, int threads) {
         // stores threads

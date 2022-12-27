@@ -19,7 +19,7 @@ namespace engine {
         int findBestMoveIn(int milliseconds);
         int findBestMoveBaseTest(int depth, BaseLevel baseLevel);
         int findBestMoveABMT(int depth, int threads);
-        int findBestMoveMMMT(int depth);
+        int findBestMoveMMMT(int depth, int threads);
 
         [[nodiscard]] int getLeafNodes() const;
         [[nodiscard]] int getBranchNodes() const;

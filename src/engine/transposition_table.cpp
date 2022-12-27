@@ -70,36 +70,37 @@ namespace engine {
      * @return The entry associated with the hash
      */
     TTEntry TranspositionTable::probe(ulong hash, int depth, bool &found, int alpha, int beta) {
-        if (this->table[this->getHashIndex(hash)].hash == hash){
-            if (this->table[this->getHashIndex(hash)].nodeType == END && false){
+        TTEntry entry = this->table[this->getHashIndex(hash)];
+
+        if (entry.hash == hash){
+            if (entry.nodeType == END){
                 found = true;
-                return this->table[this->getHashIndex(hash)];
+                return entry;
             }
-            else if (this->table[this->getHashIndex(hash)].depth >= depth){
+            else if (entry.depth >= depth){
                 // We have stored the exact evaluation for this position, so return it
-                if (this->table[this->getHashIndex(hash)].nodeType == EXACT) {
+                if (entry.nodeType == EXACT) {
                     found = true;
-                    return this->table[this->getHashIndex(hash)];
+                    return entry;
                 }
 
                 // We have stored the upper bound of the eval for this position. If it's less than alpha then we don't need to
                 // search the moves in this position as they won't interest us; otherwise we will have to search to find the exact value
-                if (this->table[this->getHashIndex(hash)].nodeType == UPPER_BOUND &&
-                    this->table[this->getHashIndex(hash)].eval <= alpha) {
+                if (entry.nodeType == UPPER_BOUND && entry.eval <= alpha) {
                     found = true;
-                    return this->table[this->getHashIndex(hash)];
+                    return entry;
                 }
 
                 // We have stored the lower bound of the eval for this position. Only return if it causes a beta cut-off.
-                if (this->table[this->getHashIndex(hash)].nodeType == LOWER_BOUND &&
-                    this->table[this->getHashIndex(hash)].eval >= beta) {
+                if (entry.nodeType == LOWER_BOUND && entry.eval >= beta) {
                     found = true;
-                    return this->table[this->getHashIndex(hash)];
+                    return entry;
                 }
             }
         }
+
         found = false;
-        return this->table[this->getHashIndex(hash)];
+        return entry;
     }
 
     /**
@@ -124,12 +125,12 @@ namespace engine {
      * @param nodeType Node type of the position
      */
      void TranspositionTable::save(ulong hash, byte depth, short eval, byte move, NodeType nodeType) {
-        writes++;
-        this->table[this->getHashIndex(hash)].hash = hash;
-        this->table[this->getHashIndex(hash)].depth = depth;
-        this->table[this->getHashIndex(hash)].eval = eval;
-        this->table[this->getHashIndex(hash)].move = move;
-        this->table[this->getHashIndex(hash)].nodeType = nodeType;
+         writes++;
+         this->table[this->getHashIndex(hash)].hash = hash;
+         this->table[this->getHashIndex(hash)].depth = depth;
+         this->table[this->getHashIndex(hash)].eval = eval;
+         this->table[this->getHashIndex(hash)].move = move;
+         this->table[this->getHashIndex(hash)].nodeType = nodeType;
     }
 
     /**

@@ -203,8 +203,65 @@ namespace engine {
      * @param id Id for which to associate the result
      * @param depth Depth of the search
      */
-    void Search::searchMiniMaxTask(engine::Search &search, engine::Position lPosition, int id, int depth, bool& abort) {
-        search.results.insert({id, miniMaxStatic(depth, search, lPosition, id, abort)});
+    void Search::searchMiniMaxTask(Position lPosition, int depth, int& result, bool& abort, int id) {
+        // ensures that correct abort flag is used
+        if (abort){
+            std::cout << "Something is wrong wiht abort flags, we should not be here!" << std::endl;
+            result = 0;
+            return;
+        }
+        // ensures that the thread will only search ongoing passions
+        if (depth == 0 || lPosition.getGameState() != GameState::ON_GOING) {
+            std::cout << "Incorrect use of searchAlphaBetaTask, we should not be here!" << std::endl;
+            result = lPosition.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(lPosition) : -Evaluation::eval(lPosition);
+            return;
+        }
+
+        // generates moves, and shuffles them
+        list<int> moveList = MoveGenerator::generateMoves(lPosition);
+        int arr[moveList.size()];
+        std::copy(moveList.begin(), moveList.end(), arr);
+        int* moves = arr;
+        MoveOrdering::shuffleMoves(moves, moveList.size());
+
+        // keeps track of the bet move as they are progressively evaluated
+        int bestMove = -1;
+        int betsScore = -EVAL_INFINITY;
+
+        for (int i = 0; i < moveList.size(); i++){
+            // check if we should abort, other thread could have found a solution
+            if (abort){
+                std::cout << "thread " + to_string(id) +  " returns due to abort flag evaluating to true!" << std::endl;
+                return;
+            }
+
+            std::cout << "Thread " + to_string(id) + " is searching move " + to_string(moves[i]) + "\n";
+
+            // make.s the move
+            lPosition.makeMove(moves[i]);
+            // keeps track of this moves score
+            int score = -Search::miniMaxStatic(lPosition, depth - 1, abort, id);
+            // unmake the move
+            lPosition.unMakeMove();
+
+            // checks if this move is better than the current best
+            if (score > betsScore){
+                betsScore = score;
+                bestMove = moves[i];
+            }
+        }
+
+        // ensures that the result was calculated and not aborted
+        std::cout << to_string(id) +  " FINISHED SEARCH A " + to_string(result) << std::endl;
+        if (!abort){
+            std::cout << to_string(id) + " FINISHED SEARCH B " + to_string(result)<< std::endl;
+            // tell other thread that this one has found a solution, so they should abort
+            abort = true;
+            // result is passed by reference, main thread will retrieve the result from them
+            result = bestMove;
+
+            std::cout << to_string(id) + " FINISHED SEARCH C " + to_string(result) << std::endl;
+        }
     }
 
     /**

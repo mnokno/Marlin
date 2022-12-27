@@ -225,7 +225,7 @@ namespace hosting {
      */
     string Server::handleMoveRequest(int opponentMove, int timeLimit) {
         // updates position
-        this->position->makeMove(opponentMove);
+        this->position->makeMove(position->convertFileToMove(opponentMove));
         // searches for the best move
         int bestMove = this->search->findBestMoveIn(timeLimit);
         // updates position

@@ -328,32 +328,29 @@ namespace engine {
     /**
      * Static implementation of minimax algorithm without any enchantments.
      *
+     * @param position reference to the thread local position
      * @param depthLeft how many moves to look ahead
-     * @param search reference to the parent search
-     * @param lPosition reference to the thread local position
+     * @param abort reference to the abort flag
      * @param id id of the thread performing the search (used to correctly assign collected data to the processes)
      * @return the score of the move
      */
-    int Search::miniMaxStatic(int depthLeft, Search &search, Position& lPosition, int id, bool& abort) {
+    int Search::miniMaxStatic(Position& position, int depthLeft, bool& abort, int id) {
+        // checks if we should abort
         if (abort){
             return 0;
         }
 
         // if the target depth was reach or the game is over, return the static evaluation of the position
-        if (depthLeft == 0 || lPosition.getGameState() != GameState::ON_GOING) {
-            search.leafCounts[id]++;
-            return lPosition.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(lPosition) : -Evaluation::eval(lPosition);
+        if(depthLeft == 0 || position.getGameState() != GameState::ON_GOING) {
+            return position.getPlayerToMove() == Player::YELLOW ? Evaluation::eval(position) : -Evaluation::eval(position);
         }
-
-        // updates counters
-        search.branchCounts[id]++;
 
         // finds max value of this position
         int max = -EVAL_INFINITY;
-        for (int& move : MoveGenerator::generateMoves(lPosition))  {
-            lPosition.makeMove(move);
-            int score = -miniMaxStatic(depthLeft - 1, search, lPosition, id, abort);
-            lPosition.unMakeMove();
+        for (int& move : MoveGenerator::generateMoves(position))  {
+            position.makeMove(move);
+            int score = -miniMaxStatic(position, depthLeft - 1, abort, id);
+            position.unMakeMove();
             if(score > max){
                 max = score;
             }
@@ -464,9 +461,10 @@ namespace engine {
      *
      * @param alpha from the previous node, call with -infinity on first node
      * @param beta from the previous node, call with infinity on first node
+     * @param position reference to the thread local position
+     * @param tt transposition table reference
      * @param depthLeft how many moves to look ahead
-     * @param search reference to the parent search
-     * @param lPosition reference to the thread local position
+     * @param abort reference to the abort flag
      * @param id id of the thread performing the search (used to correctly assign collected data to the processes)
      * @return the score of the move
      */
@@ -533,6 +531,12 @@ namespace engine {
 
 #pragma region Other
 
+    /**
+     * Sets given abort flag to true after given time
+     *
+     * @param abortFlag reference to the abort flag
+     * @param milliseconds how many milliseconds to wait before setting abort flag to true
+     */
     void Search::abortAfter(bool &abortFlag, int milliseconds) {
         std::cout << "Abort after time has been started!" << std::endl;
         usleep(milliseconds * 1000);

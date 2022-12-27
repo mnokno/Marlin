@@ -33,7 +33,7 @@ namespace engine {
         static void searchAlphaBetaTask(Position lPosition, int depth, int& result, bool& abort, TranspositionTable& tt, int id);
 
         int miniMax(int depthLeft);
-        static int miniMaxStatic(int depthLeft, Search& search, Position& lPosition, int id, bool& abort);
+        static int miniMaxStatic(Position& position, int depthLeft, bool& abort, int id);
         static void searchMiniMaxTask(Search& search, Position lPosition, int id, int depth, bool& abort);
 
         static void timedSearchTask(Search& search);
@@ -50,7 +50,6 @@ namespace engine {
         map<int, int> leafCounts;
         map<int, int> branchCounts;
         map<int, int> TTCounts;
-        int currentBestMove;
     };
 
 } // engine

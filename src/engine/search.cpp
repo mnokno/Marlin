@@ -349,7 +349,7 @@ namespace engine {
             }
             currentDepth++;
 
-        } while (!abort);
+        } while (!abort && currentDepth + position.getMoveCount() <= 42);
     }
 
 #pragma region Algorythms

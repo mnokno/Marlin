@@ -14,8 +14,6 @@ namespace engine {
     class MoveOrdering {
     public:
         static void orderMove(int*& moves, int size, Position& position);
-        static void orderMove(int*& moves, int size, Position& position, TranspositionTable& transpositionTable);
-        static void orderMove(int*& moves, int size, Position& position, int previousBestMove);
         static void shuffleMoves(int*& moves, int size);
     private:
         static void bobbleSort(int*& moves, int*& scores, int size);

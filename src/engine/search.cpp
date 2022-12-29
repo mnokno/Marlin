@@ -458,7 +458,7 @@ namespace engine {
         std::copy(moveList.begin(), moveList.end(), arr);
         int* moves = arr;
         // orders the moves
-        MoveOrdering::orderMove(moves, moveList.size(), this->position, transpositionTable);
+        MoveOrdering::orderMove(moves, moveList.size(), this->position);
 
         // finds max value of this position
         for (int i = 0; i < moveList.size(); i++){

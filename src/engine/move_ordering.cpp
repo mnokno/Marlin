@@ -23,45 +23,6 @@ namespace engine {
         delete [] scores;
     }
 
-
-    void MoveOrdering::orderMove(int *&moves, int size, Position &position, TranspositionTable& transpositionTable) {
-        // defines an array of scores
-        int* scores = new int[size]();
-
-        bool hasFound = false;
-        TTEntry entry = transpositionTable.probe(position.getHash(), 0, hasFound);
-
-        // scores each move
-        for (int i = 0;  i < size; i++){
-            int column = moves[i] % 7;
-            scores[i] = column < 3 ? column : 6 - column;
-            if (hasFound && moves[i] == entry.getMove()){
-                scores[i] += entry.getEval() << 6;
-            }
-        }
-
-        // sorts the moves according to scores
-        bobbleSort(moves, scores, size);
-        delete [] scores;
-    }
-
-    void MoveOrdering::orderMove(int *&moves, int size, Position &position, int previousBestMove) {
-        // defines an array of scores
-        int* scores = new int[size]();
-
-        // scores each move
-        for (int i = 0;  i < size; i++){
-            scores[i] = position.getStackHeight(moves[i]);
-            if (moves[i] == previousBestMove){
-                scores[i] += 1000;
-            }
-        }
-
-        // sorts the moves according to scores
-        bobbleSort(moves, scores, size);
-        delete [] scores;
-    }
-
     void MoveOrdering::shuffleMoves(int *&moves, int size) {
         // NOT TESTED
         shuffle(moves, moves + size, std::mt19937(std::random_device()()));

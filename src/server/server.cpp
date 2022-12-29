@@ -74,7 +74,7 @@ namespace hosting {
         }
 
         ZeroMemory(&hints, sizeof(hints));
-        hints.ai_family = AF_INET;
+        hints.ai_family = AF_INET6;
         hints.ai_socktype = SOCK_STREAM;
         hints.ai_protocol = IPPROTO_TCP;
         hints.ai_flags = AI_PASSIVE;
@@ -231,7 +231,7 @@ namespace hosting {
         // updates position
         this->position->makeMove(bestMove);
         // returns response
-        return "exitCode:0 move:" + to_string(bestMove) + " gameStatus:" + to_string(this->position->getGameState());
+        return "exitCode:0,move:" + to_string(bestMove) + ",gameStatus:" + to_string(this->position->getGameState());
     }
 
     /**

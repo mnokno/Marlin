@@ -14,7 +14,8 @@ namespace engine {
 
         // scores each move
         for (int i = 0;  i < size; i++){
-            scores[i] = position.getStackHeight(moves[i]);
+            int column = moves[i] % 7;
+            scores[i] = column < 3 ? column : 6 - column;
         }
 
         // sorts the moves according to scores
@@ -32,7 +33,8 @@ namespace engine {
 
         // scores each move
         for (int i = 0;  i < size; i++){
-            scores[i] = position.getStackHeight(moves[i]);
+            int column = moves[i] % 7;
+            scores[i] = column < 3 ? column : 6 - column;
             if (hasFound && moves[i] == entry.getMove()){
                 scores[i] += entry.getEval() << 6;
             }

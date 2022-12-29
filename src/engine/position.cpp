@@ -61,8 +61,8 @@ namespace engine{
                 return playerWhoMoved == Player::YELLOW ? GameState::YELLOW_WON : GameState::RED_WON;
             }
         }
-        // all the slots are filled and there is no winner so it must be a draw
-        if (moveCount >= 42){
+        // there board is fully filled, there is no winner, so it's a draw
+        if (moveCount == 42){
             return GameState::DRAW;
         }
         return GameState::ON_GOING;

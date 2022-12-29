@@ -345,7 +345,7 @@ namespace engine {
 
             if (!abort) {
                 result = betsMove;
-                std::cout << "Calculated depth " + to_string(currentDepth) + " best move " + to_string(betsMove) + "\n";
+                std::cout << "Calculated depth " + to_string(currentDepth) + " best move " + to_string(betsMove) + " score:" + to_string(betsScore) + "\n";
             }
             currentDepth++;
 
@@ -556,7 +556,7 @@ namespace engine {
         int arr[moveList.size()];
         std::copy(moveList.begin(), moveList.end(), arr);
         int* moves = arr;
-        MoveOrdering::orderMove(moves, moveList.size(), position, tt);
+        MoveOrdering::orderMove(moves, moveList.size(), position);
 
         // finds max value of this position
         for (int i = 0; i < moveList.size(); i++) {

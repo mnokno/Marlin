@@ -1,5 +1,5 @@
 //
-// Created by kubaa on 25/11/2022.
+// Created by Jakub Nowacki on 25/11/2022.
 //
 
 #ifndef MARLIN_MOVE_ORDERING_H

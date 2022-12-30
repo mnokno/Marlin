@@ -1,5 +1,5 @@
 //
-// Created by kubaa on 19/11/2022.
+// Created by Jakub Nowacki on 19/11/2022.
 //
 
 #ifndef MARLIN_TYPES_H

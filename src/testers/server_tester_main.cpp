@@ -1,5 +1,5 @@
 //
-// Created by kubaa on 19/12/2022.
+// Created by Jakub Nowacki on 19/12/2022.
 //
 
 // developed using recourses from

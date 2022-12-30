@@ -1,5 +1,5 @@
 //
-// Created by kubaa on 22/11/2022.
+// Created by Jakub Nowacki on 22/11/2022.
 //
 
 #ifndef MARLIN_CONSOLE_CVC_TESTER_H

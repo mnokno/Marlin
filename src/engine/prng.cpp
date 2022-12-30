@@ -1,5 +1,5 @@
 //
-// Created by kubaa on 20/11/2022.
+// Created by Jakub Nowacki on 20/11/2022.
 //
 
 #include "prng.h"

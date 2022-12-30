@@ -1,5 +1,5 @@
 //
-// Created by kubaa on 21/11/2022.
+// Created by Jakub Nowacki on 21/11/2022.
 //
 
 #include <list>

@@ -8,6 +8,9 @@
 
 namespace engine{
 
+    /**
+     * Creates a new position with all pointers set to being of a new game.
+     */
     Position::Position() {
         this->positions[0] = (ulong)0;
         this->positions[1] = (ulong)0;
@@ -22,6 +25,11 @@ namespace engine{
         this->moveCount = 0;
     }
 
+    /**
+     * Plays a move on the position and updates all trackers.
+     *
+     * @param move Move to be played.
+     */
     void Position::makeMove(int move) {
         // update move count
         this->moveCount++;
@@ -39,6 +47,9 @@ namespace engine{
         this->playerToMove = this->playerToMove == Player::YELLOW ? Player::RED : Player::YELLOW;
     }
 
+    /**
+     * Undoes the last move played on the position and updates all trackers.
+     */
     void Position::unMakeMove() {
         // updates move count, -- since we went back in time
         this-moveCount--;
@@ -55,6 +66,14 @@ namespace engine{
         this->positions[playerToMove] ^= PrecalculatedData::moveMasks[move];
     }
 
+    /**
+     * Calculates game state checking for wins, loses and draws after specific move was
+     * made for efficiency.
+     *
+     * @param move Move that was made
+     * @param playerWhoMoved Player who made the move
+     * @return GameState after the move was made
+     */
     GameState Position::gameStateAfterMove(int move, Player playerWhoMoved) {
         for (ulong& winingLine : PrecalculatedData::winingLinesMasks[move]){
             if ((winingLine & this->positions[playerWhoMoved]) == winingLine){
@@ -68,36 +87,79 @@ namespace engine{
         return GameState::ON_GOING;
     }
 
+    /**
+     * Getter for a mask of a player's position.
+     *
+     * @param player Player whose position is to be returned
+     * @return Mask of a player's position
+     */
     ulong Position::getPosition(Player player) {
         return this->positions[player];
     }
 
+    /**
+     * Getter for a mask of a player's position.
+     *
+     * @param player Player whose position is to be returned
+     * @return Mask of a player's position
+     */
     ulong Position::getPosition(int player) {
         return this->positions[player];
     }
 
+    /**
+     * Getter for a game state.
+     *
+     * @return Game state
+     */
     GameState Position::getGameState() {
         return this->gameState;
     }
 
+    /**
+     * Getter for a player to move.
+     *
+     * @return Player to move
+     */
     Player Position::getPlayerToMove() {
         return this->playerToMove;
     }
 
+    /**
+     * Getter for a hash of a position.
+     *
+     * @return Hash of a position
+     */
     ulong Position::getHash() {
         return this->hash;
     }
 
+    /**
+     * Getter for a stack height.
+     *
+     * @param stack Stack whose height is to be returned
+     * @return Stack height
+     */
     short Position::getStackHeight(short stack) {
         return this->stackHeights[stack];
     }
 
+    /**
+     * Getter for a move count.
+     *
+     * @return Move count
+     */
     short Position::getMoveCount() {
         return moveCount;
     }
 
+    /**
+     * Convert given column to a move.
+     *
+     * @param column Column to be converted
+     * @return Move
+     */
     int Position::convertFileToMove(int column) {
         return this->stackHeights[column] * 7 + column;
     }
-
 }

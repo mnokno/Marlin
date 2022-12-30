@@ -7,6 +7,9 @@
 
 namespace engine {
 
+    /**
+     * Precalculates data that is used by the engine during calculations.
+     */
     void PrecalculatedData::init() {
         // precalculates boarder masks
         // vertical boarders
@@ -140,6 +143,12 @@ namespace engine {
         }
     }
 
+    /**
+     * Parses an ulong to a string.
+     *
+     * @param number Ulong to be parsed.
+     * @return String representation of the ulong.
+     */
     std::string PrecalculatedData::formatUlong(ulong number){
         std::string formatted = "";
         for (ulong i = 0; i < 64; i++){
@@ -153,6 +162,12 @@ namespace engine {
         return formatted;
     }
 
+    /**
+     * Formats ulong representing a board mask to a string.
+     *
+     * @param number Ulong to be parsed.
+     * @return String representation of the ulong.
+     */
     std::string PrecalculatedData::formatBoard(ulong number){
         std::string formatted = "";
         for (ulong i = 0; i < 6; i++){
@@ -170,10 +185,22 @@ namespace engine {
         return formatted;
     }
 
+    /**
+     * Checks if th given pos/move is on the board.
+     *
+     * @param pos /move to be checked.
+     * @return true if the pos/move is on the board, false otherwise.
+     */
     bool PrecalculatedData::isOnBoard(int pos) {
         return (pos >= 0 && pos <= 41);
     }
 
+    /**
+     * Checks if the given position is on an edge of the board.
+     *
+     * @param pos Position to be checked.
+     * @return true if the position is on an edge, false otherwise.
+     */
     bool PrecalculatedData::isOnEdge(int pos) {
         for (ulong& border : boarderMasks){
             if ((border & moveMasks[pos]) != (ulong)0){
@@ -183,6 +210,13 @@ namespace engine {
         return false;
     }
 
+    /**
+     * Checks if the the given position has wrapped over the edge of the board.
+     *
+     * @param oldPos Old position, where we were coming from.
+     * @param newPos New position, where we are going to.
+     * @return true if the position has wrapped over the edge, false otherwise.
+     */
     bool PrecalculatedData::hasWrappedOver(int oldPos, int newPos) {
         int oldX = oldPos % 7;
         int oldY = (oldPos - oldX) / 7;

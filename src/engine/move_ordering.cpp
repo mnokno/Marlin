@@ -8,6 +8,13 @@
 
 namespace engine {
 
+    /**
+     * Orders moves based on how close they are to the center of the board.
+     *
+     * @param moves Array of moves to be ordered.
+     * @param size Size of the array.
+     * @param position Position to which the move belong to, not used in the current implementation.
+     */
     void MoveOrdering::orderMove(int *&moves, int size, Position &position) {
         // defines an array of scores
         int* scores = new int[size]();
@@ -23,11 +30,27 @@ namespace engine {
         delete [] scores;
     }
 
+    /**
+     * Shuffles the given array of moves.
+     *
+     * @param moves Array of moves to be shuffled.
+     * @param size Size of the array.
+     */
     void MoveOrdering::shuffleMoves(int *&moves, int size) {
         // NOT TESTED
         shuffle(moves, moves + size, std::mt19937(std::random_device()()));
     }
 
+    /**
+     * Performs a bobble sort on the given array of moves.
+     * NOTE: Perhaps insertion sort would yield better results.
+     * Max size of the array is 7, therefore this implementation is more
+     * efficient than more complex algorithms like quicksort or mergesort.
+     *
+     * @param moves Array of moves to be sorted.
+     * @param scores Scores by which the moves are sorted.
+     * @param size Size of the arrays.
+     */
     void MoveOrdering::bobbleSort(int *&moves, int *&scores, int size) {
         for (int i = 0; i < size - 1; i++){
             for (int j = 0; j < size - 1 - i; j++){

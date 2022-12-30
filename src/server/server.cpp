@@ -50,6 +50,7 @@ namespace hosting {
     /**
      * Runs the server at the given port.
      *
+     * @param port the port to run the server at
      * @return 0 if server exited successfully, 1 otherwise
      */
     int Server::runServer(string port) {
@@ -277,14 +278,15 @@ namespace hosting {
             }
         }
 
-        // Print the contents of the output map
-        //for (const auto& [key, value] : output) {
-        //    cout << key << "-" << value << endl;
-        //}
-
         return output;
     }
 
+    /**
+     * Formats position to a nice profitable string.
+     *
+     * @param position Position to format.
+     * @return Formatted position.
+     */
     std::string Server::formatPosition(Position position) {
         string formatted = "";
         for (int i = 0; i < 6; i++){

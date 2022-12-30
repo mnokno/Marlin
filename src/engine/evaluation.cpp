@@ -15,9 +15,9 @@ namespace engine {
             case GameState::ON_GOING:
                 return staticEval(position);
             case GameState::YELLOW_WON:
-                return EVAL_INFINITY;
+                return EVAL_INFINITY - (position.getMoveCount() << 6);
             case GameState::RED_WON:
-                return -EVAL_INFINITY;
+                return -EVAL_INFINITY + (position.getMoveCount() << 6);
             case GameState::DRAW:
                 return 0;
         }

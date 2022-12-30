@@ -10,6 +10,12 @@
 
 namespace engine {
 
+    /**
+     * Performs a static evaluation of the position.
+     *
+     * @param position position to evaluate
+     * @return evaluation of the position
+     */
     int Evaluation::eval(Position& position) {
         switch (position.getGameState()) {
             case GameState::ON_GOING:
@@ -24,23 +30,22 @@ namespace engine {
         return 0;
     }
 
+    /**
+     * Performs a static evaluation of the position.
+     *
+     * @param position position to evaluate
+     * @return evaluation of the position
+     */
     int Evaluation::staticEval(Position& position) {
         return winingPossibilityEval(position);
     }
 
-    int Evaluation::basicOpennessEval(Position& position) {
-        ulong yellow = 0;
-        ulong red = 0;
-        for (int i = 0; i < 7; i++){
-            if (position.getStackHeight(i) < 6){
-                int pos = position.convertFileToMove(i);
-                yellow |= (PrecalculatedData::adjacencySquareMasks[pos] & position.getPosition(Player::YELLOW));
-                red |= (PrecalculatedData::adjacencySquareMasks[pos] & position.getPosition(Player::RED));
-            }
-        }
-        return BitOps::countBits(yellow) - BitOps::countBits(red);
-    }
-
+    /**
+     * Evaluation score based on the number of winning possibilities.
+     *
+     * @param position position to evaluate
+     * @return evaluation score
+     */
     int Evaluation::winingPossibilityEval(Position& position) {
         // allocates memory to score counters
         int score[2] = {0, 0};

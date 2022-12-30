@@ -18,8 +18,10 @@ namespace engine {
     TranspositionTable::TranspositionTable(uint tableSizeInEntries) {
         std::cout << "Created new TT table Allocated entries: " << tableSizeInEntries << " In memory size: " << tableSizeInEntries * sizeof(TTEntry) / (1024 * 1024) << "MB" << std::endl;
         this->tableSize = (uint)tableSizeInEntries;
-        this->writes = 0;
         this->table = new TTEntry[tableSize];
+        this->writes = 0;
+        this->reads = 0;
+        this->hits = 0;
         clear();
     }
 
@@ -47,12 +49,13 @@ namespace engine {
     /**
      * Tries to find an entry in the transposition table, should be used by miniMax NOT alphaBeta
      * @param hash Hash to probe
+     * @param depthFromRoot Depth from root (start of the game)
      * @param found Reference to a boolean that will be set to true if the hash was found
      * @return The entry associated with the hash
      */
-    TTEntry TranspositionTable::probe(ulong hash, int depth, bool & found) {
+    TTEntry TranspositionTable::probe(ulong hash, int depthFromRoot, bool & found) {
         TTEntry entry = this->table[this->getHashIndex(hash)];
-        if (entry.hash == hash && ((entry.nodeType == EXACT && entry.depth >= depth) || entry.nodeType == END)) {
+        if (entry.hash == hash && ((entry.nodeType == EXACT && entry.depthFromRoot >= depthFromRoot) || entry.nodeType == END)) {
             found = true;
             return entry;
         }
@@ -65,12 +68,13 @@ namespace engine {
     /**
      * Tries to find an entry in the transposition table, should be used by alphaBeta NOT miniMax
      * @param hash Hash to probe
+     * @param depthFromRoot Depth from root (start of the game)
      * @param found Reference to a boolean that will be set to true if the hash was found
      * @param alpha Alpha value
      * @param beta Beta value
      * @return The entry associated with the hash
      */
-    TTEntry TranspositionTable::probe(ulong hash, int depth, bool &found, int alpha, int beta) {
+    TTEntry TranspositionTable::probe(ulong hash, int depthFromRoot, bool &found, int alpha, int beta) {
         TTEntry entry = this->table[this->getHashIndex(hash)];
 
         if (entry.hash == hash){
@@ -78,7 +82,7 @@ namespace engine {
                 found = true;
                 return entry;
             }
-            else if (entry.depth >= depth){
+            else if (entry.depthFromRoot >= depthFromRoot){
                 // We have stored the exact evaluation for this position, so return it
                 if (entry.nodeType == EXACT) {
                     found = true;
@@ -107,13 +111,13 @@ namespace engine {
     /**
      * Saves a value to the transposition table with node type EXACT, should only by used by miniMax NOT alphaBeta
      * @param hash Hash associated with the position
-     * @param depth Depth of the search with was conducted to find the eval
+     * @param depthFromRoot Depth from root (start of the game)
      * @param eval Evaluation found from the search
      */
-    void TranspositionTable::save(ulong hash, byte depth, short eval) {
+    void TranspositionTable::save(ulong hash, byte depthFromRoot, short eval) {
         writes++;
         this->table[this->getHashIndex(hash)].hash = hash;
-        this->table[this->getHashIndex(hash)].depth = depth;
+        this->table[this->getHashIndex(hash)].depthFromRoot = depthFromRoot;
         this->table[this->getHashIndex(hash)].eval = eval;
         this->table[this->getHashIndex(hash)].nodeType = EXACT;
     }
@@ -121,14 +125,15 @@ namespace engine {
     /**
      * Saves a value to the transposition table with given nodeType, should only by used by alphaBeta NOT miniMax
      * @param hash Hash associated with the position
-     * @param depth Depth of the search with was conducted to find the eval
+     * @param depthFromRoot Depth from root (start of the game)
      * @param eval Evaluation found from the search
+     * @param move Move that was chosen
      * @param nodeType Node type of the position
      */
-     void TranspositionTable::save(ulong hash, byte depth, short eval, byte move, NodeType nodeType) {
+     void TranspositionTable::save(ulong hash, byte depthFromRoot, short eval, byte move, NodeType nodeType) {
          writes++;
          this->table[this->getHashIndex(hash)].hash = hash;
-         this->table[this->getHashIndex(hash)].depth = depth;
+         this->table[this->getHashIndex(hash)].depthFromRoot = depthFromRoot;
          this->table[this->getHashIndex(hash)].eval = eval;
          this->table[this->getHashIndex(hash)].move = move;
          this->table[this->getHashIndex(hash)].nodeType = nodeType;
@@ -141,7 +146,7 @@ namespace engine {
         writes = 0;
         for (int i = 0; i < this->tableSize; i++) {
             this->table[i].hash = (ulong)0;
-            this->table[i].depth = (int)0;
+            this->table[i].depthFromRoot = (int)0;
             this->table[i].eval = (int)0;
             this->table[i].move = -1;
             this->table[i].nodeType = EMPTY;

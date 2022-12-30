@@ -12,13 +12,14 @@ namespace engine {
     struct TTEntry {
     public:
         [[nodiscard]] ulong getHash() const {return this->hash;}
-        [[nodiscard]] byte getDepth() const {return this->depth;}
+        [[nodiscard]] byte getDepthFromRoot() const {return this->depthFromRoot;}
         [[nodiscard]] short getEval() const {return this->eval;}
         [[nodiscard]] byte getMove() const {return this->move;}
+        [[nodiscard]] NodeType getNodeType() const {return this->nodeType};
     private:
         friend class TranspositionTable;
         ulong hash;
-        byte depth;
+        byte depthFromRoot;
         short eval;
         byte move;
         NodeType nodeType;
@@ -38,6 +39,8 @@ namespace engine {
         [[nodiscard]] uint getHashIndex(ulong hash) const;
         uint tableSize;
         int writes;
+        int reads;
+        int hits;
     };
 
 } // engine

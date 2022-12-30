@@ -433,7 +433,7 @@ namespace engine {
         bool hit;
         TTEntry entry = this->transpositionTable.probe(this->position.getHash(), depthLeft, hit, alpha, beta);
         // entry.getDepth() == depthLeft, has a high chance to catch a key collision
-        if (hit && entry.getDepth() == depthLeft){
+        if (hit) {
             this->TTHits++;
             return entry.getEval();
         }
@@ -460,7 +460,7 @@ namespace engine {
             int score = -alphaBeta( -beta, -alpha, depthLeft - 1 );
             this->position.unMakeMove();
             if(score >= beta){
-                this->transpositionTable.save(position.getHash(), depthLeft, beta, moves[i], LOWER_BOUND);
+                this->transpositionTable.save(position.getHash(), depthLeft + this->position.getMoveCount(), beta, moves[i], LOWER_BOUND);
                 return beta;   //  fail hard beta-cutoff
             }
             if(score > alpha){
@@ -471,7 +471,7 @@ namespace engine {
         }
 
         // adds the result to transposition table
-        this->transpositionTable.save(position.getHash(), depthLeft, alpha, bestMove, nodeType);
+        this->transpositionTable.save(position.getHash(), depthLeft + this->position.getMoveCount(), alpha, bestMove, nodeType);
 
         // returns the max (alpha) value
         return alpha;
@@ -560,11 +560,11 @@ namespace engine {
             // this move is wining for the current player, we cant do better than this, hence this
             // depth evaluation can be used for gather depths when fetching data from transition table
             if (score == EVAL_INFINITY){
-                tt.save(position.getHash(), depthLeft, beta, moves[i], END);
+                tt.save(position.getHash(), depthLeft + position.getMoveCount(), beta, moves[i], END);
                 return beta;
             }
             if(score >= beta){
-                tt.save(position.getHash(), depthLeft, beta, moves[i], LOWER_BOUND);
+                tt.save(position.getHash(), depthLeft + position.getMoveCount(), beta, moves[i], LOWER_BOUND);
                 return beta;   //  fail hard beta-cutoff
             }
             if(score > alpha){
@@ -575,7 +575,7 @@ namespace engine {
         }
 
         // adds the result to transposition table
-        tt.save(position.getHash(), depthLeft, alpha, bestMove, nodeType);
+        tt.save(position.getHash(), depthLeft + position.getMoveCount(), alpha, bestMove, nodeType);
 
         // returns the max (alpha) value
         return alpha;

@@ -556,12 +556,6 @@ namespace engine {
             position.makeMove(moves[i]);
             int score = -alphaBetaStatic(-beta, -alpha, position, tt, depthLeft - 1, abort, id);
             position.unMakeMove();
-            // this move is wining for the current player, we cant do better than this, hence this
-            // depth evaluation can be used for gather depths when fetching data from transition table
-            if (score == EVAL_INFINITY){
-                tt.save(position.getHash(), depthLeft + position.getMoveCount(), beta, moves[i], END);
-                return beta;
-            }
             if(score >= beta){
                 tt.save(position.getHash(), depthLeft + position.getMoveCount(), beta, moves[i], LOWER_BOUND);
                 return beta;   //  fail hard beta-cutoff

@@ -56,7 +56,7 @@ namespace engine {
     TTEntry TranspositionTable::probe(ulong hash, int depthFromRoot, bool & found) {
         this->reads++;
         TTEntry entry = this->table[this->getHashIndex(hash)];
-        if (entry.hash == hash && ((entry.nodeType == EXACT && entry.depthFromRoot >= depthFromRoot) || entry.nodeType == END)) {
+        if (entry.hash == hash && (entry.nodeType == EXACT && entry.depthFromRoot >= depthFromRoot)) {
             found = true;
             this->hits++;
             return entry;
@@ -80,13 +80,7 @@ namespace engine {
         this->reads++;
         TTEntry entry = this->table[this->getHashIndex(hash)];
         if (entry.hash == hash){
-            if (entry.nodeType == END){
-                // This is en end node, so higher depths will not change this value
-                found = true;
-                this->hits++;
-                return entry;
-            }
-            else if (entry.depthFromRoot >= depthFromRoot){
+            if (entry.depthFromRoot >= depthFromRoot){
                 // We have stored the exact evaluation for this position, so return it
                 if (entry.nodeType == EXACT) {
                     found = true;

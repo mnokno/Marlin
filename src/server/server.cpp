@@ -24,6 +24,7 @@
 #include "search.h"
 #include "precalculated_data.h"
 #include "zobrist_hashing.h"
+#include "bitops.h"
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -226,10 +227,18 @@ namespace hosting {
     string Server::handleMoveRequest(int opponentMove, int timeLimit) {
         // updates position
         this->position->makeMove(position->convertFileToMove(opponentMove));
+        // logs state of the game
+        printf("%s", formatPosition(*this->position).c_str());
+        printf("%s",to_string(this->position->getGameState()).c_str());
+        printf("\n");
         // searches for the best move
         int bestMove = this->search->findBestMoveIn(timeLimit);
         // updates position
         this->position->makeMove(bestMove);
+        // logs state of the game
+        printf("%s", formatPosition(*this->position).c_str());
+        printf("%s",to_string(this->position->getGameState()).c_str());
+        printf("\n");
         // returns response
         return "exitCode:0,move:" + to_string(bestMove) + ",gameStatus:" + to_string(this->position->getGameState());
     }
@@ -274,6 +283,26 @@ namespace hosting {
         //}
 
         return output;
+    }
+
+    std::string Server::formatPosition(Position position) {
+        string formatted = "";
+        for (int i = 0; i < 6; i++){
+            string line = "";
+            for (int j = 0; j < 7; j++){
+                if ((position.getPosition(Player::YELLOW) & BitOps::flipBit(0, i * 7 + j)) != 0){
+                    line += "X";
+                }
+                else if ((position.getPosition(Player::RED) & BitOps::flipBit(0, i * 7 + j)) != 0){
+                    line += "O";
+                }
+                else{
+                    line += "_";
+                }
+            }
+            formatted = line + "\n" + formatted;
+        }
+        return formatted;
     }
 
 } // hosting

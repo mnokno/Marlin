@@ -26,6 +26,7 @@ namespace hosting {
         string handleInitializeEngineRequest(int TTMemoryPool);
         string handleMoveRequest(int opponentMove, int timeLimit);
         map<string, string> stringToMap(const string& input);
+        static string formatPosition(Position position);
 
         Position* position;
         TranspositionTable* transpositionTable;

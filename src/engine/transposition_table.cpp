@@ -54,9 +54,11 @@ namespace engine {
      * @return The entry associated with the hash
      */
     TTEntry TranspositionTable::probe(ulong hash, int depthFromRoot, bool & found) {
+        this->reads++;
         TTEntry entry = this->table[this->getHashIndex(hash)];
         if (entry.hash == hash && ((entry.nodeType == EXACT && entry.depthFromRoot >= depthFromRoot) || entry.nodeType == END)) {
             found = true;
+            this->hits++;
             return entry;
         }
         else{
@@ -75,17 +77,20 @@ namespace engine {
      * @return The entry associated with the hash
      */
     TTEntry TranspositionTable::probe(ulong hash, int depthFromRoot, bool &found, int alpha, int beta) {
+        this->reads++;
         TTEntry entry = this->table[this->getHashIndex(hash)];
-
         if (entry.hash == hash){
             if (entry.nodeType == END){
+                // This is en end node, so higher depths will not change this value
                 found = true;
+                this->hits++;
                 return entry;
             }
             else if (entry.depthFromRoot >= depthFromRoot){
                 // We have stored the exact evaluation for this position, so return it
                 if (entry.nodeType == EXACT) {
                     found = true;
+                    this->hits++;
                     return entry;
                 }
 
@@ -93,12 +98,14 @@ namespace engine {
                 // search the moves in this position as they won't interest us; otherwise we will have to search to find the exact value
                 if (entry.nodeType == UPPER_BOUND && entry.eval <= alpha) {
                     found = true;
+                    this->hits++;
                     return entry;
                 }
 
                 // We have stored the lower bound of the eval for this position. Only return if it causes a beta cut-off.
                 if (entry.nodeType == LOWER_BOUND && entry.eval >= beta) {
                     found = true;
+                    this->hits++;
                     return entry;
                 }
             }
@@ -144,6 +151,8 @@ namespace engine {
      */
     void TranspositionTable::clear() {
         writes = 0;
+        reads = 0;
+        hits = 0;
         for (int i = 0; i < this->tableSize; i++) {
             this->table[i].hash = (ulong)0;
             this->table[i].depthFromRoot = (int)0;

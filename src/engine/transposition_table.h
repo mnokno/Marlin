@@ -15,7 +15,7 @@ namespace engine {
         [[nodiscard]] byte getDepthFromRoot() const {return this->depthFromRoot;}
         [[nodiscard]] short getEval() const {return this->eval;}
         [[nodiscard]] byte getMove() const {return this->move;}
-        [[nodiscard]] NodeType getNodeType() const {return this->nodeType};
+        [[nodiscard]] NodeType getNodeType() const {return this->nodeType;}
     private:
         friend class TranspositionTable;
         ulong hash;

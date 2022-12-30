@@ -6,6 +6,12 @@
 #include "position.h"
 
 namespace engine {
+    /**
+     * Generates all possible moves for a given position.
+     *
+     * @param position The position to generate moves for.
+     * @return A list of all possible moves.
+     */
     list<int> MoveGenerator::generateMoves(Position position) {
         list<int> moves;
         for (short i = 0; i < 7; i++){

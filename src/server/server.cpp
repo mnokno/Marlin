@@ -6,7 +6,7 @@
 // https://learn.microsoft.com/en-us/windows/win32/winsock/getting-started-with-winsock
 
 // STANDARD REQUESTS
-// requestType:moveCalculation,opponentMove:0,timeLimit:2000
+// requestType:moveCalculation,playedFile:0,timeLimit:2000
 // requestType:initialization,TTMemoryPool:3000
 
 #include <iostream>
@@ -150,8 +150,8 @@ namespace hosting {
                             response = handleInitializeEngineRequest(stoi(request["TTMemoryPool"]));
                         }
                     } else if (request["requestType"] == "moveCalculation"){
-                        if (request.contains("opponentMove") && request.contains("timeLimit")) {
-                            response = handleMoveRequest(stoi(request["opponentMove"]), stoi(request["timeLimit"]));
+                        if (request.contains("playedFile") && request.contains("timeLimit")) {
+                            response = handleMoveRequest(stoi(request["playedFile"]), stoi(request["timeLimit"]));
                         }
                     }
                 }
@@ -226,12 +226,16 @@ namespace hosting {
      * @return the response to the request
      */
     string Server::handleMoveRequest(int opponentMove, int timeLimit) {
-        // updates position
-        this->position->makeMove(position->convertFileToMove(opponentMove));
-        // logs state of the game
-        printf("%s", formatPosition(*this->position).c_str());
-        printf("%s",to_string(this->position->getGameState()).c_str());
-        printf("\n");
+        // if opponents move is != -1 then there is no opponent move
+        if (opponentMove != -1) {
+            // updates position
+            this->position->makeMove(position->convertFileToMove(opponentMove));
+            // logs state of the game
+            printf("%s", formatPosition(*this->position).c_str());
+            printf("%s",to_string(this->position->getGameState()).c_str());
+            printf("\n");
+        }
+
         // searches for the best move
         int bestMove = this->search->findBestMoveIn(timeLimit);
         // updates position

@@ -319,7 +319,7 @@ namespace engine {
         // reference to abort flag
         bool abort = false;
         // start timer, will set abort flag to true when time is up
-        thread waitThread = thread(abortAfter, ref(abort), milliseconds);
+        thread waitThread = thread(abortAfter, ref(abort), ref(currentDepth), position.getMoveCount(), milliseconds);
         waitThread.detach();
 
         // start search using progressive deepening
@@ -588,14 +588,25 @@ namespace engine {
      * Sets given abort flag to true after given time
      *
      * @param abortFlag reference to the abort flag
+     * @param currentDepth current depth of the search, used to abort early if the search has solved the game
+     * @param rootPositionDepth used to check if the search has solved the game
      * @param milliseconds how many milliseconds to wait before setting abort flag to true
      */
-    void Search::abortAfter(bool &abortFlag, int milliseconds) {
-        std::cout << "Abort after time has been started!" << std::endl;
-        usleep(milliseconds * 1000);
-        std::cout << "Abort after time has finished its wait time!" << std::endl;
+    void Search::abortAfter(bool &abortFlag, int& currentDepth, int rootPositionDepth,  int milliseconds) {
+        std::cout << "Search timer has been started." << std::endl;
+        for (int i = 0; i < 100; i++){
+            // usleep take useconds not milliseconds
+            usleep(milliseconds);
+            // checks it the search has solved the game
+            // its 43 not 42 because currentDepths is first incremented and then searched
+            if (currentDepth + rootPositionDepth >= 43){
+                std::cout << "Abort flag has been set to true because we had solved the position." << std::endl;
+                abortFlag = true;
+                return;
+            }
+        }
+        std::cout << "Abort flag has been set to true because the time has run out. " << std::endl;
         abortFlag = true;
-        std::cout << "Abort after time has set provided flag to false!" << std::endl;
     }
 
 #pragma endregion

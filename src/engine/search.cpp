@@ -342,8 +342,8 @@ namespace engine {
                 std::cout << "Calculated depth " + to_string(currentDepth) + " best move " + to_string(betsMove) + " score:" + to_string(betsScore) + "\n";
             }
             currentDepth++;
-
-        } while (!abort && currentDepth + position.getMoveCount() <= 42);
+            // its 43 and not 42 because we increment currentDepth before exploring it
+        } while (!abort && currentDepth + position.getMoveCount() <= 43);
     }
 
 #pragma region Algorythms

@@ -25,6 +25,7 @@ namespace hosting {
         int runServer(string port);
         string handleInitializeEngineRequest(int TTMemoryPool);
         string handleMoveRequest(int opponentMove, int timeLimit);
+        string handleNewGameRequest(int TTMemoryPool);
         map<string, string> stringToMap(const string& input);
         static string formatPosition(Position position);
 

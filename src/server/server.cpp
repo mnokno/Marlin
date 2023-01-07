@@ -143,7 +143,7 @@ namespace hosting {
                 // converts the message to a map
                 map<string, string> request = stringToMap(recvbuf);
 
-                string response = "ERROR";
+                string response = "exitcode:1";
                 if (request.contains("requestType")){
                     if (request["requestType"] == "initialization"){
                         if (request.contains("TTMemoryPool")){
@@ -152,6 +152,10 @@ namespace hosting {
                     } else if (request["requestType"] == "moveCalculation"){
                         if (request.contains("playedFile") && request.contains("timeLimit")) {
                             response = handleMoveRequest(stoi(request["playedFile"]), stoi(request["timeLimit"]));
+                        }
+                    } else if (request["requestType"] == "newGame"){
+                        if (request.contains("TTMemoryPool")){
+                            response = handleNewGameRequest(stoi(request["TTMemoryPool"]));
                         }
                     }
                 }
@@ -197,10 +201,10 @@ namespace hosting {
     }
 
     /**
-     * Handles the initialize engine request.
+     * Handles initialize engine request.
      *
      * @param TTMemoryPool the memory pool for the transposition table
-     * @return the response to the request
+     * @return response to the request
      */
     string Server::handleInitializeEngineRequest(int TTMemoryPool) {
         // deletes previews data
@@ -219,11 +223,11 @@ namespace hosting {
     }
 
     /**
-     * Handles the move request.
+     * Handles move request.
      *
      * @param opponentMove the opponent's move
      * @param timeLimit the time limit for the engine to make a move
-     * @return the response to the request
+     * @return response to the request
      */
     string Server::handleMoveRequest(int opponentMove, int timeLimit) {
         // if opponents move is != -1 then there is no opponent move
@@ -246,6 +250,25 @@ namespace hosting {
         printf("\n");
         // returns response
         return "exitCode:0,move:" + to_string(bestMove) + ",gameStatus:" + to_string(this->position->getGameState());
+    }
+
+    /**
+     * Handles new game request.
+     *
+     * @param TTMemoryPool the memory pool for the transposition table
+     * @return response to the request
+     */
+    string Server::handleNewGameRequest(int TTMemoryPool){
+        // deletes previews data
+        delete this->position;
+        delete this->transpositionTable;
+        delete this->search;
+        // creates new objects
+        this->position = new Position();
+        this->transpositionTable = new TranspositionTable(TranspositionTable::calculateTableCapacity(TTMemoryPool));
+        this->search = new Search(*this->position, *this->transpositionTable);
+        // returns response
+        return "exitCode:0";
     }
 
     /**

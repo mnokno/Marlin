@@ -24,7 +24,7 @@ int __cdecl main(int argc, char **argv)
     struct addrinfo *result = NULL,
             *ptr = NULL,
             hints;
-    char *sendbuf = "requestType:initialization,TTMemoryPool:3000";
+    char const *sendbuf = "requestType:initialization,TTMemoryPool:3000";
     char recvbuf[DEFAULT_BUFLEN];
     int iResult;
     int recvbuflen = DEFAULT_BUFLEN;

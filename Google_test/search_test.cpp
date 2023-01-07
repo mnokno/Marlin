@@ -86,7 +86,7 @@ protected:
 
 TEST_F(SearchTest, MiniMaxTest) {
     Position position = *new Position();
-    TranspositionTable tt = *new TranspositionTable(TEST_TT_SIZE);
+    TranspositionTable tt = *new TranspositionTable(TranspositionTable::calculateTableCapacity(2500));
     Search search = *new Search(position, tt);
     // from 1 to 6
     for (int depth = 1; depth < 7; depth++){
@@ -117,9 +117,9 @@ TEST_F(SearchTest, MultiThreadingTest) {
 }
 
 TEST_F(SearchTest, ProgressiveDeepningTest) {
-    validateLevel(engine::ALPHA_BETA_MT, engine::ALPHA_BETA_PD, 12);
+    validateLevel(engine::ALPHA_BETA_MT, engine::ALPHA_BETA, 12);
 }
 
 TEST_F(SearchTest, SpeedTest) {
-    validateLevel(engine::ALPHA_BETA_PD, engine::ALPHA_BETA_PD, 8);
+    validateLevel(engine::ALPHA_BETA_MT, engine::ALPHA_BETA_MT, 8);
 }

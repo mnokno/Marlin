@@ -70,7 +70,8 @@ add_executable(server
         ${engine_SOURCES}
         ${server_SOURCES}
         )
-target_link_libraries(server PRIVATE ws2_32)
+target_link_libraries(server PRIVATE ws2_32 -static-libgcc -static-libstdc++ -static)
+
 
 # defines server test configuration
 add_executable(server_test

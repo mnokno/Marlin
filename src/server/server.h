@@ -23,9 +23,9 @@ namespace hosting {
 
     private:
         int runServer(string port);
-        string handleInitializeEngineRequest(int TTMemoryPool);
-        string handleMoveRequest(int opponentMove, int timeLimit);
-        string handleNewGameRequest(int TTMemoryPool);
+        string handleInitializeEngineRequest(map<string, string> &request);
+        string handleMoveRequest(map<string, string> &request);
+        string handleNewGameRequest(map<string, string> &request);
         map<string, string> stringToMap(const string& input);
         static string formatPosition(Position position);
 

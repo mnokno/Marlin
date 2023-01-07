@@ -146,17 +146,11 @@ namespace hosting {
                 string response = "exitcode:1";
                 if (request.contains("requestType")){
                     if (request["requestType"] == "initialization"){
-                        if (request.contains("TTMemoryPool")){
-                            response = handleInitializeEngineRequest(stoi(request["TTMemoryPool"]));
-                        }
+                        response = handleInitializeEngineRequest(request);
                     } else if (request["requestType"] == "moveCalculation"){
-                        if (request.contains("playedFile") && request.contains("timeLimit")) {
-                            response = handleMoveRequest(stoi(request["playedFile"]), stoi(request["timeLimit"]));
-                        }
+                        response = handleMoveRequest(request);
                     } else if (request["requestType"] == "newGame"){
-                        if (request.contains("TTMemoryPool")){
-                            response = handleNewGameRequest(stoi(request["TTMemoryPool"]));
-                        }
+                        response = handleNewGameRequest(request);
                     }
                 }
 
@@ -206,7 +200,11 @@ namespace hosting {
      * @param TTMemoryPool the memory pool for the transposition table
      * @return response to the request
      */
-    string Server::handleInitializeEngineRequest(int TTMemoryPool) {
+    string Server::handleInitializeEngineRequest(map<string, string> &request) {
+        // check if all required parameters are present
+        if (!request.contains("TTMemoryPool")){
+            return "exitcode:2";
+        }
         // deletes previews data
         delete this->position;
         delete this->transpositionTable;
@@ -216,7 +214,7 @@ namespace hosting {
         ZobristHashing::initHashes();
         // creates new objects
         this->position = new Position();
-        this->transpositionTable = new TranspositionTable(TranspositionTable::calculateTableCapacity(TTMemoryPool));
+        this->transpositionTable = new TranspositionTable(TranspositionTable::calculateTableCapacity(stoi(request["TTMemoryPool"])));
         this->search = new Search(*this->position, *this->transpositionTable);
         // returns response
         return "exitCode:0";
@@ -229,11 +227,15 @@ namespace hosting {
      * @param timeLimit the time limit for the engine to make a move
      * @return response to the request
      */
-    string Server::handleMoveRequest(int opponentMove, int timeLimit) {
+    string Server::handleMoveRequest(map<string, string> &request) {
+        // check if all required parameters are present
+        if (!request.contains("playedFile") || !request.contains("timeLimit")) {
+            return "exitcode:2";
+        }
         // if opponents move is != -1 then there is no opponent move
-        if (opponentMove != -1) {
+        if (stoi(request["playedFile"]) != -1) {
             // updates position
-            this->position->makeMove(position->convertFileToMove(opponentMove));
+            this->position->makeMove(position->convertFileToMove(stoi(request["playedFile"])));
             // logs state of the game
             printf("%s", formatPosition(*this->position).c_str());
             printf("%s",to_string(this->position->getGameState()).c_str());
@@ -241,7 +243,7 @@ namespace hosting {
         }
 
         // searches for the best move
-        int bestMove = this->search->findBestMoveIn(timeLimit);
+        int bestMove = this->search->findBestMoveIn(stoi(request["timeLimit"]));
         // updates position
         this->position->makeMove(bestMove);
         // logs state of the game
@@ -258,14 +260,17 @@ namespace hosting {
      * @param TTMemoryPool the memory pool for the transposition table
      * @return response to the request
      */
-    string Server::handleNewGameRequest(int TTMemoryPool){
+    string Server::handleNewGameRequest(map<string, string> &request){
+        // checks if the transportation table should be rested
+        if (request.contains("TTMemoryPool")){
+            delete this->transpositionTable;
+            this->transpositionTable = new TranspositionTable(TranspositionTable::calculateTableCapacity(stoi(request["TTMemoryPool"])));
+        }
         // deletes previews data
         delete this->position;
-        delete this->transpositionTable;
         delete this->search;
         // creates new objects
         this->position = new Position();
-        this->transpositionTable = new TranspositionTable(TranspositionTable::calculateTableCapacity(TTMemoryPool));
         this->search = new Search(*this->position, *this->transpositionTable);
         // returns response
         return "exitCode:0";

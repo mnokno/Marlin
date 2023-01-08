@@ -241,7 +241,6 @@ namespace hosting {
         // searches for the best move
         int bestMove;
         if (request.contains("maxDepth")) {
-            printf("fwef");
             bestMove = this->search->findBestMoveIn(stoi(request["timeLimit"]), stoi(request["maxDepth"]));
         }
         else {

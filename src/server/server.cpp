@@ -207,6 +207,7 @@ namespace hosting {
         }
         // deletes previews data
         delete this->position;
+        delete this->transpositionTable->table;
         delete this->transpositionTable;
         delete this->search;
         // precalculates data
@@ -263,6 +264,7 @@ namespace hosting {
     string Server::handleNewGameRequest(map<string, string> &request){
         // checks if the transportation table should be rested
         if (request.contains("TTMemoryPool")){
+            delete this->transpositionTable->table;
             delete this->transpositionTable;
             this->transpositionTable = new TranspositionTable(TranspositionTable::calculateTableCapacity(stoi(request["TTMemoryPool"])));
         }

@@ -35,6 +35,7 @@ namespace engine {
         static void searchMiniMaxTask(Position lPosition, int depth, int& result, bool& abort, int id);
         static void timedSearchTask(int& result, Position position, TranspositionTable& tt, int milliseconds);
         static void abortAfter(bool& abortFlag, int& currentDepth, int& currentScore, int rootPositionDepth, int milliseconds);
+        static void waitForAbortAfter(bool& abortFlag);
 
         Position& position;
         TranspositionTable& transpositionTable;

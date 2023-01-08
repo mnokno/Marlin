@@ -345,7 +345,21 @@ namespace engine {
             }
             currentEval = bestScore;
             currentDepth++;
+
+            // checks it the search has solved the game
+            // its 43 not 42 because currentDepths is first incremented and then searched
+            if (currentDepth + position.getMoveCount() >= 43){
+                std::cout << "Exited progressive deepening loop because we had solved the position." << std::endl;
+                break;
+            }
+            // checks if the search has a premature forced end
+            if (abs(currentEval) > EVAL_INFINITY * .9){
+                std::cout << "Exited progressive deepening loop because premature forced end has been found." << std::endl;
+                break;
+            }
         } while (!abort);
+        thread waitForAbortAfterThread = thread(waitForAbortAfter, ref(abort));
+        waitForAbortAfterThread.join();
     }
 
 #pragma region Algorythms
@@ -602,6 +616,7 @@ namespace engine {
                 abortFlag = true;
                 return;
             }
+            // checks if the search has a premature forced end
             if (abs(currentScore) > EVAL_INFINITY * .9){
                 std::cout << "Abort flag has been set to true because premature forced end has been found." << std::endl;
                 abortFlag = true;
@@ -610,6 +625,17 @@ namespace engine {
         }
         std::cout << "Abort flag has been set to true because the time has run out. " << std::endl;
         abortFlag = true;
+    }
+
+    /**
+     * Wait for the abortAfter thread to finish
+     *
+     * @param abortFlag reference to the abort flag
+     */
+    void Search::waitForAbortAfter(bool &abortFlag) {
+        while (!abortFlag){
+            usleep(10);
+        }
     }
 
 #pragma endregion

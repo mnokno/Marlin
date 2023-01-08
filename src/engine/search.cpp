@@ -318,29 +318,32 @@ namespace engine {
         int currentDepth = 1;
         // reference to abort flag
         bool abort = false;
+        // stores the evaluation of the current depths move
+        int currentEval = 0;
         // start timer, will set abort flag to true when time is up
-        thread waitThread = thread(abortAfter, ref(abort), ref(currentDepth), position.getMoveCount(), milliseconds);
+        thread waitThread = thread(abortAfter, ref(abort), ref(currentDepth), ref(currentEval), position.getMoveCount(), milliseconds);
         waitThread.detach();
 
         // start search using progressive deepening
         do {
-            int betsMove = -1;
-            int betsScore = -EVAL_INFINITY;
+            int bestMove = -1;
+            int bestScore = -EVAL_INFINITY;
 
             for (int &move: MoveGenerator::generateMoves(position)) {
                 position.makeMove(move);
                 int score = -Search::alphaBetaStatic(-EVAL_INFINITY, EVAL_INFINITY, position, tt, currentDepth - 1,abort, 0);
                 position.unMakeMove();
-                if (score > betsScore) {
-                    betsScore = score;
-                    betsMove = move;
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMove = move;
                 }
             }
 
             if (!abort) {
-                result = betsMove;
-                std::cout << "Calculated depth " + to_string(currentDepth) + " best move " + to_string(betsMove) + " score:" + to_string(betsScore) + "\n";
+                result = bestMove;
+                std::cout << "Calculated depth " + to_string(currentDepth) + " best move " + to_string(bestMove) + " score:" + to_string(bestScore) + "\n";
             }
+            currentEval = bestScore;
             currentDepth++;
         } while (!abort);
     }
@@ -583,10 +586,11 @@ namespace engine {
      *
      * @param abortFlag reference to the abort flag
      * @param currentDepth current depth of the search, used to abort early if the search has solved the game
+     * @param currentScore current score of the search, used to abort early if the search has solved the game
      * @param rootPositionDepth used to check if the search has solved the game
      * @param milliseconds how many milliseconds to wait before setting abort flag to true
      */
-    void Search::abortAfter(bool &abortFlag, int& currentDepth, int rootPositionDepth,  int milliseconds) {
+    void Search::abortAfter(bool &abortFlag, int& currentDepth, int& currentScore, int rootPositionDepth,  int milliseconds) {
         std::cout << "Search timer has been started." << std::endl;
         for (int i = 0; i < 100; i++){
             // usleep take useconds not milliseconds
@@ -595,6 +599,11 @@ namespace engine {
             // its 43 not 42 because currentDepths is first incremented and then searched
             if (currentDepth + rootPositionDepth >= 43){
                 std::cout << "Abort flag has been set to true because we had solved the position." << std::endl;
+                abortFlag = true;
+                return;
+            }
+            if (abs(currentScore) > EVAL_INFINITY * .9){
+                std::cout << "Abort flag has been set to true because premature forced end has been found." << std::endl;
                 abortFlag = true;
                 return;
             }

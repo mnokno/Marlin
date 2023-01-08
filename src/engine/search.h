@@ -16,7 +16,7 @@ namespace engine {
     public:
         explicit Search(Position &position, TranspositionTable &transpositionTable);
         int findBestMove(int depth);
-        int findBestMoveIn(int milliseconds);
+        int findBestMoveIn(int milliseconds, int maxDepth);
         int findBestMoveBaseTest(int depth, BaseLevel baseLevel);
         int findBestMoveABMT(int depth, int threads);
         int findBestMoveMMMT(int depth, int threads);
@@ -33,8 +33,8 @@ namespace engine {
         int miniMax(int depthLeft);
         static int miniMaxStatic(Position& position, int depthLeft, bool& abort, int id);
         static void searchMiniMaxTask(Position lPosition, int depth, int& result, bool& abort, int id);
-        static void timedSearchTask(int& result, Position position, TranspositionTable& tt, int milliseconds);
-        static void abortAfter(bool& abortFlag, int& currentDepth, int& currentScore, int rootPositionDepth, int milliseconds);
+        static void timedSearchTask(int& result, Position position, TranspositionTable& tt, int milliseconds, int maxDepth);
+        static void abortAfter(bool& abortFlag, int& currentDepth, int& currentScore, int rootPositionDepth, int milliseconds, int maxDepth);
         static void waitForAbortAfter(bool& abortFlag);
 
         Position& position;

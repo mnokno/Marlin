@@ -49,11 +49,12 @@ namespace engine {
      * Find bet move in the given amount of time
      *
      * @param milliseconds How much time the function will have to find the best move in milliseconds
+     * @param maxDepth Maximum depth of the search, the search will end prematurity if the depth is reached
      * @return Returns the best found move
      */
-    int Search::findBestMoveIn(int milliseconds) {
+    int Search::findBestMoveIn(int milliseconds, int maxDepth) {
         int result = -1;
-        thread search = thread(timedSearchTask, ref(result), position, ref(transpositionTable), milliseconds);
+        thread search = thread(timedSearchTask, ref(result), position, ref(transpositionTable), milliseconds, maxDepth);
         search.join();
         if (result == -1){
             std::cout << "We should not be here" << std::endl;
@@ -312,8 +313,9 @@ namespace engine {
      * @param position Position to search
      * @param tt Transposition table
      * @param milliseconds Time to search in milliseconds
+     * @param maxDepth Maximum depth of the search, the search will end prematurity if the depth is reached
      */
-    void Search::timedSearchTask(int& result, Position position, TranspositionTable& tt, int milliseconds) {
+    void Search::timedSearchTask(int& result, Position position, TranspositionTable& tt, int milliseconds, int maxDepth) {
         // stores current search depth
         int currentDepth = 1;
         // reference to abort flag
@@ -321,7 +323,7 @@ namespace engine {
         // stores the evaluation of the current depths move
         int currentEval = 0;
         // start timer, will set abort flag to true when time is up
-        thread waitThread = thread(abortAfter, ref(abort), ref(currentDepth), ref(currentEval), position.getMoveCount(), milliseconds);
+        thread waitThread = thread(abortAfter, ref(abort), ref(currentDepth), ref(currentEval), position.getMoveCount(), milliseconds, maxDepth);
         waitThread.detach();
 
         // start search using progressive deepening
@@ -355,6 +357,11 @@ namespace engine {
             // checks if the search has a premature forced end
             if (abs(currentEval) > EVAL_INFINITY * .9){
                 std::cout << "Exited progressive deepening loop because premature forced end has been found." << std::endl;
+                break;
+            }
+            // checks if the search has reached the maximum depth
+            if (currentDepth > maxDepth){
+                std::cout << "Exited progressive deepening loop because maximum depth has been reached." << std::endl;
                 break;
             }
         } while (!abort);
@@ -603,8 +610,9 @@ namespace engine {
      * @param currentScore current score of the search, used to abort early if the search has solved the game
      * @param rootPositionDepth used to check if the search has solved the game
      * @param milliseconds how many milliseconds to wait before setting abort flag to true
+     * @param maxDepth Maximum depth of the search, the search will end prematurity if the depth is reached
      */
-    void Search::abortAfter(bool &abortFlag, int& currentDepth, int& currentScore, int rootPositionDepth,  int milliseconds) {
+    void Search::abortAfter(bool &abortFlag, int& currentDepth, int& currentScore, int rootPositionDepth,  int milliseconds, int maxDepth) {
         std::cout << "Search timer has been started." << std::endl;
         for (int i = 0; i < 100; i++){
             // usleep take useconds not milliseconds
@@ -619,6 +627,12 @@ namespace engine {
             // checks if the search has a premature forced end
             if (abs(currentScore) > EVAL_INFINITY * .9){
                 std::cout << "Abort flag has been set to true because premature forced end has been found." << std::endl;
+                abortFlag = true;
+                return;
+            }
+            // checks if the search has reached the maximum depth
+            if (currentDepth > maxDepth){
+                std::cout << "Abort flag has been set to true because maximum depth has been reached." << std::endl;
                 abortFlag = true;
                 return;
             }

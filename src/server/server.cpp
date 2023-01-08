@@ -239,7 +239,14 @@ namespace hosting {
         }
 
         // searches for the best move
-        int bestMove = this->search->findBestMoveIn(stoi(request["timeLimit"]));
+        int bestMove;
+        if (request.contains("maxDepth")) {
+            printf("fwef");
+            bestMove = this->search->findBestMoveIn(stoi(request["timeLimit"]), stoi(request["maxDepth"]));
+        }
+        else {
+            bestMove = this->search->findBestMoveIn(stoi(request["timeLimit"]), 50);
+        }
         // updates position
         this->position->makeMove(bestMove);
         // logs state of the game

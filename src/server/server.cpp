@@ -205,11 +205,6 @@ namespace hosting {
         if (!request.contains("TTMemoryPool")){
             return "exitcode:2";
         }
-        // deletes previews data
-        delete this->position;
-        delete this->transpositionTable->table;
-        delete this->transpositionTable;
-        delete this->search;
         // precalculates data
         PrecalculatedData::init();
         ZobristHashing::initHashes();

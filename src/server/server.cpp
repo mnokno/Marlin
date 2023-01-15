@@ -269,6 +269,8 @@ namespace hosting {
             delete this->transpositionTable;
             this->transpositionTable = new TranspositionTable(TranspositionTable::calculateTableCapacity(stoi(request["TTMemoryPool"])));
         }
+        // clears the transition table
+        this->transpositionTable->clear();
         // deletes previews data
         delete this->position;
         delete this->search;
